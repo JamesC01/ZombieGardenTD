@@ -1,12 +1,14 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #define EXPAND_V2(v2) v2.x, v2.y
 
 typedef enum {
     PT_NONE,
     PT_PSHOOTER,
+    PT_SUNFLOWER,
     PT_WALLNUT,
     PT_CHERRYBOMB,
     PT_COUNT
@@ -16,8 +18,8 @@ typedef struct {
     PlantType type;
     // packet sprite
     Vector2 origin;
+    int cost;
     bool dragging;
-
 } SeedPacket;
 const Vector2 SEEDPACKET_SIZE = {40, 50};
 
@@ -74,11 +76,6 @@ int main(void)
     seedPackets[1] = (SeedPacket){ PT_PSHOOTER, (Vector2){50 + SEEDPACKET_SIZE.x, 10}};
 
     while (!WindowShouldClose()) {
-
-
-        // Update plants
-
-
         BeginDrawing();
 
         ClearBackground(WHITE);
@@ -91,7 +88,6 @@ int main(void)
             for (int y = 0; y < tilesY; y++) {
                 DrawTexture(lawnBackgroundSprite, x * 32, y * 32, WHITE);
             }
-
         }
 
         // Draw lawn grid
@@ -108,12 +104,11 @@ int main(void)
 
                 Vector2 gridCellPos = Vector2Add(gridDrawOffset, (Vector2){x*gridCellSize.x+x*gridCellGap, y*gridCellSize.y+y*gridCellGap});
 
-                /*
-                if (seedPacket.dragging) {
+                if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
                     if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){gridCellPos.x, gridCellPos.y, gridCellSize.x, gridCellSize.y})) {
                         c = (Color){255, 255, 255, 100};
                     }
-                }*/
+                }
                 DrawRectangleV(gridCellPos, gridCellSize, c);
             }
         }
@@ -186,10 +181,13 @@ void UpdateDrawSeedPackets()
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
             if (seedPackets[i].dragging) {
                 Vector2 mpos = GetMousePosition();
-                int x = (mpos.x - gridDrawOffset.x) / gridCellSize.x;
-                int y = (mpos.y - gridDrawOffset.y) / gridCellSize.y;
+                float x = (mpos.x - gridDrawOffset.x) / gridCellSize.x;
+                float y = (mpos.y - gridDrawOffset.y) / gridCellSize.y;
 
-                gardenGrid[x][y].type = seedPackets[i].type;
+                if (x >= 0 && y >= 0
+                    && x < 9 && y < 5) {
+                    gardenGrid[(int)x][(int)y].type = seedPackets[i].type;
+                }
             }
             seedPackets[i].dragging = false;
             ShowCursor();
