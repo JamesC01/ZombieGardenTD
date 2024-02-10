@@ -34,6 +34,7 @@ typedef struct {
 
 
 void UpdateDrawPShooter(Plant* p, Vector2 screenPos);
+void UpdateDrawSeedPackets();
 
 // Assets
 Texture2D seedPacketSprite;
@@ -41,9 +42,19 @@ Texture2D lawnBackgroundSprite;
 Texture2D pShooterSprite;
 Texture2D peaSprite;
 
+// Projectile globals
 #define MAX_PROJ 16
 Projectile projectiles[MAX_PROJ] = {0};
 int nextProjectile = 0;
+
+// Plant Grid globals
+Plant gardenGrid[9][5] = {0};
+Vector2 gridDrawOffset = {40, 80};
+int gridCellGap = 0;
+Vector2 gridCellSize = {55, 70};
+
+// Seed Packet globals
+SeedPacket seedPackets[2];
 
 int main(void)
 {
@@ -59,37 +70,11 @@ int main(void)
     pShooterSprite = LoadTexture("sprites/pshooter.png");
     peaSprite = LoadTexture("sprites/pea.png");
 
-
-    Plant gardenGrid[9][5] = {0};
-    Vector2 gridDrawOffset = {40, 80};
-    int gridCellGap = 0;
-    Vector2 gridCellSize = {55, 70};
-
-    SeedPacket seedPacket = {0};
-    seedPacket.origin = (Vector2){50, 10};
+    seedPackets[0] = (SeedPacket){ PT_NONE, (Vector2){50, 10}};
+    seedPackets[1] = (SeedPacket){ PT_PSHOOTER, (Vector2){50 + SEEDPACKET_SIZE.x, 10}};
 
     while (!WindowShouldClose()) {
 
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !seedPacket.dragging) {
-            Vector2 mPos = GetMousePosition();
-
-            if (CheckCollisionPointRec(mPos, (Rectangle){seedPacket.origin.x, seedPacket.origin.y, SEEDPACKET_SIZE.x, SEEDPACKET_SIZE.y})) {
-                seedPacket.dragging = true;
-                HideCursor();
-            }
-        }
-
-        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-            if (seedPacket.dragging) {
-                Vector2 mpos = GetMousePosition();
-                int x = (mpos.x - gridDrawOffset.x) / gridCellSize.x;
-                int y = (mpos.y - gridDrawOffset.y) / gridCellSize.y;
-
-                gardenGrid[x][y].type = PT_PSHOOTER;
-            }
-            seedPacket.dragging = false;
-            ShowCursor();
-        }
 
         // Update plants
 
@@ -123,11 +108,12 @@ int main(void)
 
                 Vector2 gridCellPos = Vector2Add(gridDrawOffset, (Vector2){x*gridCellSize.x+x*gridCellGap, y*gridCellSize.y+y*gridCellGap});
 
+                /*
                 if (seedPacket.dragging) {
                     if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){gridCellPos.x, gridCellPos.y, gridCellSize.x, gridCellSize.y})) {
                         c = (Color){255, 255, 255, 100};
                     }
-                }
+                }*/
                 DrawRectangleV(gridCellPos, gridCellSize, c);
             }
         }
@@ -157,12 +143,7 @@ int main(void)
         }
 
 
-        // Draw dragged seed packet
-        if (seedPacket.dragging) {
-            DrawTextureV(seedPacketSprite, Vector2Subtract(GetMousePosition(), (Vector2){SEEDPACKET_SIZE.x/2, SEEDPACKET_SIZE.y/2}), WHITE);
-        } else {
-            DrawTextureV(seedPacketSprite, seedPacket.origin, WHITE);
-        }
+        UpdateDrawSeedPackets();
 
         EndDrawing();
 
@@ -175,6 +156,7 @@ int main(void)
 
 void UpdateDrawPShooter(Plant* p, Vector2 screenPos)
 {
+    screenPos = Vector2Add(screenPos, (Vector2){10, 5});
     p->cooldown--;
     if (p->cooldown <= 0) {
         p->cooldown = 120;
@@ -182,9 +164,41 @@ void UpdateDrawPShooter(Plant* p, Vector2 screenPos)
             nextProjectile = 0;
         }
         projectiles[nextProjectile].active = true;
-        projectiles[nextProjectile].pos = Vector2Add(screenPos, (Vector2){16, 30});
+        projectiles[nextProjectile].pos = Vector2Add(screenPos, (Vector2){33, 10});
         nextProjectile++;
     }
     DrawTexture(pShooterSprite, screenPos.x, screenPos.y, WHITE);
 
+}
+
+void UpdateDrawSeedPackets()
+{
+    for (int i = 0; i < 2; i++) {
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !seedPackets[i].dragging) {
+            Vector2 mPos = GetMousePosition();
+
+            if (CheckCollisionPointRec(mPos, (Rectangle){seedPackets[i].origin.x, seedPackets[i].origin.y, SEEDPACKET_SIZE.x, SEEDPACKET_SIZE.y})) {
+                seedPackets[i].dragging = true;
+                HideCursor();
+            }
+        }
+
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+            if (seedPackets[i].dragging) {
+                Vector2 mpos = GetMousePosition();
+                int x = (mpos.x - gridDrawOffset.x) / gridCellSize.x;
+                int y = (mpos.y - gridDrawOffset.y) / gridCellSize.y;
+
+                gardenGrid[x][y].type = seedPackets[i].type;
+            }
+            seedPackets[i].dragging = false;
+            ShowCursor();
+        }
+
+        if (seedPackets[i].dragging) {
+            DrawTextureV(seedPacketSprite, Vector2Subtract(GetMousePosition(), (Vector2){SEEDPACKET_SIZE.x/2, SEEDPACKET_SIZE.y/2}), WHITE);
+        } else {
+            DrawTextureV(seedPacketSprite, seedPackets[i].origin, WHITE);
+        }
+    }
 }
