@@ -3,14 +3,15 @@
 I've become much more open minded when listening to guys like Casey Muratori, and I feel like I've learned a lot.
 The goal of this project is to apply the idea of writing code as simply as possible, without too much planning,
 and no premature abstraction. Another goal is to also just enjoy programming. Enjoy lower level C programming.
-Also partly to see if I even do enjoy it.
+Also partly to see if I even do enjoy it. I spent around 1 hour today workong on this project.
+
 
 10/02/2024
 
-I've spent 3 hours on this project so far (including doing the sprites) and I'm really enjoying it. It feels very
-natural, and I'm not doing too much planning, it's just organically growing. I think planning should be a balance.
-Planning can be very difficult when there are lots of different things interacting. It's too much to keep in your
-head, or even written down, sometimes, so this gung-ho style of programming feels very nice. I like the idea of
+I've spent 3 hours (2 hours today) on this project so far (including doing the sprites) and I'm really enjoying it.
+It feels very natural, and I'm not doing too much planning, it's just organically growing. I think planning should
+be a balance. Planning can be very difficult when there are lots of different things interacting. It's too much to
+keep in your head, or even written down, sometimes, so this gung-ho style of programming feels very nice. I like the idea of
 just loosely planning something, or thinking about a simple implementation of it, and then just doing it. It feels
 right.
 
@@ -30,3 +31,23 @@ the implementation isn't too bad, but it's when you abstract it before you even 
 like this feeling of not obsessively planning. It feels fun. It's similar to what Casey Muratori describes as
 "exploration-based architecture", where you aren't 100% how to solve the problem, so you're just exploring around,
 rather than planning heavily, since you aren't sure what you're in for.
+
+
+11/02/2024
+
+Today I spent 2 hours and 3 minutes getting suns working in the game, making a shovel sprite, and making the seedpackets
+and shovel have a shadow behind them when they're being dragged. Implementing stuff from scratch like this seems to take
+quite a while, but I'm enjoying myself, and I'd imagine it gets faster with time. I suppose you get the added benefit of
+knowing how pretty much all of your game logic works, whereas in an engine, the engine would handle a lot of it for you,
+which can get in the way of things, sometimes. I think both are good. When I want to make something more ambitious, with
+lots of features like animations, physics, UI, etc., then I'd probably go with Godot. But if I want to enjoy some programming,
+and also just have some fun, then doing stuff from scratch is great, and very worthwhile, because it just gives you more
+in-depth problems-solving experience.
+
+So after 5 hours working on this game, I've gotten a peashooter plant and a garden grid where you can place them. I've got
+suns that act as a currancy. I've got a shovel which allows you to dig up plants, and that's about it. Of course, a lot actually
+went into it. I had to do 99% of the logic myself. There's a couple utily functions for doing simple collision checks that are
+built into raylib, but I could do those trivially.
+
+The next time I work on this project, I would like to get some sound effects working. That would really bring it to life.
+I think the next plant I'll work on is the sunflower. Once that's implemented, the zombies should come next!

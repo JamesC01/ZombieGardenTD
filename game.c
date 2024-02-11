@@ -50,6 +50,7 @@ Texture2D lawnBackgroundSprite;
 Texture2D pShooterSprite;
 Texture2D peaSprite;
 Texture2D sunSprite;
+Texture2D shovelSprite;
 
 // Projectile globals
 #define MAX_PROJ 16
@@ -87,6 +88,7 @@ int main(void)
     pShooterSprite = LoadTexture("sprites/pshooter.png");
     peaSprite = LoadTexture("sprites/pea.png");
     sunSprite = LoadTexture("sprites/sun.png");
+    shovelSprite = LoadTexture("sprites/shovel.png");
 
     seedPackets[0] = (SeedPacket){ PT_NONE, (Vector2){100, 10}, 0};
     seedPackets[1] = (SeedPacket){ PT_PSHOOTER, (Vector2){100 + SEEDPACKET_SIZE.x + 8, 10}, 3};
@@ -206,16 +208,6 @@ int main(void)
     return 0;
 }
 
-int GetSeedCost(PlantType ptype)
-{
-    switch (ptype) {
-        case PT_PSHOOTER:
-            return 3;
-        default:
-            return 999;
-    }
-}
-
 void UpdateDrawPShooter(Plant* p, Vector2 screenPos)
 {
     screenPos = Vector2Add(screenPos, (Vector2){10, 5});
@@ -235,11 +227,14 @@ void UpdateDrawPShooter(Plant* p, Vector2 screenPos)
 
 void UpdateDrawSeedPackets()
 {
+    // Draw tray
     int margin = 4;
     Vector2 trayStart = {seedPackets[0].origin.x-margin, 0};
     Vector2 trayEnd = {trayStart.x+8*SEEDPACKET_SIZE.x+margin, seedPackets[0].origin.y+SEEDPACKET_SIZE.y+margin};
     DrawRectangleV(trayStart, trayEnd, DARKBROWN);
+
     for (int i = 0; i < 2; i++) {
+        // Set packet dragging true if mouse clicked inside it.
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !seedPackets[i].dragging) {
             Vector2 mPos = GetMousePosition();
 
@@ -249,6 +244,7 @@ void UpdateDrawSeedPackets()
             }
         }
 
+        // Handle dropping the seed packet
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
             if (seedPackets[i].dragging && sunsCollectedCount >= seedPackets[i].cost) {
                 Vector2 mpos = GetMousePosition();
@@ -265,14 +261,25 @@ void UpdateDrawSeedPackets()
             ShowCursor();
         }
 
+        // Draw seedpacket
         Vector2 seedPacketUIPos;
+        Texture2D shovelOrSeedPacket;
+
+        if (seedPackets[i].type == PT_NONE) {
+            shovelOrSeedPacket = shovelSprite;
+        } else {
+            shovelOrSeedPacket = seedPacketSprite;
+        }
 
         if (seedPackets[i].dragging) {
             seedPacketUIPos = Vector2Subtract(GetMousePosition(), (Vector2){SEEDPACKET_SIZE.x/2, SEEDPACKET_SIZE.y/2});
+            DrawTextureV(shovelOrSeedPacket, Vector2Add(seedPacketUIPos, (Vector2){4, 4}), (Color){0, 0, 0, 50});
         } else {
             seedPacketUIPos = seedPackets[i].origin;
         }
-        DrawTextureV(seedPacketSprite, seedPacketUIPos, WHITE);
+
+        DrawTextureV(shovelOrSeedPacket, seedPacketUIPos, WHITE);
+
         switch (seedPackets[i].type) {
             case PT_PSHOOTER:
                 DrawTextureEx(pShooterSprite, Vector2Add(seedPacketUIPos, (Vector2){11, 12}), 0, 0.5f, WHITE);
