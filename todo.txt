@@ -1,0 +1,4 @@
+11/02/2024
+
+Include easter eggs, or just fun stuff like you'd expect in demo-scene software, or just
+older software in-general.

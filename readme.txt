@@ -24,7 +24,9 @@ I can think about how to abstract/compress it.
 
 The planning I've been thinking about is stuff like "how will the projectiles hit the zombies?" and "how will the
 zombies be able to eat the plants?" When thinking about these types of problems, I find my brains tries to think
-of ways of implementing it, which is great. I think the problem arises from when you stay away from programming
-completely to solve the problem ahead of time, and try to plan too much for future features. Actually planning
+of ways of implementing it, which is great. I think the problem arises from when spend too much time planning, and
+try too hard to plan ahead for future features, when you aren't even sure how to implement them. Actually planning
 the implementation isn't too bad, but it's when you abstract it before you even need to. Regardless, I still really
-like this feeling of not obsessively planning. It feels fun.
+like this feeling of not obsessively planning. It feels fun. It's similar to what Casey Muratori describes as
+"exploration-based architecture", where you aren't 100% how to solve the problem, so you're just exploring around,
+rather than planning heavily, since you aren't sure what you're in for.
