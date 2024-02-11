@@ -88,8 +88,8 @@ int main(void)
     peaSprite = LoadTexture("sprites/pea.png");
     sunSprite = LoadTexture("sprites/sun.png");
 
-    seedPackets[0] = (SeedPacket){ PT_NONE, (Vector2){100, 10}};
-    seedPackets[1] = (SeedPacket){ PT_PSHOOTER, (Vector2){100 + SEEDPACKET_SIZE.x + 8, 10}};
+    seedPackets[0] = (SeedPacket){ PT_NONE, (Vector2){100, 10}, 0};
+    seedPackets[1] = (SeedPacket){ PT_PSHOOTER, (Vector2){100 + SEEDPACKET_SIZE.x + 8, 10}, 3};
 
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -161,7 +161,7 @@ int main(void)
                 int sunSize = (suns[i].isBigSun) ? sunSpriteSize : (int)(sunSpriteSize*0.75f);
                 Vector2 sunHalfSize = {sunSize/2, sunSize/2};
                 suns[i].pos.y += 0.25f;
-                DrawTexturePro(sunSprite, (Rectangle){0,0,sunSpriteSize, sunSpriteSize}, (Rectangle){EXPAND_V2(suns[i].pos), sunSize, sunSize }, sunHalfSize, GetTime(), WHITE);
+                DrawTexturePro(sunSprite, (Rectangle){0,0,sunSpriteSize, sunSpriteSize}, (Rectangle){EXPAND_V2(suns[i].pos), sunSize, sunSize }, sunHalfSize, GetTime()*10, WHITE);
 
                 // Handle sun being clicked on
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -206,6 +206,16 @@ int main(void)
     return 0;
 }
 
+int GetSeedCost(PlantType ptype)
+{
+    switch (ptype) {
+        case PT_PSHOOTER:
+            return 3;
+        default:
+            return 999;
+    }
+}
+
 void UpdateDrawPShooter(Plant* p, Vector2 screenPos)
 {
     screenPos = Vector2Add(screenPos, (Vector2){10, 5});
@@ -226,8 +236,9 @@ void UpdateDrawPShooter(Plant* p, Vector2 screenPos)
 void UpdateDrawSeedPackets()
 {
     int margin = 4;
-    Rectangle seedTray = {seedPackets[0].origin.x-margin, seedPackets[0].origin.y-margin, SEEDPACKET_SIZE.x*8+margin*2, SEEDPACKET_SIZE.y+margin*2};
-    DrawRectangleRec(seedTray, DARKBROWN);
+    Vector2 trayStart = {seedPackets[0].origin.x-margin, 0};
+    Vector2 trayEnd = {trayStart.x+8*SEEDPACKET_SIZE.x+margin, seedPackets[0].origin.y+SEEDPACKET_SIZE.y+margin};
+    DrawRectangleV(trayStart, trayEnd, DARKBROWN);
     for (int i = 0; i < 2; i++) {
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !seedPackets[i].dragging) {
             Vector2 mPos = GetMousePosition();
@@ -239,7 +250,7 @@ void UpdateDrawSeedPackets()
         }
 
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-            if (seedPackets[i].dragging) {
+            if (seedPackets[i].dragging && sunsCollectedCount >= seedPackets[i].cost) {
                 Vector2 mpos = GetMousePosition();
                 float x = (mpos.x - gridDrawOffset.x) / gridCellSize.x;
                 float y = (mpos.y - gridDrawOffset.y) / gridCellSize.y;
@@ -247,6 +258,7 @@ void UpdateDrawSeedPackets()
                 if (x >= 0 && y >= 0
                     && x < 9 && y < 5) {
                     gardenGrid[(int)x][(int)y].type = seedPackets[i].type;
+                    sunsCollectedCount -= seedPackets[i].cost;
                 }
             }
             seedPackets[i].dragging = false;
@@ -267,6 +279,9 @@ void UpdateDrawSeedPackets()
                 break;
             default:
                 break;
+        }
+        if (sunsCollectedCount < seedPackets[i].cost) {
+            DrawRectangleV(seedPacketUIPos, (Vector2){seedPacketSprite.width, seedPacketSprite.height}, (Color){100, 100, 100, 100});
         }
     }
 }
