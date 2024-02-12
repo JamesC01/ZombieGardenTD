@@ -14,6 +14,15 @@ typedef enum {
     PT_COUNT
 } PlantType;
 
+int plantCooldownLUT[] = {
+    0, // PT_NONE,
+    60*2, // PT_PSHOOTER,
+    60*10, // PT_SUNFLOWER,
+    //PT_WALLNUT,
+    //PT_CHERRYBOMB,
+    //PT_COUNT
+};
+
 typedef struct {
     PlantType type;
     // packet sprite
@@ -39,13 +48,14 @@ typedef struct {
 typedef struct {
     Vector2 pos;
     bool active;
-    bool isBigSun;
 } Sun;
 
 
 void UpdateDrawPShooter(Plant* p, Vector2 screenPos);
+void UpdateDrawSunflower(Plant* p, Vector2 screenPos);
 void DrawSeedPackets();
 void UpdateSeedPackets();
+void SpawnSun(Vector2 pos);
 
 // Assets
 Texture2D seedPacketSprite;
@@ -68,9 +78,9 @@ Vector2 gridCellSize = {55, 70};
 
 // Seed Packet globals
 #define SEEDPACKET_COOLDOWN_SLOW 60*20
-#define SEEDPACKET_COOLDOWN_NORMAL 60*10
+#define SEEDPACKET_COOLDOWN_NORMAL 60*15
 #define SEEDPACKET_COOLDOWN_FAST 60*10
-#define SEEDPACKET_COUNT 2
+#define SEEDPACKET_COUNT 3
 SeedPacket seedPackets[SEEDPACKET_COUNT];
 bool draggingSeedPacket = false;
 
@@ -81,7 +91,7 @@ Sun suns[MAX_SUNS] = {0};
 int nextSun = 0;
 
 int sunCooldown = 60;
-int sunsCollectedCount = 0;
+int sunsCollectedCount = 8;
 
 int main(void)
 {
@@ -99,8 +109,11 @@ int main(void)
     sunSprite = LoadTexture("sprites/sun.png");
     shovelSprite = LoadTexture("sprites/shovel.png");
 
+    // Implementation detail, the shovel is also a seedpacket. It just works.
+    // TODO: get rid of hardcoded positions
     seedPackets[0] = (SeedPacket){ PT_NONE, (Vector2){100, 10}, 0};
     seedPackets[1] = (SeedPacket){ PT_PSHOOTER, (Vector2){100 + SEEDPACKET_SIZE.x + 8, 10}, 3, 0, SEEDPACKET_COOLDOWN_NORMAL};
+    seedPackets[2] = (SeedPacket){ PT_SUNFLOWER, (Vector2){100 + SEEDPACKET_SIZE.x*2 + 8*2, 10}, 2, 0, SEEDPACKET_COOLDOWN_FAST};
 
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -149,6 +162,8 @@ int main(void)
                     case PT_PSHOOTER:
                         UpdateDrawPShooter(p, screenPos);
                         break;
+                    case PT_SUNFLOWER:
+                        UpdateDrawSunflower(p, screenPos);
                     case PT_NONE:
                     default:
                         continue;
@@ -165,21 +180,6 @@ int main(void)
         }
 
 
-        // Spawn suns
-        sunCooldown--;
-        if (sunCooldown <= 0) {
-            sunCooldown = SUN_SPAWN_TIME;
-            if (nextSun == MAX_SUNS) {
-                nextSun = 0;
-            }
-
-            suns[nextSun].active = true;
-            suns[nextSun].isBigSun = GetRandomValue(0, 2) == 0;
-            suns[nextSun].pos.x = GetRandomValue(64, 640-64);
-            suns[nextSun].pos.y = SEEDPACKET_SIZE.y+32;
-
-            nextSun++;
-        }
 
         // Draw top bar
         DrawRectangle(0, 0, screenWidth, SEEDPACKET_SIZE.y+20, DARKBROWN);
@@ -194,27 +194,34 @@ int main(void)
         UpdateSeedPackets();
         DrawSeedPackets();
 
+        // Spawn suns
+        sunCooldown--;
+        if (sunCooldown <= 0) {
+            sunCooldown = SUN_SPAWN_TIME;
+            Vector2 pos = {GetRandomValue(64, screenWidth-64), SEEDPACKET_SIZE.y+32};
+            SpawnSun(pos);
+        }
+
         // Update and draw Suns
         for (int i = 0; i < MAX_SUNS; i++) {
             if (suns[i].active) {
                 suns[i].pos.y += 0.25f;
 
-                const int sunSpriteSize = sunSprite.width;
-                int sunSize = (suns[i].isBigSun) ? sunSpriteSize : (int)(sunSpriteSize*0.75f);
-                Vector2 sunHalfSize = {sunSize/2, sunSize/2};
+                const int sunSize = sunSprite.width;
+                Vector2 sunHalfSize = {(float)sunSize/2, (float)sunSize/2};
 
                 // Handle sun being clicked on
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                     Rectangle sunBox = {EXPAND_V2(Vector2Subtract(suns[i].pos, sunHalfSize)), sunSize, sunSize};
                     if (CheckCollisionPointRec(GetMousePosition(), sunBox)) {
                         suns[i].active = false;
-                        sunsCollectedCount += (suns[i].isBigSun) ? 2 : 1;
+                        sunsCollectedCount++;
                     }
                 }
 
                 // Draw sun
-                Rectangle src = {0,0,sunSpriteSize, sunSpriteSize};
-                Rectangle dst = {EXPAND_V2(suns[i].pos), sunSize, sunSize};
+                Rectangle src = {0,0,sunSize, sunSize};
+                Rectangle dst = { EXPAND_V2(suns[i].pos), sunSize, sunSize};
                 DrawTexturePro(sunSprite, src, dst, sunHalfSize, GetTime()*10, WHITE);
             }
         }
@@ -233,12 +240,36 @@ int main(void)
     return 0;
 }
 
+void SpawnSun(Vector2 pos)
+{
+    if (nextSun == MAX_SUNS) {
+        nextSun = 0;
+    }
+
+    suns[nextSun].active = true;
+    suns[nextSun].pos = pos;
+
+    nextSun++;
+}
+
+void UpdateDrawSunflower(Plant* p, Vector2 screenPos)
+{
+    screenPos = Vector2Add(screenPos, (Vector2){10, 5});
+    Vector2 sunSpawnPos = Vector2Add(screenPos, (Vector2){15, 12});
+    p->cooldown--;
+    if (p->cooldown <= 0) {
+        p->cooldown = plantCooldownLUT[PT_SUNFLOWER];
+        SpawnSun(sunSpawnPos);
+    }
+    DrawTexture(pShooterSprite, screenPos.x, screenPos.y, ORANGE);
+}
+
 void UpdateDrawPShooter(Plant* p, Vector2 screenPos)
 {
     screenPos = Vector2Add(screenPos, (Vector2){10, 5});
     p->cooldown--;
     if (p->cooldown <= 0) {
-        p->cooldown = 120;
+        p->cooldown = plantCooldownLUT[PT_PSHOOTER];
         if (nextProjectile == MAX_PROJ) {
             nextProjectile = 0;
         }
@@ -274,6 +305,7 @@ void UpdateSeedPackets()
                 if (x >= 0 && y >= 0
                         && x < 9 && y < 5) {
                     gardenGrid[(int)x][(int)y].type = seedPackets[i].type;
+                    gardenGrid[(int)x][(int)y].cooldown = plantCooldownLUT[seedPackets[i].type];
                     sunsCollectedCount -= seedPackets[i].cost;
                     if (seedPackets[i].type != PT_NONE) {
                         // TODO: consider making a lookup table where the PlantType is the index
