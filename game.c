@@ -20,6 +20,7 @@ typedef struct {
     Vector2 origin;
     int cost;
     int buyCooldown;
+    int buyCooldownMax;
     bool dragging;
 } SeedPacket;
 const Vector2 SEEDPACKET_SIZE = {40, 50};
@@ -66,6 +67,9 @@ int gridCellGap = 0;
 Vector2 gridCellSize = {55, 70};
 
 // Seed Packet globals
+#define SEEDPACKET_COOLDOWN_SLOW 60*20
+#define SEEDPACKET_COOLDOWN_NORMAL 60*10
+#define SEEDPACKET_COOLDOWN_FAST 60*10
 #define SEEDPACKET_COUNT 2
 SeedPacket seedPackets[SEEDPACKET_COUNT];
 bool draggingSeedPacket = false;
@@ -96,7 +100,7 @@ int main(void)
     shovelSprite = LoadTexture("sprites/shovel.png");
 
     seedPackets[0] = (SeedPacket){ PT_NONE, (Vector2){100, 10}, 0};
-    seedPackets[1] = (SeedPacket){ PT_PSHOOTER, (Vector2){100 + SEEDPACKET_SIZE.x + 8, 10}, 3, 60*5};
+    seedPackets[1] = (SeedPacket){ PT_PSHOOTER, (Vector2){100 + SEEDPACKET_SIZE.x + 8, 10}, 3, 0, SEEDPACKET_COOLDOWN_NORMAL};
 
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -161,8 +165,7 @@ int main(void)
         }
 
 
-
-        // Tick cooldown and spawn sun
+        // Spawn suns
         sunCooldown--;
         if (sunCooldown <= 0) {
             sunCooldown = SUN_SPAWN_TIME;
@@ -187,19 +190,18 @@ int main(void)
         Vector2 trayEnd = {trayStart.x+8*SEEDPACKET_SIZE.x+margin, seedPackets[0].origin.y+SEEDPACKET_SIZE.y+margin};
         DrawRectangleV(trayStart, trayEnd, (Color){46, 40, 34, 255});
 
+
         UpdateSeedPackets();
         DrawSeedPackets();
 
         // Update and draw Suns
         for (int i = 0; i < MAX_SUNS; i++) {
             if (suns[i].active) {
+                suns[i].pos.y += 0.25f;
+
                 const int sunSpriteSize = sunSprite.width;
                 int sunSize = (suns[i].isBigSun) ? sunSpriteSize : (int)(sunSpriteSize*0.75f);
                 Vector2 sunHalfSize = {sunSize/2, sunSize/2};
-                suns[i].pos.y += 0.25f;
-                Rectangle src = {0,0,sunSpriteSize, sunSpriteSize};
-                Rectangle dst = {EXPAND_V2(suns[i].pos), sunSize, sunSize};
-                DrawTexturePro(sunSprite, src, dst, sunHalfSize, GetTime()*10, WHITE);
 
                 // Handle sun being clicked on
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -209,10 +211,15 @@ int main(void)
                         sunsCollectedCount += (suns[i].isBigSun) ? 2 : 1;
                     }
                 }
+
+                // Draw sun
+                Rectangle src = {0,0,sunSpriteSize, sunSpriteSize};
+                Rectangle dst = {EXPAND_V2(suns[i].pos), sunSize, sunSize};
+                DrawTexturePro(sunSprite, src, dst, sunHalfSize, GetTime()*10, WHITE);
             }
         }
 
-        // Draw UI
+        // Draw sun count
         char sunCountText[32];
         sprintf(sunCountText, "Suns: %i", sunsCollectedCount);
         DrawText(sunCountText, 10, 10, 20, WHITE);
@@ -268,7 +275,10 @@ void UpdateSeedPackets()
                         && x < 9 && y < 5) {
                     gardenGrid[(int)x][(int)y].type = seedPackets[i].type;
                     sunsCollectedCount -= seedPackets[i].cost;
-                    seedPackets[i].buyCooldown = 60*5;
+                    if (seedPackets[i].type != PT_NONE) {
+                        // TODO: consider making a lookup table where the PlantType is the index
+                        seedPackets[i].buyCooldown = seedPackets[i].buyCooldownMax;
+                    }
                 }
             }
             seedPackets[i].dragging = false;
@@ -312,10 +322,9 @@ void DrawSeedPackets()
         if (sunsCollectedCount < seedPackets[i].cost) {
             DrawRectangleV(seedPacketUIPos, (Vector2){seedPacketSprite.width, seedPacketSprite.height}, (Color){80, 80, 80, 150});
         }
-        if (seedPackets[i].buyCooldown > 0) {
+        if (seedPackets[i].buyCooldown > 0 && seedPackets[i].type != PT_NONE) {
             seedPackets[i].buyCooldown--;
-            const int maxCooldown = 60*5;
-            Rectangle overlayRect = (Rectangle){EXPAND_V2(seedPacketUIPos), SEEDPACKET_SIZE.x, SEEDPACKET_SIZE.y*((float)seedPackets[i].buyCooldown/(float)maxCooldown)};
+            Rectangle overlayRect = (Rectangle){EXPAND_V2(seedPacketUIPos), SEEDPACKET_SIZE.x, SEEDPACKET_SIZE.y*((float)seedPackets[i].buyCooldown/(float)seedPackets[i].buyCooldownMax)};
             DrawRectangleRec(overlayRect, (Color){50, 50, 50, 100});
         }
     }
