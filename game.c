@@ -43,7 +43,8 @@ typedef struct {
 
 
 void UpdateDrawPShooter(Plant* p, Vector2 screenPos);
-void UpdateDrawSeedPackets();
+void DrawSeedPackets();
+void UpdateSeedPackets();
 
 // Assets
 Texture2D seedPacketSprite;
@@ -186,7 +187,8 @@ int main(void)
         Vector2 trayEnd = {trayStart.x+8*SEEDPACKET_SIZE.x+margin, seedPackets[0].origin.y+SEEDPACKET_SIZE.y+margin};
         DrawRectangleV(trayStart, trayEnd, (Color){46, 40, 34, 255});
 
-        UpdateDrawSeedPackets();
+        UpdateSeedPackets();
+        DrawSeedPackets();
 
         // Update and draw Suns
         for (int i = 0; i < MAX_SUNS; i++) {
@@ -241,9 +243,8 @@ void UpdateDrawPShooter(Plant* p, Vector2 screenPos)
 
 }
 
-void UpdateDrawSeedPackets()
+void UpdateSeedPackets()
 {
-
     for (int i = 0; i < SEEDPACKET_COUNT; i++) {
         // Set packet dragging true if mouse clicked inside it.
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !seedPackets[i].dragging) {
@@ -264,7 +265,7 @@ void UpdateDrawSeedPackets()
                 float y = (mpos.y - gridDrawOffset.y) / gridCellSize.y;
 
                 if (x >= 0 && y >= 0
-                    && x < 9 && y < 5) {
+                        && x < 9 && y < 5) {
                     gardenGrid[(int)x][(int)y].type = seedPackets[i].type;
                     sunsCollectedCount -= seedPackets[i].cost;
                     seedPackets[i].buyCooldown = 60*5;
@@ -274,7 +275,12 @@ void UpdateDrawSeedPackets()
             draggingSeedPacket = false;
             ShowCursor();
         }
+    }
+}
 
+void DrawSeedPackets()
+{
+    for (int i = 0; i < SEEDPACKET_COUNT; i++) {
         // Draw seedpacket
         Vector2 seedPacketUIPos;
         Texture2D shovelOrSeedPacket;
