@@ -49,5 +49,33 @@ suns that act as a currancy. I've got a shovel which allows you to dig up plants
 went into it. I had to do 99% of the logic myself. There's a couple utily functions for doing simple collision checks that are
 built into raylib, but I could do those trivially.
 
+Maybe at some point the novetly of writing this (mostly) from scratch in C will run out, or maybe this will be start of
+many more from-scratch projects. I think the areas that I will get bored of are repetetive ones, where I find myself
+writing the same code multiple times for different projects. If I get to that point, instead of getting bored, maybe just
+copy-paste, or try to create a simple library that I can bring into future projects.
+
+Then again, I have written multiple projects without an engine, and I've enjoyed pretty much all of them. Although it isn't
+fun to write the same code over and over without improvements, so like I said, make a library out of it. Doesn't have to
+be amazingly designed.
+
+I think the projects that favour being made from scratch are tile/grid based things. A voxel engine, a roguelike, a game like
+terraria. These are all things I've had a go at making, and they're all fairly nice to implement when doing it from scratch.
+Engines kind of complicate games like this, where you might need procedural generation, and need a lot of control over specific
+things.
+
+When I tried to make a zelda-like RPG, I had quite a hard time. But with that project, it was very object-oriented and I think
+I overcomplicated things. If I redid that project, or made a slightly similar one, but with less complex features, closer to Zelda
+1, maybe it wouldn't be too hard, to at least get most of the mechanics working. Could be a good challenge, but I'm not sure if
+I want to spent like a month on something just for a challenge. The C++ roguelike I made, and the C# monogame RPG I made both took
+about a month, and they were both very minimal and kind of boring. If I'm going to put time into a complex project from-scratch like
+that, I'd want to do it differently, and kind of have more fun with it, and create something actually interesting. You only have so
+much time in your life, so I'd rather spend it making something cool, rather than spending a month on something that I did purely
+as a coding exercise. You can enjoy coding, and get better at it by working on creative projects. Ironically, you probably would actually
+improve more at something you enjoy making, because you're more engaged in it. So while it seems like a good idea to do something as
+a "coding exercise", it's probably just better to have fun and explore (most of the time, at least.)
+
+I think from-scratch development *can* be fast, once you're good at it, but I'll have to wait and see. Regardless of if it takes a lot
+more time or not, it's still enjoyable, and valuable.
+
 The next time I work on this project, I would like to get some sound effects working. That would really bring it to life.
 I think the next plant I'll work on is the sunflower. Once that's implemented, the zombies should come next!

@@ -2,3 +2,5 @@
 
 Include easter eggs, or just fun stuff like you'd expect in demo-scene software, or just
 older software in-general.
+
+Make seedtray span entire top of screen, but make the actually seed tray part look recessed

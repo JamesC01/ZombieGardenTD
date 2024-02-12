@@ -19,6 +19,7 @@ typedef struct {
     // packet sprite
     Vector2 origin;
     int cost;
+    int buyCooldown;
     bool dragging;
 } SeedPacket;
 const Vector2 SEEDPACKET_SIZE = {40, 50};
@@ -64,9 +65,12 @@ int gridCellGap = 0;
 Vector2 gridCellSize = {55, 70};
 
 // Seed Packet globals
-SeedPacket seedPackets[2];
+#define SEEDPACKET_COUNT 2
+SeedPacket seedPackets[SEEDPACKET_COUNT];
+bool draggingSeedPacket = false;
 
 // Sun globals
+#define SUN_SPAWN_TIME 60*4
 #define MAX_SUNS 8
 Sun suns[MAX_SUNS] = {0};
 int nextSun = 0;
@@ -91,7 +95,7 @@ int main(void)
     shovelSprite = LoadTexture("sprites/shovel.png");
 
     seedPackets[0] = (SeedPacket){ PT_NONE, (Vector2){100, 10}, 0};
-    seedPackets[1] = (SeedPacket){ PT_PSHOOTER, (Vector2){100 + SEEDPACKET_SIZE.x + 8, 10}, 3};
+    seedPackets[1] = (SeedPacket){ PT_PSHOOTER, (Vector2){100 + SEEDPACKET_SIZE.x + 8, 10}, 3, 60*5};
 
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -122,7 +126,7 @@ int main(void)
 
                 Vector2 gridCellPos = Vector2Add(gridDrawOffset, (Vector2){x*gridCellSize.x+x*gridCellGap, y*gridCellSize.y+y*gridCellGap});
 
-                if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+                if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && draggingSeedPacket) {
                     if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){gridCellPos.x, gridCellPos.y, gridCellSize.x, gridCellSize.y})) {
                         c = (Color){255, 255, 255, 100};
                     }
@@ -156,6 +160,34 @@ int main(void)
         }
 
 
+
+        // Tick cooldown and spawn sun
+        sunCooldown--;
+        if (sunCooldown <= 0) {
+            sunCooldown = SUN_SPAWN_TIME;
+            if (nextSun == MAX_SUNS) {
+                nextSun = 0;
+            }
+
+            suns[nextSun].active = true;
+            suns[nextSun].isBigSun = GetRandomValue(0, 2) == 0;
+            suns[nextSun].pos.x = GetRandomValue(64, 640-64);
+            suns[nextSun].pos.y = SEEDPACKET_SIZE.y+32;
+
+            nextSun++;
+        }
+
+        // Draw top bar
+        DrawRectangle(0, 0, screenWidth, SEEDPACKET_SIZE.y+20, DARKBROWN);
+        
+        // Draw seed tray
+        int margin = 4;
+        Vector2 trayStart = {seedPackets[0].origin.x-margin, 0};
+        Vector2 trayEnd = {trayStart.x+8*SEEDPACKET_SIZE.x+margin, seedPackets[0].origin.y+SEEDPACKET_SIZE.y+margin};
+        DrawRectangleV(trayStart, trayEnd, (Color){46, 40, 34, 255});
+
+        UpdateDrawSeedPackets();
+
         // Update and draw Suns
         for (int i = 0; i < MAX_SUNS; i++) {
             if (suns[i].active) {
@@ -163,7 +195,9 @@ int main(void)
                 int sunSize = (suns[i].isBigSun) ? sunSpriteSize : (int)(sunSpriteSize*0.75f);
                 Vector2 sunHalfSize = {sunSize/2, sunSize/2};
                 suns[i].pos.y += 0.25f;
-                DrawTexturePro(sunSprite, (Rectangle){0,0,sunSpriteSize, sunSpriteSize}, (Rectangle){EXPAND_V2(suns[i].pos), sunSize, sunSize }, sunHalfSize, GetTime()*10, WHITE);
+                Rectangle src = {0,0,sunSpriteSize, sunSpriteSize};
+                Rectangle dst = {EXPAND_V2(suns[i].pos), sunSize, sunSize};
+                DrawTexturePro(sunSprite, src, dst, sunHalfSize, GetTime()*10, WHITE);
 
                 // Handle sun being clicked on
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -175,24 +209,6 @@ int main(void)
                 }
             }
         }
-
-        // Tick cooldown and spawn sun
-        sunCooldown--;
-        if (sunCooldown <= 0) {
-            sunCooldown = 60*10;
-            if (nextSun == MAX_SUNS) {
-                nextSun = 0;
-            }
-
-            suns[nextSun].active = true;
-            suns[nextSun].isBigSun = GetRandomValue(0, 2) == 0;
-            suns[nextSun].pos.x = GetRandomValue(64, 640-64);
-            suns[nextSun].pos.y = -128;
-
-            nextSun++;
-        }
-        
-        UpdateDrawSeedPackets();
 
         // Draw UI
         char sunCountText[32];
@@ -227,26 +243,22 @@ void UpdateDrawPShooter(Plant* p, Vector2 screenPos)
 
 void UpdateDrawSeedPackets()
 {
-    // Draw tray
-    int margin = 4;
-    Vector2 trayStart = {seedPackets[0].origin.x-margin, 0};
-    Vector2 trayEnd = {trayStart.x+8*SEEDPACKET_SIZE.x+margin, seedPackets[0].origin.y+SEEDPACKET_SIZE.y+margin};
-    DrawRectangleV(trayStart, trayEnd, DARKBROWN);
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < SEEDPACKET_COUNT; i++) {
         // Set packet dragging true if mouse clicked inside it.
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !seedPackets[i].dragging) {
             Vector2 mPos = GetMousePosition();
 
             if (CheckCollisionPointRec(mPos, (Rectangle){seedPackets[i].origin.x, seedPackets[i].origin.y, SEEDPACKET_SIZE.x, SEEDPACKET_SIZE.y})) {
                 seedPackets[i].dragging = true;
+                draggingSeedPacket = true;
                 HideCursor();
             }
         }
 
         // Handle dropping the seed packet
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-            if (seedPackets[i].dragging && sunsCollectedCount >= seedPackets[i].cost) {
+            if (seedPackets[i].dragging && sunsCollectedCount >= seedPackets[i].cost && seedPackets[i].buyCooldown <= 0) {
                 Vector2 mpos = GetMousePosition();
                 float x = (mpos.x - gridDrawOffset.x) / gridCellSize.x;
                 float y = (mpos.y - gridDrawOffset.y) / gridCellSize.y;
@@ -255,9 +267,11 @@ void UpdateDrawSeedPackets()
                     && x < 9 && y < 5) {
                     gardenGrid[(int)x][(int)y].type = seedPackets[i].type;
                     sunsCollectedCount -= seedPackets[i].cost;
+                    seedPackets[i].buyCooldown = 60*5;
                 }
             }
             seedPackets[i].dragging = false;
+            draggingSeedPacket = false;
             ShowCursor();
         }
 
@@ -287,8 +301,16 @@ void UpdateDrawSeedPackets()
             default:
                 break;
         }
+
+        // Handle dimming seed
         if (sunsCollectedCount < seedPackets[i].cost) {
-            DrawRectangleV(seedPacketUIPos, (Vector2){seedPacketSprite.width, seedPacketSprite.height}, (Color){100, 100, 100, 100});
+            DrawRectangleV(seedPacketUIPos, (Vector2){seedPacketSprite.width, seedPacketSprite.height}, (Color){80, 80, 80, 150});
+        }
+        if (seedPackets[i].buyCooldown > 0) {
+            seedPackets[i].buyCooldown--;
+            const int maxCooldown = 60*5;
+            Rectangle overlayRect = (Rectangle){EXPAND_V2(seedPacketUIPos), SEEDPACKET_SIZE.x, SEEDPACKET_SIZE.y*((float)seedPackets[i].buyCooldown/(float)maxCooldown)};
+            DrawRectangleRec(overlayRect, (Color){50, 50, 50, 100});
         }
     }
 }
