@@ -245,9 +245,6 @@ int main(void)
             if (zombies[i].active) {
 
                 if (zombies[i].gridPos.x > 0 && zombies[i].gridPos.x < GRID_WIDTH) {
-                    // TODO round the value so the zombie only attacks the plant when it is on the left side of the
-                    // cell in front of the plant.
-                    // TODO: Also, the grid position of the zombie seems to not actually line up with the sprite.
                     int frontOfZombieRounded = (int)roundf(zombies[i].gridPos.x)-1;
                     if (gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y].type != PT_NONE) {
                         gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y].health -= 0.01f;

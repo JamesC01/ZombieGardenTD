@@ -92,3 +92,10 @@ because putting a cooldownMax variable on every plant didn't feel right, for som
 the plant just seems like an extra step, so I put all of the cooldown values in an array, and used the PlantType enums to index into it. I got
 this idea from seeing some code Casey Muratori wrote, where he used a lookup table for something. I'm not sure if it's the right thing to do
 in this case, but it felt right.
+
+
+13/02/2024
+
+Spent 1 hour 32 minutes this session. I made the sunflower sprite, made lots of small tweaks, and also implemented zombies (currently using a
+ripped plants vs zombies sprite). They spawn from the right side of the screen, and can be damaged from projectiles, and when they run into
+a plant, they stop moving and start damaging it. It all works so far! Still no sound effects yet, but I had a good time implementing zombies.

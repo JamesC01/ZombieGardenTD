@@ -6,3 +6,5 @@ older software in-general.
 Make seedtray not start at y0, but a few pixels more, to wrap it around the seedpackets properly
 
 Add sound effects. It will bring the game to life.
+
+Add shadow below plants and zombies, and maybe projectiles.
