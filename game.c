@@ -177,17 +177,25 @@ int main(void)
         // Update and Draw plants
         for (int x = 0; x < GRID_WIDTH; x++) {
             for (int y = 0; y < GRID_HEIGHT; y++) {
-                Vector2 screenPos = Vector2Add(gridDrawOffset, (Vector2){x*gridCellSize.x+x*gridCellGap, y*gridCellSize.y+y*gridCellGap});
-                Plant* p = &gardenGrid[x][y];
-                switch (p->type) {
-                    case PT_PSHOOTER:
-                        UpdateDrawPShooter(p, screenPos);
-                        break;
-                    case PT_SUNFLOWER:
-                        UpdateDrawSunflower(p, screenPos);
-                    case PT_NONE:
-                    default:
-                        continue;
+                if (gardenGrid[x][y].type != PT_NONE) {
+                    Vector2 screenPos = Vector2Add(gridDrawOffset, (Vector2){x*gridCellSize.x+x*gridCellGap, y*gridCellSize.y+y*gridCellGap});
+                    Plant* p = &gardenGrid[x][y];
+
+                    if (p->health <= 0) {
+                        p->type = PT_NONE;
+                    }
+
+                    printf("%f\n", p->health);
+
+                    switch (p->type) {
+                        case PT_PSHOOTER:
+                            UpdateDrawPShooter(p, screenPos);
+                            break;
+                        case PT_SUNFLOWER:
+                            UpdateDrawSunflower(p, screenPos);
+                        default:
+                            continue;
+                    }
                 }
             }
         }
@@ -236,7 +244,21 @@ int main(void)
         // Update and draw zombies
         for (int i = 0; i < MAX_ZOMBIES; i++) {
             if (zombies[i].active) {
-                zombies[i].gridPos.x -= 0.005f;
+
+                if (zombies[i].gridPos.x > 0) {
+                    // TODO round the value so the zombie only attacks the plant when it is on the left side of the
+                    // cell in front of the plant.
+                    // TODO: Also, the grid position of the zombie seems to not actually line up with the sprite.
+                    if (gardenGrid[(int)(zombies[i].gridPos.x)][(int)zombies[i].gridPos.y].type != PT_NONE) {
+                        gardenGrid[(int)(zombies[i].gridPos.x)][(int)zombies[i].gridPos.y].health -= 0.01f;
+                    } else {
+                        zombies[i].gridPos.x -= 0.005f;
+                    }
+
+                } else {
+                    zombies[i].gridPos.x -= 0.005f;
+                }
+
 
                 int x = gridDrawOffset.x + zombies[i].gridPos.x*gridCellSize.x;
                 int y = gridDrawOffset.y + zombies[i].gridPos.y*gridCellSize.y;
