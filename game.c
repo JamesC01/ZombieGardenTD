@@ -442,13 +442,17 @@ void UpdateSeedPackets()
                 if (x >= 0 && y >= 0
                         && x < 9 && y < 5) {
                     // TODO: put gardengrid(x, y) into a variable
-                    gardenGrid[(int)x][(int)y].type = seedPackets[i].type;
-                    gardenGrid[(int)x][(int)y].cooldown = plantCooldownLUT[seedPackets[i].type];
-                    gardenGrid[(int)x][(int)y].health = 1.0f;
-                    sunsCollectedCount -= seedPackets[i].cost;
-                    if (seedPackets[i].type != PT_NONE) {
-                        // TODO: consider making a lookup table where the PlantType is the index
-                        seedPackets[i].buyCooldown = seedPackets[i].buyCooldownMax;
+                    if (gardenGrid[(int)x][(int)y].type == PT_NONE) {
+                        gardenGrid[(int)x][(int)y].type = seedPackets[i].type;
+                        gardenGrid[(int)x][(int)y].cooldown = plantCooldownLUT[seedPackets[i].type];
+                        gardenGrid[(int)x][(int)y].health = 1.0f;
+                        sunsCollectedCount -= seedPackets[i].cost;
+                        if (seedPackets[i].type != PT_NONE) {
+                            // TODO: consider making a lookup table where the PlantType is the index
+                            seedPackets[i].buyCooldown = seedPackets[i].buyCooldownMax;
+                        }
+                    } else if (seedPackets[i].type == PT_NONE) {
+                        gardenGrid[(int)x][(int)y].type = PT_NONE;
                     }
                 }
             }
