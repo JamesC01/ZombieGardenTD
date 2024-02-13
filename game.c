@@ -64,7 +64,7 @@ void DrawSeedPackets();
 void UpdateSeedPackets();
 void SpawnSun(Vector2 pos);
 
-// Assets
+// Textures
 Texture2D seedPacketSprite;
 Texture2D lawnBackgroundSprite;
 Texture2D pShooterSprite;
@@ -73,6 +73,16 @@ Texture2D sunSprite;
 Texture2D shovelSprite;
 Texture2D sunflowerSprite;
 Texture2D zombieSprite;
+
+// Sounds
+#define ZOMBIE_GROWL_SOUND_COUNT 4
+#define ZOMBIE_HIT_SOUND_COUNT 4
+Sound zombieGrowlSounds[ZOMBIE_GROWL_SOUND_COUNT];
+Sound zombieHitSounds[ZOMBIE_HIT_SOUND_COUNT];
+
+Sound peaShootSound;
+Sound popSound;
+Sound sunAppearSound;
 
 // Projectile globals
 #define MAX_PROJ 16
@@ -112,12 +122,17 @@ int nextZombie = 0;
 
 int zombieSpawnCooldown = 0;
 
+int zombieGrowlCooldown = 60*2;
+
+
 int main(void)
 {
     const int screenWidth = 640;
     const int screenHeight = 480;
 
     InitWindow(screenWidth, screenHeight, "Plants Vs Zombies Clone");
+
+    InitAudioDevice();
 
     SetTargetFPS(60);
 
@@ -129,6 +144,22 @@ int main(void)
     shovelSprite = LoadTexture("sprites/shovel.png");
     sunflowerSprite = LoadTexture("sprites/sunflower.png");
     zombieSprite = LoadTexture("sprites/zombie.png");
+
+    peaShootSound = LoadSound("sounds/shoot_pea.wav");
+    popSound = LoadSound("sounds/pop.wav");
+    sunAppearSound = LoadSound("sounds/sun_appear.wav");
+
+    for (int i = 0; i < ZOMBIE_HIT_SOUND_COUNT; i++) {
+        char path[64];
+        sprintf(path, "sounds/zombie_hit%i.wav", i+1);
+        zombieHitSounds[i] = LoadSound(path);
+    }
+
+    for (int i = 0; i < ZOMBIE_GROWL_SOUND_COUNT; i++) {
+        char path[64];
+        sprintf(path, "sounds/zombie_growl%i.wav", i+1);
+        zombieHitSounds[i] = LoadSound(path);
+    }
 
     // Implementation detail, the shovel is also a seedpacket. It just works.
     // TODO: get rid of hardcoded positions
@@ -240,9 +271,15 @@ int main(void)
             nextZombie++;
         }
 
+        zombieGrowlCooldown--;
         // Update and draw zombies
         for (int i = 0; i < MAX_ZOMBIES; i++) {
             if (zombies[i].active) {
+                if (zombieGrowlCooldown < 0) {
+                    PlaySound(zombieGrowlSounds[GetRandomValue(0, ZOMBIE_GROWL_SOUND_COUNT-1)]);
+                    zombieGrowlCooldown = GetRandomValue(60, 60*10);
+                }
+
 
                 if (zombies[i].gridPos.x > 0 && zombies[i].gridPos.x < GRID_WIDTH) {
                     int frontOfZombieRounded = (int)roundf(zombies[i].gridPos.x)-1;
@@ -266,6 +303,8 @@ int main(void)
                         if (CheckCollisionPointRec(projectiles[j].pos, box)) {
                             projectiles[j].active = false;
                             zombies[i].health -= 0.1f;
+                            PlaySound(popSound);
+                            PlaySound(zombieHitSounds[GetRandomValue(0, ZOMBIE_HIT_SOUND_COUNT-1)]);
                         }
                     } 
                 }
@@ -327,6 +366,8 @@ int main(void)
 
     }
 
+    // TODO: Properly unload assets
+
     CloseWindow();
 
     return 0;
@@ -340,6 +381,7 @@ void SpawnSun(Vector2 pos)
 
     suns[nextSun].active = true;
     suns[nextSun].pos = pos;
+    PlaySound(sunAppearSound);
 
     nextSun++;
 }
@@ -368,6 +410,7 @@ void UpdateDrawPShooter(Plant* p, Vector2 screenPos)
         projectiles[nextProjectile].active = true;
         projectiles[nextProjectile].pos = Vector2Add(screenPos, (Vector2){33, 10});
         nextProjectile++;
+        PlaySound(peaShootSound);
     }
     DrawTexture(pShooterSprite, screenPos.x, screenPos.y, WHITE);
 
