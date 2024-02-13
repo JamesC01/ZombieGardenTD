@@ -64,6 +64,7 @@ Texture2D pShooterSprite;
 Texture2D peaSprite;
 Texture2D sunSprite;
 Texture2D shovelSprite;
+Texture2D sunflowerSprite;
 
 // Projectile globals
 #define MAX_PROJ 16
@@ -91,7 +92,7 @@ Sun suns[MAX_SUNS] = {0};
 int nextSun = 0;
 
 int sunCooldown = 60;
-int sunsCollectedCount = 8;
+int sunsCollectedCount = 0;
 
 int main(void)
 {
@@ -108,12 +109,13 @@ int main(void)
     peaSprite = LoadTexture("sprites/pea.png");
     sunSprite = LoadTexture("sprites/sun.png");
     shovelSprite = LoadTexture("sprites/shovel.png");
+    sunflowerSprite = LoadTexture("sprites/sunflower.png");
 
     // Implementation detail, the shovel is also a seedpacket. It just works.
     // TODO: get rid of hardcoded positions
     seedPackets[0] = (SeedPacket){ PT_NONE, (Vector2){100, 10}, 0};
-    seedPackets[1] = (SeedPacket){ PT_PSHOOTER, (Vector2){100 + SEEDPACKET_SIZE.x + 8, 10}, 3, 0, SEEDPACKET_COOLDOWN_NORMAL};
-    seedPackets[2] = (SeedPacket){ PT_SUNFLOWER, (Vector2){100 + SEEDPACKET_SIZE.x*2 + 8*2, 10}, 2, 0, SEEDPACKET_COOLDOWN_FAST};
+    seedPackets[1] = (SeedPacket){ PT_SUNFLOWER, (Vector2){100 + SEEDPACKET_SIZE.x + 8, 10}, 2, 0, SEEDPACKET_COOLDOWN_FAST};
+    seedPackets[2] = (SeedPacket){ PT_PSHOOTER, (Vector2){100 + SEEDPACKET_SIZE.x*2 + 8*2, 10}, 3, 0, SEEDPACKET_COOLDOWN_NORMAL};
 
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -254,14 +256,14 @@ void SpawnSun(Vector2 pos)
 
 void UpdateDrawSunflower(Plant* p, Vector2 screenPos)
 {
-    screenPos = Vector2Add(screenPos, (Vector2){10, 5});
+    screenPos = Vector2Add(screenPos, (Vector2){8, 20});
     Vector2 sunSpawnPos = Vector2Add(screenPos, (Vector2){15, 12});
     p->cooldown--;
     if (p->cooldown <= 0) {
         p->cooldown = plantCooldownLUT[PT_SUNFLOWER];
         SpawnSun(sunSpawnPos);
     }
-    DrawTexture(pShooterSprite, screenPos.x, screenPos.y, ORANGE);
+    DrawTexture(sunflowerSprite, screenPos.x, screenPos.y, WHITE);
 }
 
 void UpdateDrawPShooter(Plant* p, Vector2 screenPos)
@@ -345,6 +347,9 @@ void DrawSeedPackets()
         switch (seedPackets[i].type) {
             case PT_PSHOOTER:
                 DrawTextureEx(pShooterSprite, Vector2Add(seedPacketUIPos, (Vector2){11, 12}), 0, 0.5f, WHITE);
+                break;
+            case PT_SUNFLOWER:
+                DrawTextureEx(sunflowerSprite, Vector2Add(seedPacketUIPos, (Vector2){5, 12}), 0, 0.75f, WHITE);
                 break;
             default:
                 break;

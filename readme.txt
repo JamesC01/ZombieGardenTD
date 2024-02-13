@@ -79,3 +79,16 @@ more time or not, it's still enjoyable, and valuable.
 
 The next time I work on this project, I would like to get some sound effects working. That would really bring it to life.
 I think the next plant I'll work on is the sunflower. Once that's implemented, the zombies should come next!
+
+
+12/02/2024
+
+Took 1 hour and 20 minutes this session! I did a decent bit. I implemented cooldowns for the seed packets, I refactored a decent bit of
+stuff, pulled stuff out into seperate functions when the function became hard to read, replaced a bunch of hardcoded values with constants,
+I implemented a sunflower (not done the sprite yet), and I fixed a bug where the mouse being clicked would highlight the grid even when
+you weren't dragging anything. There might be more things, but that's the bulk of it. It's coming along quite nicely. Implenting the sunflowers
+didn't take very long, at most about 30 minutes, but that includes a bit of refactoring. I used a lookup table for finding the plant cooldowns,
+because putting a cooldownMax variable on every plant didn't feel right, for some reason. Having to keep those values consistent when spawning
+the plant just seems like an extra step, so I put all of the cooldown values in an array, and used the PlantType enums to index into it. I got
+this idea from seeing some code Casey Muratori wrote, where he used a lookup table for something. I'm not sure if it's the right thing to do
+in this case, but it felt right.
