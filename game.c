@@ -50,6 +50,12 @@ typedef struct {
     bool active;
 } Sun;
 
+typedef struct {
+    Vector2 gridPos;
+    float health;
+    bool active;
+} Zombie;
+
 
 void UpdateDrawPShooter(Plant* p, Vector2 screenPos);
 void UpdateDrawSunflower(Plant* p, Vector2 screenPos);
@@ -65,6 +71,7 @@ Texture2D peaSprite;
 Texture2D sunSprite;
 Texture2D shovelSprite;
 Texture2D sunflowerSprite;
+Texture2D zombieSprite;
 
 // Projectile globals
 #define MAX_PROJ 16
@@ -72,7 +79,9 @@ Projectile projectiles[MAX_PROJ] = {0};
 int nextProjectile = 0;
 
 // Plant Grid globals
-Plant gardenGrid[9][5] = {0};
+#define GRID_WIDTH 9
+#define GRID_HEIGHT 5
+Plant gardenGrid[GRID_WIDTH][GRID_HEIGHT] = {0};
 Vector2 gridDrawOffset = {40, 80};
 int gridCellGap = 0;
 Vector2 gridCellSize = {55, 70};
@@ -94,6 +103,14 @@ int nextSun = 0;
 int sunCooldown = 60;
 int sunsCollectedCount = 0;
 
+// Zombie globals
+#define ZOMBIE_SPAWN_TIME 60*20
+#define MAX_ZOMBIES 16
+Zombie zombies[MAX_ZOMBIES] = {0};
+int nextZombie = 0;
+
+int zombieSpawnCooldown = 60*5;
+
 int main(void)
 {
     const int screenWidth = 640;
@@ -110,12 +127,14 @@ int main(void)
     sunSprite = LoadTexture("sprites/sun.png");
     shovelSprite = LoadTexture("sprites/shovel.png");
     sunflowerSprite = LoadTexture("sprites/sunflower.png");
+    zombieSprite = LoadTexture("sprites/zombie.png");
 
     // Implementation detail, the shovel is also a seedpacket. It just works.
     // TODO: get rid of hardcoded positions
     seedPackets[0] = (SeedPacket){ PT_NONE, (Vector2){100, 10}, 0};
     seedPackets[1] = (SeedPacket){ PT_SUNFLOWER, (Vector2){100 + SEEDPACKET_SIZE.x + 8, 10}, 2, 0, SEEDPACKET_COOLDOWN_FAST};
     seedPackets[2] = (SeedPacket){ PT_PSHOOTER, (Vector2){100 + SEEDPACKET_SIZE.x*2 + 8*2, 10}, 3, 0, SEEDPACKET_COOLDOWN_NORMAL};
+
 
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -133,8 +152,8 @@ int main(void)
         }
 
         // Draw lawn grid
-        for (int x = 0; x < 9; x++) {
-            for (int y = 0; y < 5; y++) {
+        for (int x = 0; x < GRID_WIDTH; x++) {
+            for (int y = 0; y < GRID_HEIGHT; y++) {
 
                 // Checkerboard tint
                 Color c = {230, 255, 230, 50};
@@ -156,8 +175,8 @@ int main(void)
         }
 
         // Update and Draw plants
-        for (int x = 0; x < 9; x++) {
-            for (int y = 0; y < 5; y++) {
+        for (int x = 0; x < GRID_WIDTH; x++) {
+            for (int y = 0; y < GRID_HEIGHT; y++) {
                 Vector2 screenPos = Vector2Add(gridDrawOffset, (Vector2){x*gridCellSize.x+x*gridCellGap, y*gridCellSize.y+y*gridCellGap});
                 Plant* p = &gardenGrid[x][y];
                 switch (p->type) {
@@ -178,6 +197,10 @@ int main(void)
             if (projectiles[i].active) {
                 projectiles[i].pos.x += 5;
                 DrawTextureV(peaSprite, projectiles[i].pos, WHITE);
+
+                if (projectiles[i].pos.x > 640) {
+                    projectiles[i].active = false;
+                }
             }
         }
 
@@ -191,6 +214,54 @@ int main(void)
         Vector2 trayStart = {seedPackets[0].origin.x-margin, 0};
         Vector2 trayEnd = {trayStart.x+8*SEEDPACKET_SIZE.x+margin, seedPackets[0].origin.y+SEEDPACKET_SIZE.y+margin};
         DrawRectangleV(trayStart, trayEnd, (Color){46, 40, 34, 255});
+
+        // Spawn zombies
+        zombieSpawnCooldown--;
+        if (zombieSpawnCooldown <= 0) {
+            zombieSpawnCooldown = ZOMBIE_SPAWN_TIME;
+            Vector2 gridPos = {12, GetRandomValue(0, 4)};
+
+            // TODO: This is a duplicate of the sun spawning code. Consider refactoring.
+            if (nextZombie == MAX_ZOMBIES) {
+                nextZombie = 0;
+            }
+
+            zombies[nextZombie].active = true;
+            zombies[nextZombie].health = 1.0f;
+            zombies[nextZombie].gridPos = gridPos;
+
+            nextZombie++;
+        }
+
+        // Update and draw zombies
+        for (int i = 0; i < MAX_ZOMBIES; i++) {
+            if (zombies[i].active) {
+                zombies[i].gridPos.x -= 0.005f;
+
+                int x = gridDrawOffset.x + zombies[i].gridPos.x*gridCellSize.x;
+                int y = gridDrawOffset.y + zombies[i].gridPos.y*gridCellSize.y;
+                Rectangle box = {x+gridCellSize.x/2-25, y+gridCellSize.y-16-70, zombieSprite.width, zombieSprite.height};
+
+                for (int j = 0; j < MAX_PROJ; j++) {
+                    if (projectiles[j].active) {
+                        if (CheckCollisionPointRec(projectiles[j].pos, box)) {
+                            projectiles[j].active = false;
+                            zombies[i].health -= 0.1f;
+                        }
+                    } 
+                }
+
+                if (zombies[i].health <= 0) {
+                    zombies[i].active = false;
+                }
+
+                Rectangle src = {0,0,zombieSprite.width, zombieSprite.height};
+                Rectangle dst = {x+gridCellSize.x/2, y+gridCellSize.y-16, zombieSprite.width, zombieSprite.height};
+                DrawTexturePro(zombieSprite, src, dst, (Vector2){25, 70}, 0, WHITE);
+
+                //DrawRectangleRec(box, (Color){100, 100, 255, 100});
+            }
+        }
 
 
         UpdateSeedPackets();
