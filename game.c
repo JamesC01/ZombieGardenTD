@@ -1,3 +1,4 @@
+#include <math.h>
 #include <raylib.h>
 #include <raymath.h>
 #include <stdbool.h>
@@ -109,7 +110,7 @@ int sunsCollectedCount = 0;
 Zombie zombies[MAX_ZOMBIES] = {0};
 int nextZombie = 0;
 
-int zombieSpawnCooldown = 60*5;
+int zombieSpawnCooldown = 0;
 
 int main(void)
 {
@@ -247,8 +248,9 @@ int main(void)
                     // TODO round the value so the zombie only attacks the plant when it is on the left side of the
                     // cell in front of the plant.
                     // TODO: Also, the grid position of the zombie seems to not actually line up with the sprite.
-                    if (gardenGrid[(int)(zombies[i].gridPos.x)][(int)zombies[i].gridPos.y].type != PT_NONE) {
-                        gardenGrid[(int)(zombies[i].gridPos.x)][(int)zombies[i].gridPos.y].health -= 0.01f;
+                    int frontOfZombieRounded = (int)roundf(zombies[i].gridPos.x)-1;
+                    if (gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y].type != PT_NONE) {
+                        gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y].health -= 0.01f;
                     } else {
                         zombies[i].gridPos.x -= 0.005f;
                     }
@@ -260,7 +262,7 @@ int main(void)
 
                 int x = gridDrawOffset.x + zombies[i].gridPos.x*gridCellSize.x;
                 int y = gridDrawOffset.y + zombies[i].gridPos.y*gridCellSize.y;
-                Rectangle box = {x+gridCellSize.x/2-25, y+gridCellSize.y-16-70, zombieSprite.width, zombieSprite.height};
+                Rectangle box = {x-zombieSprite.width/2, y-16, zombieSprite.width, zombieSprite.height};
 
                 for (int j = 0; j < MAX_PROJ; j++) {
                     if (projectiles[j].active) {
@@ -276,8 +278,8 @@ int main(void)
                 }
 
                 Rectangle src = {0,0,zombieSprite.width, zombieSprite.height};
-                Rectangle dst = {x+gridCellSize.x/2, y+gridCellSize.y-16, zombieSprite.width, zombieSprite.height};
-                DrawTexturePro(zombieSprite, src, dst, (Vector2){25, 70}, 0, WHITE);
+                Rectangle dst = {x-zombieSprite.width/2, y-16, zombieSprite.width, zombieSprite.height};
+                DrawTexturePro(zombieSprite, src, dst, Vector2Zero(), 0, WHITE);
 
                 //DrawRectangleRec(box, (Color){100, 100, 255, 100});
             }
