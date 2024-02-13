@@ -20,7 +20,7 @@ typedef enum {
 int plantCooldownLUT[] = {
     0, // PT_NONE,
     60*2, // PT_PSHOOTER,
-    60*15, // PT_SUNFLOWER,
+    60*20, // PT_SUNFLOWER,
     //PT_WALLNUT,
     //PT_CHERRYBOMB,
     //PT_COUNT
@@ -123,7 +123,6 @@ Zombie zombies[MAX_ZOMBIES] = {0};
 int nextZombie = 0;
 
 int zombieSpawnCooldown = 60*15;
-
 int zombieGrowlCooldown = 60*2;
 
 
