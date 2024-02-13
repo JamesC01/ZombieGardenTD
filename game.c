@@ -185,8 +185,6 @@ int main(void)
                         p->type = PT_NONE;
                     }
 
-                    printf("%f\n", p->health);
-
                     switch (p->type) {
                         case PT_PSHOOTER:
                             UpdateDrawPShooter(p, screenPos);
@@ -245,7 +243,7 @@ int main(void)
         for (int i = 0; i < MAX_ZOMBIES; i++) {
             if (zombies[i].active) {
 
-                if (zombies[i].gridPos.x > 0) {
+                if (zombies[i].gridPos.x > 0 && zombies[i].gridPos.x < GRID_WIDTH) {
                     // TODO round the value so the zombie only attacks the plant when it is on the left side of the
                     // cell in front of the plant.
                     // TODO: Also, the grid position of the zombie seems to not actually line up with the sprite.
@@ -399,8 +397,10 @@ void UpdateSeedPackets()
 
                 if (x >= 0 && y >= 0
                         && x < 9 && y < 5) {
+                    // TODO: put gardengrid(x, y) into a variable
                     gardenGrid[(int)x][(int)y].type = seedPackets[i].type;
                     gardenGrid[(int)x][(int)y].cooldown = plantCooldownLUT[seedPackets[i].type];
+                    gardenGrid[(int)x][(int)y].health = 1.0f;
                     sunsCollectedCount -= seedPackets[i].cost;
                     if (seedPackets[i].type != PT_NONE) {
                         // TODO: consider making a lookup table where the PlantType is the index
