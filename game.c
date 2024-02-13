@@ -15,10 +15,12 @@ typedef enum {
     PT_COUNT
 } PlantType;
 
+// Cooldowns apply to certain actions, for peashooters, it's the shoot frequency,
+// for sunflowers, is the spawnrate of the suns.
 int plantCooldownLUT[] = {
     0, // PT_NONE,
     60*2, // PT_PSHOOTER,
-    60*10, // PT_SUNFLOWER,
+    60*15, // PT_SUNFLOWER,
     //PT_WALLNUT,
     //PT_CHERRYBOMB,
     //PT_COUNT
@@ -26,7 +28,6 @@ int plantCooldownLUT[] = {
 
 typedef struct {
     PlantType type;
-    // packet sprite
     Vector2 origin;
     int cost;
     int buyCooldown;
@@ -106,13 +107,14 @@ SeedPacket seedPackets[SEEDPACKET_COUNT];
 bool draggingSeedPacket = false;
 
 // Sun globals
-#define SUN_SPAWN_TIME 60*4
+#define SUN_VALUE 25
+#define SUN_SPAWN_TIME 60*15
 #define MAX_SUNS 8
 Sun suns[MAX_SUNS] = {0};
 int nextSun = 0;
 
 int sunCooldown = 60;
-int sunsCollectedCount = 0;
+int sunsCollectedCount = SUN_VALUE*2; // in PvZ, you start out with enough sun to buy a sunflower
 
 // Zombie globals
 #define ZOMBIE_SPAWN_TIME 60*20
@@ -120,7 +122,7 @@ int sunsCollectedCount = 0;
 Zombie zombies[MAX_ZOMBIES] = {0};
 int nextZombie = 0;
 
-int zombieSpawnCooldown = 0;
+int zombieSpawnCooldown = 60*15;
 
 int zombieGrowlCooldown = 60*2;
 
@@ -164,8 +166,8 @@ int main(void)
     // Implementation detail, the shovel is also a seedpacket. It just works.
     // TODO: get rid of hardcoded positions
     seedPackets[0] = (SeedPacket){ PT_NONE, (Vector2){100, 10}, 0};
-    seedPackets[1] = (SeedPacket){ PT_SUNFLOWER, (Vector2){100 + SEEDPACKET_SIZE.x + 8, 10}, 2, 0, SEEDPACKET_COOLDOWN_FAST};
-    seedPackets[2] = (SeedPacket){ PT_PSHOOTER, (Vector2){100 + SEEDPACKET_SIZE.x*2 + 8*2, 10}, 3, 0, SEEDPACKET_COOLDOWN_NORMAL};
+    seedPackets[1] = (SeedPacket){ PT_SUNFLOWER, (Vector2){100 + SEEDPACKET_SIZE.x + 8, 10}, SUN_VALUE*2, 0, SEEDPACKET_COOLDOWN_FAST};
+    seedPackets[2] = (SeedPacket){ PT_PSHOOTER, (Vector2){100 + SEEDPACKET_SIZE.x*2 + 8*2, 10}, SUN_VALUE*4, 0, SEEDPACKET_COOLDOWN_FAST};
 
 
     while (!WindowShouldClose()) {
@@ -249,8 +251,8 @@ int main(void)
         
         // Draw seed tray
         int margin = 4;
-        Vector2 trayStart = {seedPackets[0].origin.x-margin, 0};
-        Vector2 trayEnd = {trayStart.x+8*SEEDPACKET_SIZE.x+margin, seedPackets[0].origin.y+SEEDPACKET_SIZE.y+margin};
+        Vector2 trayStart = {seedPackets[0].origin.x-margin, seedPackets[0].origin.y-margin};
+        Vector2 trayEnd = {trayStart.x+8*SEEDPACKET_SIZE.x+margin, seedPackets[0].origin.y+SEEDPACKET_SIZE.y};
         DrawRectangleV(trayStart, trayEnd, (Color){46, 40, 34, 255});
 
         // Spawn zombies
@@ -284,13 +286,13 @@ int main(void)
                 if (zombies[i].gridPos.x > 0 && zombies[i].gridPos.x < GRID_WIDTH) {
                     int frontOfZombieRounded = (int)roundf(zombies[i].gridPos.x)-1;
                     if (gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y].type != PT_NONE) {
-                        gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y].health -= 0.01f;
+                        gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y].health -= 0.005f;
                     } else {
-                        zombies[i].gridPos.x -= 0.005f;
+                        zombies[i].gridPos.x -= 0.003f;
                     }
 
                 } else {
-                    zombies[i].gridPos.x -= 0.005f;
+                    zombies[i].gridPos.x -= 0.003f;
                 }
 
 
@@ -346,7 +348,7 @@ int main(void)
                     Rectangle sunBox = {EXPAND_V2(Vector2Subtract(suns[i].pos, sunHalfSize)), sunSize, sunSize};
                     if (CheckCollisionPointRec(GetMousePosition(), sunBox)) {
                         suns[i].active = false;
-                        sunsCollectedCount++;
+                        sunsCollectedCount += SUN_VALUE;
                     }
                 }
 
@@ -359,8 +361,8 @@ int main(void)
 
         // Draw sun count
         char sunCountText[32];
-        sprintf(sunCountText, "Suns: %i", sunsCollectedCount);
-        DrawText(sunCountText, 10, 10, 20, WHITE);
+        sprintf(sunCountText, "Sun:\n\n%i", sunsCollectedCount);
+        DrawText(sunCountText, 32, 10, 20, WHITE);
 
         EndDrawing();
 
