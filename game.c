@@ -160,7 +160,7 @@ int main(void)
     for (int i = 0; i < ZOMBIE_GROWL_SOUND_COUNT; i++) {
         char path[64];
         sprintf(path, "sounds/zombie_growl%i.wav", i+1);
-        zombieHitSounds[i] = LoadSound(path);
+        zombieGrowlSounds[i] = LoadSound(path);
     }
 
     // Implementation detail, the shovel is also a seedpacket. It just works.
@@ -279,7 +279,7 @@ int main(void)
             if (zombies[i].active) {
                 if (zombieGrowlCooldown < 0) {
                     PlaySound(zombieGrowlSounds[GetRandomValue(0, ZOMBIE_GROWL_SOUND_COUNT-1)]);
-                    zombieGrowlCooldown = GetRandomValue(60, 60*10);
+                    zombieGrowlCooldown = GetRandomValue(60*10, 60*15);
                 }
 
 
