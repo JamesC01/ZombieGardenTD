@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
 #define EXPAND_V2(v2) v2.x, v2.y
 
@@ -68,10 +69,20 @@ typedef struct {
     bool active;
 } Zombie;
 
+typedef struct {
+    Vector2 pos;
+    Vector2 size;
+    Vector2 velocity;
+    Color colour;
+    int lifetime;
+    bool active;
+} Particle;
+
 
 void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos);
 void UpdateDrawSunflower(Plant* p, Vector2 screenPos);
 void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos);
+void UpdateDrawParticles();
 void DrawSeedPackets();
 void UpdateSeedPackets();
 void SpawnSun(Vector2 pos);
@@ -139,6 +150,11 @@ int nextZombie = 0;
 int zombieSpawnCooldown = 0;
 int zombieGrowlCooldown = 60*2;
 
+// Particle globals
+#define MAX_PARTICLES 128
+Particle particles[MAX_PARTICLES] = {0};
+int nextParticle = 0;
+
 
 int main(void)
 {
@@ -185,6 +201,22 @@ int main(void)
     seedPackets[2] = (SeedPacket){ PT_PSHOOTER, (Vector2){100 + SEEDPACKET_SIZE.x*2 + 8*2, 10}, SUN_VALUE*4, 0, SEEDPACKET_COOLDOWN_FAST};
     seedPackets[3] = (SeedPacket){ PT_WALLNUT, (Vector2){100 + SEEDPACKET_SIZE.x*3 + 8*3, 10}, SUN_VALUE*2, 0, SEEDPACKET_COOLDOWN_SLOW};
     seedPackets[4] = (SeedPacket){ PT_CHERRYBOMB, (Vector2){100 + SEEDPACKET_SIZE.x*4 + 8*4, 10}, SUN_VALUE*6, 0, SEEDPACKET_COOLDOWN_SLOW};
+
+    for (int i = 0; i < 32; i++) {
+        if (nextParticle == MAX_PARTICLES)
+            nextParticle = 0;
+
+        particles[nextParticle].pos = (Vector2){300, 200};
+        particles[nextParticle].size = (Vector2){2, 2};
+        Vector2 randDir = Vector2Normalize((Vector2){(float)rand()/(float)RAND_MAX-0.5f, (float)rand()/(float)RAND_MAX-0.5f});
+        particles[nextParticle].velocity = Vector2Scale(randDir, 2+(float)rand()/(float)RAND_MAX);
+        particles[nextParticle].colour = (Color){255, 255, 255, 255};
+        particles[nextParticle].lifetime = 60;
+        particles[nextParticle].active = true;
+
+
+        nextParticle ++;
+    }
 
 
     while (!WindowShouldClose()) {
@@ -351,6 +383,8 @@ int main(void)
             }
         }
 
+        UpdateDrawParticles();
+
 
         UpdateSeedPackets();
         DrawSeedPackets();
@@ -401,6 +435,22 @@ int main(void)
     CloseWindow();
 
     return 0;
+}
+
+void UpdateDrawParticles()
+{
+    for (int i = 0; i < MAX_PARTICLES; i++) {
+        if (particles[i].active) {
+            particles[i].pos = Vector2Add(particles[i].pos, particles[i].velocity);
+            particles[i].lifetime--;
+
+            DrawRectangleV(particles[i].pos, particles[i].size, particles[i].colour);
+
+            if (particles[i].lifetime <= 0) {
+                particles[i].active = false;
+            }
+        }
+    }
 }
 
 void SpawnSun(Vector2 pos)
