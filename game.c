@@ -205,6 +205,7 @@ int main(void)
 
     int fps = 60;
     int frameCount = 0;
+    bool waveStarted = false;
 
     while (!WindowShouldClose()) {
 
@@ -221,11 +222,28 @@ int main(void)
         int seconds = frameCount/60;
         switch (seconds) {
             case 120:
-                currentZombieSpawnRate = 60*2;
-                zombieSpawnCooldown = 0;
+                if (!waveStarted) {
+                    waveStarted = true;
+                    currentZombieSpawnRate = 60*5;
+                    zombieSpawnCooldown = 0;
+                }
                 break;
             case 120+30:
                 currentZombieSpawnRate = 60*20;
+                waveStarted = false;
+                break;
+
+            case 240:
+                if (!waveStarted) {
+                    waveStarted = true;
+                    currentZombieSpawnRate = 60*5;
+                    zombieSpawnCooldown = 0;
+                }
+                break;
+            case 240+30:
+                currentZombieSpawnRate = 60*20;
+                waveStarted = false;
+                break;
         }
 
 
@@ -325,8 +343,8 @@ int main(void)
         zombieSpawnCooldown--;
         if (zombieSpawnCooldown <= 0) {
             zombieSpawnCooldown = currentZombieSpawnRate;
+            float xSpawn = GetRandomValue(12, 14) + rand()/(float)RAND_MAX;
             // TODO: use constant for getrandom value max
-            const int xSpawn = 12; // default 12, tweak for debugging purposes
             Vector2 gridPos = {xSpawn, GetRandomValue(0, 4)};
 
             // TODO: This is a duplicate of the sun spawning code. Consider refactoring.
