@@ -59,7 +59,7 @@ typedef struct {
 } Zombie;
 
 
-void UpdateDrawPShooter(Plant* p, Vector2 screenPos);
+void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos);
 void UpdateDrawSunflower(Plant* p, Vector2 screenPos);
 void DrawSeedPackets();
 void UpdateSeedPackets();
@@ -117,12 +117,13 @@ int sunCooldown = 60;
 int sunsCollectedCount = SUN_VALUE*2; // in PvZ, you start out with enough sun to buy a sunflower
 
 // Zombie globals
+// TODO: zombie spawn time shouldn't be constant
 #define ZOMBIE_SPAWN_TIME 60*20
 #define MAX_ZOMBIES 16
 Zombie zombies[MAX_ZOMBIES] = {0};
 int nextZombie = 0;
 
-int zombieSpawnCooldown = 60*15;
+int zombieSpawnCooldown = 60*30;
 int zombieGrowlCooldown = 60*2;
 
 
@@ -221,7 +222,7 @@ int main(void)
 
                     switch (p->type) {
                         case PT_PSHOOTER:
-                            UpdateDrawPShooter(p, screenPos);
+                            UpdateDrawPShooter(p, (Vector2){x, y}, screenPos);
                             break;
                         case PT_SUNFLOWER:
                             UpdateDrawSunflower(p, screenPos);
@@ -403,22 +404,35 @@ void UpdateDrawSunflower(Plant* p, Vector2 screenPos)
     DrawTexture(sunflowerSprite, screenPos.x, screenPos.y, WHITE);
 }
 
-void UpdateDrawPShooter(Plant* p, Vector2 screenPos)
+void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
 {
     screenPos = Vector2Add(screenPos, (Vector2){10, 5});
-    p->cooldown--;
-    if (p->cooldown <= 0) {
-        p->cooldown = plantCooldownLUT[PT_PSHOOTER];
-        if (nextProjectile == MAX_PROJ) {
-            nextProjectile = 0;
-        }
-        projectiles[nextProjectile].active = true;
-        projectiles[nextProjectile].pos = Vector2Add(screenPos, (Vector2){33, 10});
-        nextProjectile++;
-        PlaySound(peaShootSound);
-    }
-    DrawTexture(pShooterSprite, screenPos.x, screenPos.y, WHITE);
 
+    // Look for a zombie in our row
+    bool zombieInRow = false;
+    for (int i = 0; i < MAX_ZOMBIES; i++) {
+        if (zombies[i].active && zombies[i].gridPos.y == gridPos.y) {
+            zombieInRow = true;
+            break;
+        }
+    }
+
+    // Shoot pea if a zombie is in our row
+    if (zombieInRow) {
+        p->cooldown--;
+        if (p->cooldown <= 0) {
+            p->cooldown = plantCooldownLUT[PT_PSHOOTER];
+            if (nextProjectile == MAX_PROJ) {
+                nextProjectile = 0;
+            }
+            projectiles[nextProjectile].active = true;
+            projectiles[nextProjectile].pos = Vector2Add(screenPos, (Vector2){33, 10});
+            nextProjectile++;
+            PlaySound(peaShootSound);
+        }
+    }
+
+    DrawTexture(pShooterSprite, screenPos.x, screenPos.y, WHITE);
 }
 
 void UpdateSeedPackets()
