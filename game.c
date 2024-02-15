@@ -211,6 +211,7 @@ int main(void)
         for (int x = 0; x < GRID_WIDTH; x++) {
             for (int y = 0; y < GRID_HEIGHT; y++) {
                 if (gardenGrid[x][y].type != PT_NONE) {
+                    // TODO: get rid of gridCellGap, I'm not using it as far as I can tell.
                     Vector2 screenPos = Vector2Add(gridDrawOffset, (Vector2){x*gridCellSize.x+x*gridCellGap, y*gridCellSize.y+y*gridCellGap});
                     Plant* p = &gardenGrid[x][y];
 
@@ -258,6 +259,7 @@ int main(void)
         zombieSpawnCooldown--;
         if (zombieSpawnCooldown <= 0) {
             zombieSpawnCooldown = ZOMBIE_SPAWN_TIME;
+            // TODO: use constant for getrandom value max
             Vector2 gridPos = {12, GetRandomValue(0, 4)};
 
             // TODO: This is a duplicate of the sun spawning code. Consider refactoring.
@@ -286,7 +288,9 @@ int main(void)
                     int frontOfZombieRounded = (int)roundf(zombies[i].gridPos.x)-1;
                     if (gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y].type != PT_NONE) {
                         gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y].health -= 0.005f;
+                        // TODO: Play eating sounds
                     } else {
+                        // TODO: get rid of this duplicate code. Either with a constant or by restructuring these statements.
                         zombies[i].gridPos.x -= 0.003f;
                     }
 
@@ -477,6 +481,7 @@ void DrawSeedPackets()
 
         if (seedPackets[i].dragging) {
             seedPacketUIPos = Vector2Subtract(GetMousePosition(), (Vector2){SEEDPACKET_SIZE.x/2, SEEDPACKET_SIZE.y/2});
+            // TODO: Drawing here and also below, is this a bug?
             DrawTextureV(shovelOrSeedPacket, Vector2Add(seedPacketUIPos, (Vector2){4, 4}), (Color){0, 0, 0, 50});
         } else {
             seedPacketUIPos = seedPackets[i].origin;

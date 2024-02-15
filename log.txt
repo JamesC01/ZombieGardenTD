@@ -96,7 +96,7 @@ in this case, but it felt right.
 
 13/02/2024
 
-Spent 2 hour 47 minutes this session. I made the sunflower sprite, made lots of small tweaks, and also implemented zombies (currently using a
+Spent 2 hour 57 minutes this session. I made the sunflower sprite, made lots of small tweaks, and also implemented zombies (currently using a
 ripped plants vs zombies sprite). They spawn from the right side of the screen, and can be damaged from projectiles, and when they run into
 a plant, they stop moving and start damaging it. It all works so far! Still no sound effects yet, but I had a good time implementing zombies.
 
@@ -106,3 +106,5 @@ value tweaks to the cooldowns, sun value, and certain rates to make it closer to
 Next time I think I wall add the wallnut, which would be incredibly easy to implement, but I will have to figure out a nice way to represent
 different health values for plants. I could technically just increase the value, but I chose floats because I wanted health to be from 0 to,
 1, so I might have to rework some stuff. Also, doing the sprite for the zombie would be nice, since I want to make my own assets for this game.
+
+I also fixed a bug where you could plant a plant over another plant and it would replace it.
