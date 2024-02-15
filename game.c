@@ -150,8 +150,6 @@ int currentZombieSpawnRate = 60*20;
 int zombieSpawnCooldown = 60*30;
 int zombieGrowlCooldown = 60*2;
 
-int zombieBigWaveTimer = 60*60;
-
 // Particle globals
 #define MAX_PARTICLES 128
 Particle particles[MAX_PARTICLES] = {0};
@@ -211,13 +209,25 @@ int main(void)
     while (!WindowShouldClose()) {
 
         if (IsKeyPressed(KEY_UP)) {
-            fps += 30;
+            fps += 60;
             SetTargetFPS(fps);
         }
         else if (IsKeyPressed(KEY_DOWN)) {
             fps = 60;
             SetTargetFPS(fps);
         }
+
+        // Control zombie spawn rate during waves
+        int seconds = frameCount/60;
+        switch (seconds) {
+            case 120:
+                currentZombieSpawnRate = 60*2;
+                zombieSpawnCooldown = 0;
+                break;
+            case 120+30:
+                currentZombieSpawnRate = 60*20;
+        }
+
 
         BeginDrawing();
 
