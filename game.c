@@ -3,6 +3,7 @@
 #include <raymath.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <math.h>
 
 #define EXPAND_V2(v2) v2.x, v2.y
 
@@ -21,8 +22,8 @@ int plantCooldownLUT[] = {
     0, // PT_NONE,
     60*2, // PT_PSHOOTER,
     60*20, // PT_SUNFLOWER,
-    //PT_WALLNUT,
-    //PT_CHERRYBOMB,
+    0, //PT_WALLNUT,
+    60*3 //PT_CHERRYBOMB,
     //PT_COUNT
 };
 
@@ -30,8 +31,8 @@ int plantHealthLUT[] = {
     0, // PT_NONE,
     100, // PT_PSHOOTER,
     100, // PT_SUNFLOWER,
-    800 //PT_WALLNUT,
-    //PT_CHERRYBOMB,
+    800, //PT_WALLNUT,
+    100 //PT_CHERRYBOMB,
     //PT_COUNT
 };
 
@@ -70,6 +71,7 @@ typedef struct {
 
 void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos);
 void UpdateDrawSunflower(Plant* p, Vector2 screenPos);
+void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos);
 void DrawSeedPackets();
 void UpdateSeedPackets();
 void SpawnSun(Vector2 pos);
@@ -83,6 +85,7 @@ Texture2D sunSprite;
 Texture2D shovelSprite;
 Texture2D sunflowerSprite;
 Texture2D wallnutSprite;
+Texture2D cherrySprite;
 Texture2D zombieSprite;
 
 // Sounds
@@ -112,7 +115,7 @@ Vector2 gridCellSize = {55, 70};
 #define SEEDPACKET_COOLDOWN_SLOW 60*20
 #define SEEDPACKET_COOLDOWN_NORMAL 60*15
 #define SEEDPACKET_COOLDOWN_FAST 60*10
-#define SEEDPACKET_COUNT 4 // +1 because of the shovel
+#define SEEDPACKET_COUNT 5 // +1 because of the shovel
 SeedPacket seedPackets[SEEDPACKET_COUNT];
 bool draggingSeedPacket = false;
 
@@ -124,12 +127,12 @@ Sun suns[MAX_SUNS] = {0};
 int nextSun = 0;
 
 int sunCooldown = 60;
-int sunsCollectedCount = SUN_VALUE*2; // in PvZ, you start out with enough sun to buy a sunflower
+int sunsCollectedCount = SUN_VALUE*1000;//SUN_VALUE*2; // in PvZ, you start out with enough sun to buy a sunflower
 
 // Zombie globals
 // TODO: zombie spawn time shouldn't be constant
 #define ZOMBIE_SPAWN_TIME 60*20
-#define MAX_ZOMBIES 16
+#define MAX_ZOMBIES 32
 Zombie zombies[MAX_ZOMBIES] = {0};
 int nextZombie = 0;
 
@@ -156,6 +159,7 @@ int main(void)
     shovelSprite = LoadTexture("sprites/shovel.png");
     sunflowerSprite = LoadTexture("sprites/sunflower.png");
     wallnutSprite = LoadTexture("sprites/wallnut.png");
+    cherrySprite = LoadTexture("sprites/wallnut.png");
     zombieSprite = LoadTexture("sprites/zombie.png");
 
     peaShootSound = LoadSound("sounds/shoot_pea.wav");
@@ -180,6 +184,7 @@ int main(void)
     seedPackets[1] = (SeedPacket){ PT_SUNFLOWER, (Vector2){100 + SEEDPACKET_SIZE.x + 8, 10}, SUN_VALUE*2, 0, SEEDPACKET_COOLDOWN_FAST};
     seedPackets[2] = (SeedPacket){ PT_PSHOOTER, (Vector2){100 + SEEDPACKET_SIZE.x*2 + 8*2, 10}, SUN_VALUE*4, 0, SEEDPACKET_COOLDOWN_FAST};
     seedPackets[3] = (SeedPacket){ PT_WALLNUT, (Vector2){100 + SEEDPACKET_SIZE.x*3 + 8*3, 10}, SUN_VALUE*2, 0, SEEDPACKET_COOLDOWN_SLOW};
+    seedPackets[4] = (SeedPacket){ PT_CHERRYBOMB, (Vector2){100 + SEEDPACKET_SIZE.x*4 + 8*4, 10}, SUN_VALUE*6, 0, SEEDPACKET_COOLDOWN_SLOW};
 
 
     while (!WindowShouldClose()) {
@@ -241,6 +246,9 @@ int main(void)
                             break;
                         case PT_WALLNUT:
                             DrawTextureV(wallnutSprite, Vector2Add(screenPos, (Vector2){8, 16}), WHITE);
+                            break;
+                        case PT_CHERRYBOMB:
+                            UpdateDrawCherryBomb(p, (Vector2){x, y,}, screenPos);
                             break;
                         default:
                             continue;
@@ -408,6 +416,25 @@ void SpawnSun(Vector2 pos)
     nextSun++;
 }
 
+void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
+{
+    p->cooldown--;
+    if (p->cooldown <= 0) {
+
+        for (int i = 0; i < MAX_ZOMBIES; i++) {
+            if (zombies[i].active) {
+                Zombie* z = &zombies[i];
+                if (fabs((int)z->gridPos.x - gridPos.x) < 2 && fabs((int)z->gridPos.y - gridPos.y) < 2) {
+                    z->health = 0;
+                }
+            }
+        }
+
+        p->health = 0;
+    }
+    DrawTexture(cherrySprite, screenPos.x, screenPos.y, RED);
+}
+
 void UpdateDrawSunflower(Plant* p, Vector2 screenPos)
 {
     screenPos = Vector2Add(screenPos, (Vector2){8, 20});
@@ -528,6 +555,9 @@ void DrawSeedPackets()
                 break;
             case PT_WALLNUT:
                 DrawTextureEx(wallnutSprite, Vector2Add(seedPacketUIPos, (Vector2){5, 13}), 0, 0.7f, WHITE);
+                break;
+            case PT_CHERRYBOMB:
+                DrawTextureEx(wallnutSprite, Vector2Add(seedPacketUIPos, (Vector2){5, 13}), 0, 0.7f, RED);
                 break;
             default:
                 break;
