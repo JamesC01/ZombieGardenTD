@@ -5,6 +5,3 @@ older software in-general.
 
 Add shadow below plants and zombies, and maybe projectiles.
 
-Add particle effects for damage/death
-
-Tweak zombie spawn/move rate to closer match PvZ

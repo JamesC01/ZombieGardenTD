@@ -139,17 +139,18 @@ Sun suns[MAX_SUNS] = {0};
 int nextSun = 0;
 
 int sunCooldown = 60;
-int sunsCollectedCount = SUN_VALUE*1000;//SUN_VALUE*2; // in PvZ, you start out with enough sun to buy a sunflower
+int sunsCollectedCount = SUN_VALUE*2; // in PvZ, you start out with enough sun to buy a sunflower
 
 // Zombie globals
-// TODO: zombie spawn time shouldn't be constant
-#define ZOMBIE_SPAWN_TIME 60*20
 #define MAX_ZOMBIES 32
 Zombie zombies[MAX_ZOMBIES] = {0};
 int nextZombie = 0;
 
-int zombieSpawnCooldown = 0;
+int currentZombieSpawnRate = 60*20;
+int zombieSpawnCooldown = 60*30;
 int zombieGrowlCooldown = 60*2;
+
+int zombieBigWaveTimer = 60*60;
 
 // Particle globals
 #define MAX_PARTICLES 128
@@ -205,6 +206,7 @@ int main(void)
 
 
     int fps = 60;
+    int frameCount = 0;
 
     while (!WindowShouldClose()) {
 
@@ -312,7 +314,7 @@ int main(void)
         // Spawn zombies
         zombieSpawnCooldown--;
         if (zombieSpawnCooldown <= 0) {
-            zombieSpawnCooldown = ZOMBIE_SPAWN_TIME;
+            zombieSpawnCooldown = currentZombieSpawnRate;
             // TODO: use constant for getrandom value max
             const int xSpawn = 12; // default 12, tweak for debugging purposes
             Vector2 gridPos = {xSpawn, GetRandomValue(0, 4)};
@@ -425,6 +427,13 @@ int main(void)
         char sunCountText[32];
         sprintf(sunCountText, "Sun:\n\n%i", sunsCollectedCount);
         DrawText(sunCountText, 32, 10, 20, WHITE);
+
+
+        // Draw timer
+        frameCount++;
+        char timerText[32];
+        sprintf(timerText, "%i", frameCount/60);
+        DrawText(timerText, screenWidth-64, 10, 20, WHITE);
 
         EndDrawing();
 
