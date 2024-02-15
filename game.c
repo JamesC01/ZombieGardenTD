@@ -26,6 +26,15 @@ int plantCooldownLUT[] = {
     //PT_COUNT
 };
 
+int plantHealthLUT[] = {
+    0, // PT_NONE,
+    100, // PT_PSHOOTER,
+    100, // PT_SUNFLOWER,
+    800 //PT_WALLNUT,
+    //PT_CHERRYBOMB,
+    //PT_COUNT
+};
+
 typedef struct {
     PlantType type;
     Vector2 origin;
@@ -73,6 +82,7 @@ Texture2D peaSprite;
 Texture2D sunSprite;
 Texture2D shovelSprite;
 Texture2D sunflowerSprite;
+Texture2D wallnutSprite;
 Texture2D zombieSprite;
 
 // Sounds
@@ -102,7 +112,7 @@ Vector2 gridCellSize = {55, 70};
 #define SEEDPACKET_COOLDOWN_SLOW 60*20
 #define SEEDPACKET_COOLDOWN_NORMAL 60*15
 #define SEEDPACKET_COOLDOWN_FAST 60*10
-#define SEEDPACKET_COUNT 3
+#define SEEDPACKET_COUNT 4 // +1 because of the shovel
 SeedPacket seedPackets[SEEDPACKET_COUNT];
 bool draggingSeedPacket = false;
 
@@ -123,7 +133,7 @@ int sunsCollectedCount = SUN_VALUE*2; // in PvZ, you start out with enough sun t
 Zombie zombies[MAX_ZOMBIES] = {0};
 int nextZombie = 0;
 
-int zombieSpawnCooldown = 60*30;
+int zombieSpawnCooldown = 0;
 int zombieGrowlCooldown = 60*2;
 
 
@@ -145,6 +155,7 @@ int main(void)
     sunSprite = LoadTexture("sprites/sun.png");
     shovelSprite = LoadTexture("sprites/shovel.png");
     sunflowerSprite = LoadTexture("sprites/sunflower.png");
+    wallnutSprite = LoadTexture("sprites/wallnut.png");
     zombieSprite = LoadTexture("sprites/zombie.png");
 
     peaShootSound = LoadSound("sounds/shoot_pea.wav");
@@ -168,6 +179,7 @@ int main(void)
     seedPackets[0] = (SeedPacket){ PT_NONE, (Vector2){100, 10}, 0};
     seedPackets[1] = (SeedPacket){ PT_SUNFLOWER, (Vector2){100 + SEEDPACKET_SIZE.x + 8, 10}, SUN_VALUE*2, 0, SEEDPACKET_COOLDOWN_FAST};
     seedPackets[2] = (SeedPacket){ PT_PSHOOTER, (Vector2){100 + SEEDPACKET_SIZE.x*2 + 8*2, 10}, SUN_VALUE*4, 0, SEEDPACKET_COOLDOWN_FAST};
+    seedPackets[3] = (SeedPacket){ PT_WALLNUT, (Vector2){100 + SEEDPACKET_SIZE.x*3 + 8*3, 10}, SUN_VALUE*2, 0, SEEDPACKET_COOLDOWN_SLOW};
 
 
     while (!WindowShouldClose()) {
@@ -226,6 +238,10 @@ int main(void)
                             break;
                         case PT_SUNFLOWER:
                             UpdateDrawSunflower(p, screenPos);
+                            break;
+                        case PT_WALLNUT:
+                            DrawTextureV(wallnutSprite, Vector2Add(screenPos, (Vector2){8, 16}), WHITE);
+                            break;
                         default:
                             continue;
                     }
@@ -288,21 +304,21 @@ int main(void)
                 if (zombies[i].gridPos.x > 0 && zombies[i].gridPos.x < GRID_WIDTH) {
                     int frontOfZombieRounded = (int)roundf(zombies[i].gridPos.x)-1;
                     if (gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y].type != PT_NONE) {
-                        gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y].health -= 0.005f;
+                        gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y].health -= 0.5f;
                         // TODO: Play eating sounds
                     } else {
                         // TODO: get rid of this duplicate code. Either with a constant or by restructuring these statements.
-                        zombies[i].gridPos.x -= 0.003f;
+                        zombies[i].gridPos.x -= 0.002f;
                     }
 
                 } else {
-                    zombies[i].gridPos.x -= 0.003f;
+                    zombies[i].gridPos.x -= 0.002f;
                 }
 
 
                 int x = gridDrawOffset.x + zombies[i].gridPos.x*gridCellSize.x;
                 int y = gridDrawOffset.y + zombies[i].gridPos.y*gridCellSize.y;
-                Rectangle box = {x-zombieSprite.width/2, y-16, zombieSprite.width, zombieSprite.height};
+                Rectangle box = {x-(float)zombieSprite.width/2, y-16, zombieSprite.width, zombieSprite.height};
 
                 for (int j = 0; j < MAX_PROJ; j++) {
                     if (projectiles[j].active) {
@@ -320,7 +336,7 @@ int main(void)
                 }
 
                 Rectangle src = {0,0,zombieSprite.width, zombieSprite.height};
-                Rectangle dst = {x-zombieSprite.width/2, y-16, zombieSprite.width, zombieSprite.height};
+                Rectangle dst = {x-(float)zombieSprite.width/2, y-16, zombieSprite.width, zombieSprite.height};
                 DrawTexturePro(zombieSprite, src, dst, Vector2Zero(), 0, WHITE);
 
                 //DrawRectangleRec(box, (Color){100, 100, 255, 100});
@@ -462,7 +478,7 @@ void UpdateSeedPackets()
                     if (gardenGrid[(int)x][(int)y].type == PT_NONE) {
                         gardenGrid[(int)x][(int)y].type = seedPackets[i].type;
                         gardenGrid[(int)x][(int)y].cooldown = plantCooldownLUT[seedPackets[i].type];
-                        gardenGrid[(int)x][(int)y].health = 1.0f;
+                        gardenGrid[(int)x][(int)y].health = plantHealthLUT[seedPackets[i].type];
                         sunsCollectedCount -= seedPackets[i].cost;
                         if (seedPackets[i].type != PT_NONE) {
                             // TODO: consider making a lookup table where the PlantType is the index
@@ -509,6 +525,9 @@ void DrawSeedPackets()
                 break;
             case PT_SUNFLOWER:
                 DrawTextureEx(sunflowerSprite, Vector2Add(seedPacketUIPos, (Vector2){5, 12}), 0, 0.75f, WHITE);
+                break;
+            case PT_WALLNUT:
+                DrawTextureEx(wallnutSprite, Vector2Add(seedPacketUIPos, (Vector2){5, 13}), 0, 0.7f, WHITE);
                 break;
             default:
                 break;
