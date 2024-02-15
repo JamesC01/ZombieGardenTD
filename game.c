@@ -83,6 +83,7 @@ void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos);
 void UpdateDrawSunflower(Plant* p, Vector2 screenPos);
 void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos);
 void UpdateDrawParticles();
+void CreateParticleExplosion(Vector2 pos, Vector2 size, int maxSpeed, int lifetime, int particleCount, Color colour);
 void DrawSeedPackets();
 void UpdateSeedPackets();
 void SpawnSun(Vector2 pos);
@@ -202,21 +203,6 @@ int main(void)
     seedPackets[3] = (SeedPacket){ PT_WALLNUT, (Vector2){100 + SEEDPACKET_SIZE.x*3 + 8*3, 10}, SUN_VALUE*2, 0, SEEDPACKET_COOLDOWN_SLOW};
     seedPackets[4] = (SeedPacket){ PT_CHERRYBOMB, (Vector2){100 + SEEDPACKET_SIZE.x*4 + 8*4, 10}, SUN_VALUE*6, 0, SEEDPACKET_COOLDOWN_SLOW};
 
-    for (int i = 0; i < 32; i++) {
-        if (nextParticle == MAX_PARTICLES)
-            nextParticle = 0;
-
-        particles[nextParticle].pos = (Vector2){300, 200};
-        particles[nextParticle].size = (Vector2){2, 2};
-        Vector2 randDir = Vector2Normalize((Vector2){(float)rand()/(float)RAND_MAX-0.5f, (float)rand()/(float)RAND_MAX-0.5f});
-        particles[nextParticle].velocity = Vector2Scale(randDir, 2+(float)rand()/(float)RAND_MAX);
-        particles[nextParticle].colour = (Color){255, 255, 255, 255};
-        particles[nextParticle].lifetime = 60;
-        particles[nextParticle].active = true;
-
-
-        nextParticle ++;
-    }
 
 
     while (!WindowShouldClose()) {
@@ -317,7 +303,8 @@ int main(void)
         if (zombieSpawnCooldown <= 0) {
             zombieSpawnCooldown = ZOMBIE_SPAWN_TIME;
             // TODO: use constant for getrandom value max
-            Vector2 gridPos = {12, GetRandomValue(0, 4)};
+            const int xSpawn = 8; // default 12, tweak for debugging purposes
+            Vector2 gridPos = {xSpawn, GetRandomValue(0, 4)};
 
             // TODO: This is a duplicate of the sun spawning code. Consider refactoring.
             if (nextZombie == MAX_ZOMBIES) {
@@ -358,7 +345,7 @@ int main(void)
 
                 int x = gridDrawOffset.x + zombies[i].gridPos.x*gridCellSize.x;
                 int y = gridDrawOffset.y + zombies[i].gridPos.y*gridCellSize.y;
-                Rectangle box = {x-(float)zombieSprite.width/2, y-16, zombieSprite.width, zombieSprite.height};
+                Rectangle box = {x-8, y-16, zombieSprite.width/2, zombieSprite.height};
 
                 for (int j = 0; j < MAX_PROJ; j++) {
                     if (projectiles[j].active) {
@@ -367,6 +354,7 @@ int main(void)
                             zombies[i].health -= 0.1f;
                             PlaySound(popSound);
                             PlaySound(zombieHitSounds[GetRandomValue(0, ZOMBIE_HIT_SOUND_COUNT-1)]);
+                            CreateParticleExplosion(projectiles[j].pos, (Vector2){3,3}, 3, 15, 16, (Color){100, 0, 0, 255});
                         }
                     } 
                 }
@@ -379,6 +367,7 @@ int main(void)
                 Rectangle dst = {x-(float)zombieSprite.width/2, y-16, zombieSprite.width, zombieSprite.height};
                 DrawTexturePro(zombieSprite, src, dst, Vector2Zero(), 0, WHITE);
 
+                // Zombie collider debug
                 //DrawRectangleRec(box, (Color){100, 100, 255, 100});
             }
         }
@@ -437,6 +426,26 @@ int main(void)
     return 0;
 }
 
+// TODO: Consider adding minSpeed
+void CreateParticleExplosion(Vector2 pos, Vector2 size, int maxSpeed, int lifetime, int particleCount, Color colour)
+{
+    for (int i = 0; i < particleCount; i++) {
+        if (nextParticle == MAX_PARTICLES)
+            nextParticle = 0;
+
+        particles[nextParticle].pos = pos;
+        particles[nextParticle].size = size;
+        Vector2 randDir = Vector2Normalize((Vector2){(float)rand()/(float)RAND_MAX-0.5f, (float)rand()/(float)RAND_MAX-0.5f});
+        particles[nextParticle].velocity = Vector2Scale(randDir, GetRandomValue(0, maxSpeed-1)+(float)rand()/(float)RAND_MAX);
+        particles[nextParticle].colour = colour;
+        particles[nextParticle].lifetime = lifetime;
+        particles[nextParticle].active = true;
+
+
+        nextParticle++;
+    }
+}
+
 void UpdateDrawParticles()
 {
     for (int i = 0; i < MAX_PARTICLES; i++) {
@@ -468,6 +477,7 @@ void SpawnSun(Vector2 pos)
 
 void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
 {
+    screenPos = Vector2Add(screenPos, (Vector2){8, 20});
     p->cooldown--;
     if (p->cooldown <= 0) {
 
@@ -479,6 +489,8 @@ void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
                 }
             }
         }
+
+        CreateParticleExplosion(screenPos, (Vector2){8, 8}, 5, 30, 48, DARKBROWN);
 
         p->health = 0;
     }
@@ -517,11 +529,17 @@ void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
             p->cooldown = plantCooldownLUT[PT_PSHOOTER];
             if (nextProjectile == MAX_PROJ) {
                 nextProjectile = 0;
+
+
             }
+
+            Vector2 peaSpawnPos = Vector2Add(screenPos, (Vector2){33, 10});
             projectiles[nextProjectile].active = true;
-            projectiles[nextProjectile].pos = Vector2Add(screenPos, (Vector2){33, 10});
+            projectiles[nextProjectile].pos = peaSpawnPos;
             nextProjectile++;
+
             PlaySound(peaShootSound);
+            CreateParticleExplosion(peaSpawnPos, (Vector2){2, 2}, 3, 15, 8, (Color){200, 255, 200, 255});
         }
     }
 
