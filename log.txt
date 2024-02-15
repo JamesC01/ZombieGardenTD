@@ -108,3 +108,15 @@ different health values for plants. I could technically just increase the value,
 1, so I might have to rework some stuff. Also, doing the sprite for the zombie would be nice, since I want to make my own assets for this game.
 
 I also fixed a bug where you could plant a plant over another plant and it would replace it.
+
+
+15/02/2024
+
+Spent 3 whole hours today! I pushed the project to a github repo (but I don't think I timed that), I made peashooters only shoot a zombie when one
+is in their row. I added wallnuts, along with a sprite, and tweaked the zombie speed and damage. I implemented the cherry bomb, particles for the
+explosion and when the peashooters shoot a pea and hit zombies. And I added a simple zombie spawn wave at 2 minutes in, and made tweaks to the
+spawnrates to make it more enjoyable to play. Quite a bit! The code is started to get a bit messy at almost 700 lines, now, so spending some time
+to look over the code and consider splitting it into multiple files might be a good idea, and compressing down some of the repetetive constructs I
+have in there.
+
+Next time, I'd like to add some more sound effects, maybe do some music for it, and like I said, some refactoring.
