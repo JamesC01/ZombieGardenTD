@@ -204,8 +204,19 @@ int main(void)
     seedPackets[4] = (SeedPacket){ PT_CHERRYBOMB, (Vector2){100 + SEEDPACKET_SIZE.x*4 + 8*4, 10}, SUN_VALUE*6, 0, SEEDPACKET_COOLDOWN_SLOW};
 
 
+    int fps = 60;
 
     while (!WindowShouldClose()) {
+
+        if (IsKeyPressed(KEY_UP)) {
+            fps += 30;
+            SetTargetFPS(fps);
+        }
+        else if (IsKeyPressed(KEY_DOWN)) {
+            fps = 60;
+            SetTargetFPS(fps);
+        }
+
         BeginDrawing();
 
         ClearBackground(WHITE);
@@ -303,7 +314,7 @@ int main(void)
         if (zombieSpawnCooldown <= 0) {
             zombieSpawnCooldown = ZOMBIE_SPAWN_TIME;
             // TODO: use constant for getrandom value max
-            const int xSpawn = 8; // default 12, tweak for debugging purposes
+            const int xSpawn = 12; // default 12, tweak for debugging purposes
             Vector2 gridPos = {xSpawn, GetRandomValue(0, 4)};
 
             // TODO: This is a duplicate of the sun spawning code. Consider refactoring.
