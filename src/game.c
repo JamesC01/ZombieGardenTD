@@ -5,53 +5,13 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include "assets.h"
+#include "particles.h"
+#include "plant.h"
+#include "seed_packets.h"
 
 #define EXPAND_V2(v2) v2.x, v2.y
 
-typedef enum {
-    PT_NONE,
-    PT_PSHOOTER,
-    PT_SUNFLOWER,
-    PT_WALLNUT,
-    PT_CHERRYBOMB,
-    PT_COUNT
-} PlantType;
-
-// Cooldowns apply to certain actions, for peashooters, it's the shoot frequency,
-// for sunflowers, is the spawnrate of the suns.
-int plantCooldownLUT[] = {
-    0, // PT_NONE,
-    60*2, // PT_PSHOOTER,
-    60*20, // PT_SUNFLOWER,
-    0, //PT_WALLNUT,
-    60*3 //PT_CHERRYBOMB,
-    //PT_COUNT
-};
-
-int plantHealthLUT[] = {
-    0, // PT_NONE,
-    100, // PT_PSHOOTER,
-    100, // PT_SUNFLOWER,
-    800, //PT_WALLNUT,
-    100 //PT_CHERRYBOMB,
-    //PT_COUNT
-};
-
-typedef struct {
-    PlantType type;
-    Vector2 origin;
-    int cost;
-    int buyCooldown;
-    int buyCooldownMax;
-    bool dragging;
-} SeedPacket;
-const Vector2 SEEDPACKET_SIZE = {40, 50};
-
-typedef struct {
-    PlantType type;
-    int cooldown;
-    float health;
-} Plant;
 
 typedef struct {
     Vector2 pos;
@@ -69,49 +29,16 @@ typedef struct {
     bool active;
 } Zombie;
 
-typedef struct {
-    Vector2 pos;
-    Vector2 size;
-    Vector2 velocity;
-    Color colour;
-    int lifetime;
-    bool active;
-} Particle;
 
 
 void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos);
 void UpdateDrawSunflower(Plant* p, Vector2 screenPos);
 void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos);
-void UpdateDrawParticles();
-void CreateParticleExplosion(Vector2 pos, Vector2 size, int maxSpeed, int lifetime, int particleCount, Color colour);
 void DrawSeedPackets();
 void UpdateSeedPackets();
 void SpawnSun(Vector2 pos);
 void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint);
 
-// Textures
-Texture2D seedPacketSprite;
-Texture2D lawnBackgroundSprite;
-Texture2D pShooterSprite;
-Texture2D peaSprite;
-Texture2D sunSprite;
-Texture2D shovelSprite;
-Texture2D sunflowerSprite;
-Texture2D wallnutSprite;
-Texture2D cherrySprite;
-Texture2D zombieSprite;
-Texture2D shadowSprite;
-Texture2D smallShadowSprite;
-
-// Sounds
-#define ZOMBIE_GROWL_SOUND_COUNT 4
-#define ZOMBIE_HIT_SOUND_COUNT 4
-Sound zombieGrowlSounds[ZOMBIE_GROWL_SOUND_COUNT];
-Sound zombieHitSounds[ZOMBIE_HIT_SOUND_COUNT];
-
-Sound peaShootSound;
-Sound popSound;
-Sound sunAppearSound;
 
 // Projectile globals
 #define MAX_PROJ 16
@@ -125,13 +52,6 @@ Plant gardenGrid[GRID_WIDTH][GRID_HEIGHT] = {0};
 Vector2 gridDrawOffset = {40, 80};
 Vector2 gridCellSize = {55, 70};
 
-// Seed Packet globals
-#define SEEDPACKET_COOLDOWN_SLOW 60*20
-#define SEEDPACKET_COOLDOWN_NORMAL 60*15
-#define SEEDPACKET_COOLDOWN_FAST 60*10
-#define SEEDPACKET_COUNT 5 // +1 because of the shovel
-SeedPacket seedPackets[SEEDPACKET_COUNT];
-bool draggingSeedPacket = false;
 
 // Sun globals
 #define SUN_VALUE 25
@@ -152,10 +72,6 @@ int currentZombieSpawnRate = 60*20;
 int zombieSpawnCooldown = 60*30;
 int zombieGrowlCooldown = 60*2;
 
-// Particle globals
-#define MAX_PARTICLES 128
-Particle particles[MAX_PARTICLES] = {0};
-int nextParticle = 0;
 
 
 int main(void)
@@ -169,43 +85,8 @@ int main(void)
 
     SetTargetFPS(60);
 
-    seedPacketSprite = LoadTexture("sprites/seedpacket.png");
-    lawnBackgroundSprite = LoadTexture("sprites/lawn.png");
-    pShooterSprite = LoadTexture("sprites/pshooter.png");
-    peaSprite = LoadTexture("sprites/pea.png");
-    sunSprite = LoadTexture("sprites/sun.png");
-    shovelSprite = LoadTexture("sprites/shovel.png");
-    sunflowerSprite = LoadTexture("sprites/sunflower.png");
-    wallnutSprite = LoadTexture("sprites/wallnut.png");
-    cherrySprite = LoadTexture("sprites/wallnut.png");
-    zombieSprite = LoadTexture("sprites/zombie.png");
-    shadowSprite = LoadTexture("sprites/shadow.png");
-    smallShadowSprite = LoadTexture("sprites/small_shadow.png");
-
-    peaShootSound = LoadSound("sounds/shoot_pea.wav");
-    popSound = LoadSound("sounds/pop.wav");
-    sunAppearSound = LoadSound("sounds/sun_appear.wav");
-
-    for (int i = 0; i < ZOMBIE_HIT_SOUND_COUNT; i++) {
-        char path[64];
-        sprintf(path, "sounds/zombie_hit%i.wav", i+1);
-        zombieHitSounds[i] = LoadSound(path);
-    }
-
-    for (int i = 0; i < ZOMBIE_GROWL_SOUND_COUNT; i++) {
-        char path[64];
-        sprintf(path, "sounds/zombie_growl%i.wav", i+1);
-        zombieGrowlSounds[i] = LoadSound(path);
-    }
-
-    // Implementation detail, the shovel is also a seedpacket. It just works.
-    // TODO: get rid of hardcoded positions
-    seedPackets[0] = (SeedPacket){ PT_NONE, (Vector2){100, 10}, 0};
-    seedPackets[1] = (SeedPacket){ PT_SUNFLOWER, (Vector2){100 + SEEDPACKET_SIZE.x + 8, 10}, SUN_VALUE*2, 0, SEEDPACKET_COOLDOWN_FAST};
-    seedPackets[2] = (SeedPacket){ PT_PSHOOTER, (Vector2){100 + SEEDPACKET_SIZE.x*2 + 8*2, 10}, SUN_VALUE*4, 0, SEEDPACKET_COOLDOWN_FAST};
-    seedPackets[3] = (SeedPacket){ PT_WALLNUT, (Vector2){100 + SEEDPACKET_SIZE.x*3 + 8*3, 10}, SUN_VALUE*2, 0, SEEDPACKET_COOLDOWN_SLOW};
-    seedPackets[4] = (SeedPacket){ PT_CHERRYBOMB, (Vector2){100 + SEEDPACKET_SIZE.x*4 + 8*4, 10}, SUN_VALUE*6, 0, SEEDPACKET_COOLDOWN_SLOW};
-
+    LoadAssets();
+    CreateSeedPackets();
 
     int fps = 60;
     int frameCount = 0;
@@ -338,7 +219,6 @@ int main(void)
                 }
             }
         }
-
 
 
         // Draw top bar
@@ -487,41 +367,6 @@ int main(void)
     return 0;
 }
 
-// TODO: Consider adding minSpeed
-void CreateParticleExplosion(Vector2 pos, Vector2 size, int maxSpeed, int lifetime, int particleCount, Color colour)
-{
-    for (int i = 0; i < particleCount; i++) {
-        if (nextParticle == MAX_PARTICLES)
-            nextParticle = 0;
-
-        particles[nextParticle].pos = pos;
-        particles[nextParticle].size = size;
-        Vector2 randDir = Vector2Normalize((Vector2){(float)rand()/(float)RAND_MAX-0.5f, (float)rand()/(float)RAND_MAX-0.5f});
-        particles[nextParticle].velocity = Vector2Scale(randDir, GetRandomValue(0, maxSpeed-1)+(float)rand()/(float)RAND_MAX);
-        particles[nextParticle].colour = colour;
-        particles[nextParticle].lifetime = lifetime;
-        particles[nextParticle].active = true;
-
-
-        nextParticle++;
-    }
-}
-
-void UpdateDrawParticles()
-{
-    for (int i = 0; i < MAX_PARTICLES; i++) {
-        if (particles[i].active) {
-            particles[i].pos = Vector2Add(particles[i].pos, particles[i].velocity);
-            particles[i].lifetime--;
-
-            DrawRectangleV(particles[i].pos, particles[i].size, particles[i].colour);
-
-            if (particles[i].lifetime <= 0) {
-                particles[i].active = false;
-            }
-        }
-    }
-}
 
 void SpawnSun(Vector2 pos)
 {
@@ -613,101 +458,4 @@ void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
 
     Vector2 origin = {(float)pShooterSprite.width/2, pShooterSprite.height-4};
     DrawTextureCentered(pShooterSprite, screenPos, origin, WHITE);
-}
-
-void UpdateSeedPackets()
-{
-    for (int i = 0; i < SEEDPACKET_COUNT; i++) {
-        // Set packet dragging true if mouse clicked inside it.
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !seedPackets[i].dragging) {
-            Vector2 mPos = GetMousePosition();
-
-            if (CheckCollisionPointRec(mPos, (Rectangle){seedPackets[i].origin.x, seedPackets[i].origin.y, SEEDPACKET_SIZE.x, SEEDPACKET_SIZE.y})) {
-                seedPackets[i].dragging = true;
-                draggingSeedPacket = true;
-                HideCursor();
-            }
-        }
-
-        // Handle dropping the seed packet
-        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-            if (seedPackets[i].dragging && sunsCollectedCount >= seedPackets[i].cost && seedPackets[i].buyCooldown <= 0) {
-                Vector2 mpos = GetMousePosition();
-                float x = (mpos.x - gridDrawOffset.x) / gridCellSize.x;
-                float y = (mpos.y - gridDrawOffset.y) / gridCellSize.y;
-
-                if (x >= 0 && y >= 0
-                        && x < 9 && y < 5) {
-                    // TODO: put gardengrid(x, y) into a variable
-                    if (gardenGrid[(int)x][(int)y].type == PT_NONE) {
-                        gardenGrid[(int)x][(int)y].type = seedPackets[i].type;
-                        gardenGrid[(int)x][(int)y].cooldown = plantCooldownLUT[seedPackets[i].type];
-                        gardenGrid[(int)x][(int)y].health = plantHealthLUT[seedPackets[i].type];
-                        sunsCollectedCount -= seedPackets[i].cost;
-                        if (seedPackets[i].type != PT_NONE) {
-                            // TODO: consider making a lookup table where the PlantType is the index
-                            seedPackets[i].buyCooldown = seedPackets[i].buyCooldownMax;
-                        }
-                    } else if (seedPackets[i].type == PT_NONE) {
-                        gardenGrid[(int)x][(int)y].type = PT_NONE;
-                    }
-                }
-            }
-            seedPackets[i].dragging = false;
-            draggingSeedPacket = false;
-            ShowCursor();
-        }
-    }
-}
-
-void DrawSeedPackets()
-{
-    for (int i = 0; i < SEEDPACKET_COUNT; i++) {
-        // Draw seedpacket
-        Vector2 seedPacketUIPos;
-        Texture2D shovelOrSeedPacket;
-
-        if (seedPackets[i].type == PT_NONE) {
-            shovelOrSeedPacket = shovelSprite;
-        } else {
-            shovelOrSeedPacket = seedPacketSprite;
-        }
-
-        if (seedPackets[i].dragging) {
-            seedPacketUIPos = Vector2Subtract(GetMousePosition(), (Vector2){SEEDPACKET_SIZE.x/2, SEEDPACKET_SIZE.y/2});
-            // TODO: Drawing here and also below, is this a bug?
-            DrawTextureV(shovelOrSeedPacket, Vector2Add(seedPacketUIPos, (Vector2){4, 4}), (Color){0, 0, 0, 50});
-        } else {
-            seedPacketUIPos = seedPackets[i].origin;
-        }
-
-        DrawTextureV(shovelOrSeedPacket, seedPacketUIPos, WHITE);
-
-        switch (seedPackets[i].type) {
-            case PT_PSHOOTER:
-                DrawTextureEx(pShooterSprite, Vector2Add(seedPacketUIPos, (Vector2){11, 12}), 0, 0.5f, WHITE);
-                break;
-            case PT_SUNFLOWER:
-                DrawTextureEx(sunflowerSprite, Vector2Add(seedPacketUIPos, (Vector2){5, 12}), 0, 0.75f, WHITE);
-                break;
-            case PT_WALLNUT:
-                DrawTextureEx(wallnutSprite, Vector2Add(seedPacketUIPos, (Vector2){5, 13}), 0, 0.7f, WHITE);
-                break;
-            case PT_CHERRYBOMB:
-                DrawTextureEx(wallnutSprite, Vector2Add(seedPacketUIPos, (Vector2){5, 13}), 0, 0.7f, RED);
-                break;
-            default:
-                break;
-        }
-
-        // Handle dimming seed
-        if (sunsCollectedCount < seedPackets[i].cost) {
-            DrawRectangleV(seedPacketUIPos, (Vector2){seedPacketSprite.width, seedPacketSprite.height}, (Color){80, 80, 80, 150});
-        }
-        if (seedPackets[i].buyCooldown > 0 && seedPackets[i].type != PT_NONE) {
-            seedPackets[i].buyCooldown--;
-            Rectangle overlayRect = (Rectangle){EXPAND_V2(seedPacketUIPos), SEEDPACKET_SIZE.x, SEEDPACKET_SIZE.y*((float)seedPackets[i].buyCooldown/(float)seedPackets[i].buyCooldownMax)};
-            DrawRectangleRec(overlayRect, (Color){50, 50, 50, 100});
-        }
-    }
 }
