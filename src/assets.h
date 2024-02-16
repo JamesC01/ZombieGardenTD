@@ -27,6 +27,8 @@ extern Sound peaShootSound;
 extern Sound popSound;
 extern Sound sunAppearSound;
 
+extern Music themeSong;
+
 void LoadAssets();
 
 #endif

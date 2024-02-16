@@ -131,9 +131,10 @@ pitch them and add effects to hide the fact that they're just my mouth.
 
 16/02/2024
 
-(Note: I spent a couple minutes doing more reorganizing, but it wasn't timed. It was no more than 5 minutes.)
+(Note: I spent around 10 minutes doing more reorganizing, but it wasn't timed.) I spent some time (probably 20 minutes or so working a bit more
+on the theme song, but didn't time it.) I also spent an extra 24 minutes (which I did time, and added to the main text below.)
 
-Spent 1 hour 40 minutes today. I made the peashooters only shoot if the zombie is on screen, I made plant positioning more consistent which helped
+Spent 1 hour 40 minutes (+24 minutes music prod) today. I made the peashooters only shoot if the zombie is on screen, I made plant positioning more consistent which helped
 with adding shadows, which I also did. Finally I restructured the project into multiple files. I'm not sure if this was the right move, but game.c
 was getting quite big at 700 lines, and I have to keep jumping from the bottom to the top constantly. The make working with multiple files more
 efficient and enjoyable, I'll probably have to learn about using tabs in vim, so I can switch between my working files fairly quickly. I've just tried

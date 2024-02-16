@@ -44,11 +44,15 @@ int main(void)
     LoadAssets();
     CreateSeedPackets();
 
+    PlayMusicStream(themeSong);
+
     int fps = 60;
     int frameCount = 0;
     bool waveStarted = false;
 
     while (!WindowShouldClose()) {
+
+        UpdateMusicStream(themeSong);
 
         if (IsKeyPressed(KEY_UP)) {
             fps += 60;

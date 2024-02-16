@@ -1,4 +1,5 @@
 #include "assets.h"
+#include <raylib.h>
 #include <stdio.h>
 
 Texture2D seedPacketSprite;
@@ -21,6 +22,8 @@ Sound peaShootSound;
 Sound popSound;
 Sound sunAppearSound;
 
+Music themeSong;
+
 void LoadAssets()
 {
     seedPacketSprite = LoadTexture("sprites/seedpacket.png");
@@ -35,6 +38,8 @@ void LoadAssets()
     zombieSprite = LoadTexture("sprites/zombie.png");
     shadowSprite = LoadTexture("sprites/shadow.png");
     smallShadowSprite = LoadTexture("sprites/small_shadow.png");
+
+    themeSong = LoadMusicStream("sounds/theme.mp3");
 
     peaShootSound = LoadSound("sounds/shoot_pea.wav");
     popSound = LoadSound("sounds/pop.wav");
