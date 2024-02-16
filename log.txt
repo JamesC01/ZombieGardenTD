@@ -96,6 +96,9 @@ in this case, but it felt right.
 
 13/02/2024
 
+(Note: I spent around 30 minutes on the sound effects, consider subtracting that from the time if you want, but right now, it's part of the
+2 hours 57 minutes.)
+
 Spent 2 hour 57 minutes this session. I made the sunflower sprite, made lots of small tweaks, and also implemented zombies (currently using a
 ripped plants vs zombies sprite). They spawn from the right side of the screen, and can be damaged from projectiles, and when they run into
 a plant, they stop moving and start damaging it. It all works so far! Still no sound effects yet, but I had a good time implementing zombies.
@@ -112,6 +115,8 @@ I also fixed a bug where you could plant a plant over another plant and it would
 
 15/02/2024
 
+(Note: I spent 37 minutes working on a track for the game, but I haven't added it to the main time, since I'm not sure if I'll use it.)
+
 Spent 3 whole hours today! I pushed the project to a github repo (but I don't think I timed that), I made peashooters only shoot a zombie when one
 is in their row. I added wallnuts, along with a sprite, and tweaked the zombie speed and damage. I implemented the cherry bomb, particles for the
 explosion and when the peashooters shoot a pea and hit zombies. And I added a simple zombie spawn wave at 2 minutes in, and made tweaks to the
@@ -119,4 +124,6 @@ spawnrates to make it more enjoyable to play. Quite a bit! The code is started t
 to look over the code and consider splitting it into multiple files might be a good idea, and compressing down some of the repetetive constructs I
 have in there.
 
-Next time, I'd like to add some more sound effects, maybe do some music for it, and like I said, some refactoring.
+Next time, I'd like to add some more sound effects, maybe do some music for it, and like I said, some refactoring. I was looking for an explosion
+sound on freesound, but couldn't find a good one, so I might make all sound effects in the game with mouth sounds or foley. I can layer sounds, and
+pitch them and add effects to hide the fact that they're just my mouth.

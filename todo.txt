@@ -5,3 +5,6 @@ older software in-general.
 
 Add shadow below plants and zombies, and maybe projectiles.
 
+Make peashooters only shoot when zombie is on screen (or grid index 8+3)
+
+Keep playing with spawnrate during waves

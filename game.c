@@ -564,7 +564,7 @@ void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
     // Look for a zombie in our row
     bool zombieInRow = false;
     for (int i = 0; i < MAX_ZOMBIES; i++) {
-        if (zombies[i].active && zombies[i].gridPos.y == gridPos.y) {
+        if (zombies[i].active && zombies[i].gridPos.y == gridPos.y && zombies[i].gridPos.x >= gridPos.x && zombies[i].gridPos.x <= GRID_WIDTH+2) {
             zombieInRow = true;
             break;
         }
