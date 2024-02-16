@@ -101,6 +101,7 @@ Texture2D wallnutSprite;
 Texture2D cherrySprite;
 Texture2D zombieSprite;
 Texture2D shadowSprite;
+Texture2D smallShadowSprite;
 
 // Sounds
 #define ZOMBIE_GROWL_SOUND_COUNT 4
@@ -179,6 +180,7 @@ int main(void)
     cherrySprite = LoadTexture("sprites/wallnut.png");
     zombieSprite = LoadTexture("sprites/zombie.png");
     shadowSprite = LoadTexture("sprites/shadow.png");
+    smallShadowSprite = LoadTexture("sprites/small_shadow.png");
 
     peaShootSound = LoadSound("sounds/shoot_pea.wav");
     popSound = LoadSound("sounds/pop.wav");
@@ -297,6 +299,9 @@ int main(void)
                     if (p->health <= 0) {
                         p->type = PT_NONE;
                     }
+                    
+
+                    DrawTextureCentered(shadowSprite, screenPos, (Vector2){(float)shadowSprite.width/2, (float)shadowSprite.height/2}, WHITE);
 
                     switch (p->type) {
                         case PT_PSHOOTER:
@@ -325,6 +330,7 @@ int main(void)
         for (int i = 0; i < MAX_PROJ; i++) {
             if (projectiles[i].active) {
                 projectiles[i].pos.x += 5;
+                DrawTextureCentered(smallShadowSprite, Vector2Add(projectiles[i].pos, (Vector2){0, 42}), Vector2Zero(), WHITE);
                 DrawTextureV(peaSprite, projectiles[i].pos, WHITE);
 
                 if (projectiles[i].pos.x > 640) {
@@ -408,6 +414,8 @@ int main(void)
                 if (zombies[i].health <= 0) {
                     zombies[i].active = false;
                 }
+
+                // TODO: Draw shadow
 
                 Rectangle src = {0,0,zombieSprite.width, zombieSprite.height};
                 Rectangle dst = {x-(float)zombieSprite.width/2, y-16, zombieSprite.width, zombieSprite.height};
