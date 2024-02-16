@@ -7,3 +7,8 @@ Add shadow below plants and zombies, and maybe projectiles.
 
 Tweak sunflower/sun spawn rates. At the start, they seem good, but once you get about 10 sunflowers,
 it gets out of hand. You get way too much sun.
+
+Make a B section to music, add more transitional elements, and make drums quieter, and make certain
+drum parts less busy.
+
+Make zombies groan more often, maybe multiple at the same time.
