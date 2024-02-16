@@ -10,3 +10,11 @@ int nextSun = 0;
 
 int sunCooldown = 60;
 int sunsCollectedCount = SUN_VALUE*2; // in PvZ, you start out with enough sun to buy a sunflower
+
+
+Zombie zombies[MAX_ZOMBIES] = {0};
+int nextZombie = 0;
+
+int currentZombieSpawnRate = 60*20;
+int zombieSpawnCooldown = 60*30;
+int zombieGrowlCooldown = 60*2;

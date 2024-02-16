@@ -5,12 +5,11 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include "globals.h"
 #include "assets.h"
 #include "particles.h"
 #include "plant.h"
 #include "seed_packets.h"
-
-#define EXPAND_V2(v2) v2.x, v2.y
 
 
 typedef struct {
@@ -18,60 +17,17 @@ typedef struct {
     bool active;
 } Projectile;
 
-typedef struct {
-    Vector2 pos;
-    bool active;
-} Sun;
-
-typedef struct {
-    Vector2 gridPos;
-    float health;
-    bool active;
-} Zombie;
-
-
-
-void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos);
-void UpdateDrawSunflower(Plant* p, Vector2 screenPos);
-void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos);
-void DrawSeedPackets();
-void UpdateSeedPackets();
-void SpawnSun(Vector2 pos);
-void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint);
-
-
 // Projectile globals
 #define MAX_PROJ 16
 Projectile projectiles[MAX_PROJ] = {0};
 int nextProjectile = 0;
 
-// Plant Grid globals
-#define GRID_WIDTH 9
-#define GRID_HEIGHT 5
-Plant gardenGrid[GRID_WIDTH][GRID_HEIGHT] = {0};
-Vector2 gridDrawOffset = {40, 80};
-Vector2 gridCellSize = {55, 70};
 
-
-// Sun globals
-#define SUN_VALUE 25
-#define SUN_SPAWN_TIME 60*15
-#define MAX_SUNS 8
-Sun suns[MAX_SUNS] = {0};
-int nextSun = 0;
-
-int sunCooldown = 60;
-int sunsCollectedCount = SUN_VALUE*2; // in PvZ, you start out with enough sun to buy a sunflower
-
-// Zombie globals
-#define MAX_ZOMBIES 32
-Zombie zombies[MAX_ZOMBIES] = {0};
-int nextZombie = 0;
-
-int currentZombieSpawnRate = 60*20;
-int zombieSpawnCooldown = 60*30;
-int zombieGrowlCooldown = 60*2;
-
+void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos);
+void UpdateDrawSunflower(Plant* p, Vector2 screenPos);
+void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos);
+void SpawnSun(Vector2 pos);
+void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint);
 
 
 int main(void)
