@@ -5,6 +5,5 @@ older software in-general.
 
 Add shadow below plants and zombies, and maybe projectiles.
 
-Make peashooters only shoot when zombie is on screen (or grid index 8+3)
-
-Keep playing with spawnrate during waves
+Tweak sunflower/sun spawn rates. At the start, they seem good, but once you get about 10 sunflowers,
+it gets out of hand. You get way too much sun.

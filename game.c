@@ -87,6 +87,7 @@ void CreateParticleExplosion(Vector2 pos, Vector2 size, int maxSpeed, int lifeti
 void DrawSeedPackets();
 void UpdateSeedPackets();
 void SpawnSun(Vector2 pos);
+void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint);
 
 // Textures
 Texture2D seedPacketSprite;
@@ -99,6 +100,7 @@ Texture2D sunflowerSprite;
 Texture2D wallnutSprite;
 Texture2D cherrySprite;
 Texture2D zombieSprite;
+Texture2D shadowSprite;
 
 // Sounds
 #define ZOMBIE_GROWL_SOUND_COUNT 4
@@ -120,7 +122,6 @@ int nextProjectile = 0;
 #define GRID_HEIGHT 5
 Plant gardenGrid[GRID_WIDTH][GRID_HEIGHT] = {0};
 Vector2 gridDrawOffset = {40, 80};
-int gridCellGap = 0;
 Vector2 gridCellSize = {55, 70};
 
 // Seed Packet globals
@@ -177,6 +178,7 @@ int main(void)
     wallnutSprite = LoadTexture("sprites/wallnut.png");
     cherrySprite = LoadTexture("sprites/wallnut.png");
     zombieSprite = LoadTexture("sprites/zombie.png");
+    shadowSprite = LoadTexture("sprites/shadow.png");
 
     peaShootSound = LoadSound("sounds/shoot_pea.wav");
     popSound = LoadSound("sounds/pop.wav");
@@ -224,7 +226,7 @@ int main(void)
             case 120:
                 if (!waveStarted) {
                     waveStarted = true;
-                    currentZombieSpawnRate = 60*5;
+                    currentZombieSpawnRate = 60*3;
                     zombieSpawnCooldown = 0;
                 }
                 break;
@@ -236,7 +238,7 @@ int main(void)
             case 240:
                 if (!waveStarted) {
                     waveStarted = true;
-                    currentZombieSpawnRate = 60*5;
+                    currentZombieSpawnRate = 60*2;
                     zombieSpawnCooldown = 0;
                 }
                 break;
@@ -273,7 +275,7 @@ int main(void)
                     c = (Color){230, 255, 230, 20};
                 }
 
-                Vector2 gridCellPos = Vector2Add(gridDrawOffset, (Vector2){x*gridCellSize.x+x*gridCellGap, y*gridCellSize.y+y*gridCellGap});
+                Vector2 gridCellPos = Vector2Add(gridDrawOffset, (Vector2){x*gridCellSize.x, y*gridCellSize.y});
 
                 if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && draggingSeedPacket) {
                     if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){gridCellPos.x, gridCellPos.y, gridCellSize.x, gridCellSize.y})) {
@@ -289,7 +291,7 @@ int main(void)
             for (int y = 0; y < GRID_HEIGHT; y++) {
                 if (gardenGrid[x][y].type != PT_NONE) {
                     // TODO: get rid of gridCellGap, I'm not using it as far as I can tell.
-                    Vector2 screenPos = Vector2Add(gridDrawOffset, (Vector2){x*gridCellSize.x+x*gridCellGap, y*gridCellSize.y+y*gridCellGap});
+                    Vector2 screenPos = Vector2Add(gridDrawOffset, (Vector2){x*gridCellSize.x+gridCellSize.x/2, y*gridCellSize.y+gridCellSize.y*0.75f});
                     Plant* p = &gardenGrid[x][y];
 
                     if (p->health <= 0) {
@@ -304,7 +306,10 @@ int main(void)
                             UpdateDrawSunflower(p, screenPos);
                             break;
                         case PT_WALLNUT:
-                            DrawTextureV(wallnutSprite, Vector2Add(screenPos, (Vector2){8, 16}), WHITE);
+                            {
+                                Vector2 origin = {(float)wallnutSprite.width/2, wallnutSprite.height-4};
+                                DrawTextureCentered(wallnutSprite, screenPos, origin, WHITE);
+                            }
                             break;
                         case PT_CHERRYBOMB:
                             UpdateDrawCherryBomb(p, (Vector2){x, y,}, screenPos);
@@ -386,7 +391,7 @@ int main(void)
 
                 int x = gridDrawOffset.x + zombies[i].gridPos.x*gridCellSize.x;
                 int y = gridDrawOffset.y + zombies[i].gridPos.y*gridCellSize.y;
-                Rectangle box = {x-8, y-16, zombieSprite.width/2, zombieSprite.height};
+                Rectangle box = {x-8, y-16, (float)zombieSprite.width/2, zombieSprite.height};
 
                 for (int j = 0; j < MAX_PROJ; j++) {
                     if (projectiles[j].active) {
@@ -525,7 +530,6 @@ void SpawnSun(Vector2 pos)
 
 void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
 {
-    screenPos = Vector2Add(screenPos, (Vector2){8, 20});
     p->cooldown--;
     if (p->cooldown <= 0) {
 
@@ -542,25 +546,33 @@ void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
 
         p->health = 0;
     }
-    DrawTexture(cherrySprite, screenPos.x, screenPos.y, RED);
+
+    Vector2 origin = {(float)wallnutSprite.width/2, wallnutSprite.height-4};
+    DrawTextureCentered(wallnutSprite, screenPos, origin, WHITE);
+}
+
+void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint)
+{
+    Rectangle src = {0, 0, sprite.width, sprite.height};
+    Rectangle dst = {EXPAND_V2(pos), sprite.width, sprite.height};
+    DrawTexturePro(sprite, src, dst, origin, 0, tint);
 }
 
 void UpdateDrawSunflower(Plant* p, Vector2 screenPos)
 {
-    screenPos = Vector2Add(screenPos, (Vector2){8, 20});
-    Vector2 sunSpawnPos = Vector2Add(screenPos, (Vector2){15, 12});
+    Vector2 sunSpawnPos = Vector2Subtract(screenPos, (Vector2){0, 18});
     p->cooldown--;
     if (p->cooldown <= 0) {
         p->cooldown = plantCooldownLUT[PT_SUNFLOWER];
         SpawnSun(sunSpawnPos);
     }
-    DrawTexture(sunflowerSprite, screenPos.x, screenPos.y, WHITE);
+
+    Vector2 origin = {(float)sunflowerSprite.width/2, sunflowerSprite.height-4};
+    DrawTextureCentered(sunflowerSprite, screenPos, origin, WHITE);
 }
 
 void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
 {
-    screenPos = Vector2Add(screenPos, (Vector2){10, 5});
-
     // Look for a zombie in our row
     bool zombieInRow = false;
     for (int i = 0; i < MAX_ZOMBIES; i++) {
@@ -581,7 +593,7 @@ void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
 
             }
 
-            Vector2 peaSpawnPos = Vector2Add(screenPos, (Vector2){33, 10});
+            Vector2 peaSpawnPos = Vector2Add(screenPos, (Vector2){18, -42});
             projectiles[nextProjectile].active = true;
             projectiles[nextProjectile].pos = peaSpawnPos;
             nextProjectile++;
@@ -591,7 +603,8 @@ void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
         }
     }
 
-    DrawTexture(pShooterSprite, screenPos.x, screenPos.y, WHITE);
+    Vector2 origin = {(float)pShooterSprite.width/2, pShooterSprite.height-4};
+    DrawTextureCentered(pShooterSprite, screenPos, origin, WHITE);
 }
 
 void UpdateSeedPackets()
