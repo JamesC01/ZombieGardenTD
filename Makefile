@@ -1,4 +1,4 @@
-SRC = src/game.c src/assets.c src/particles.c src/seed_packets.c src/plant.c  src/globals.c
+SRC = src/game.c src/assets.c src/particles.c src/seed_packets.c src/plant.c  src/globals.c src/zombie.c
 
 pvz: $(SRC)
 	gcc $(SRC) -lraylib -lGL -lm -lpthread -o ./pvz

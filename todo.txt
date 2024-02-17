@@ -3,8 +3,6 @@
 Include easter eggs, or just fun stuff like you'd expect in demo-scene software, or just
 older software in-general.
 
-Add shadow below plants and zombies, and maybe projectiles.
-
 Tweak sunflower/sun spawn rates. At the start, they seem good, but once you get about 10 sunflowers,
 it gets out of hand. You get way too much sun.
 

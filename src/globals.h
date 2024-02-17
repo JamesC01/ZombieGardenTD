@@ -21,22 +21,6 @@ extern int sunCooldown;
 extern int sunsCollectedCount; // in PvZ, you start out with enough sun to buy a sunflower
 
 
-typedef struct {
-    Vector2 gridPos;
-    float health;
-    bool active;
-} Zombie;
-
-// Zombie globals
-#define MAX_ZOMBIES 32
-extern Zombie zombies[MAX_ZOMBIES];
-extern int nextZombie;
-
-extern int currentZombieSpawnRate;
-extern int zombieSpawnCooldown;
-extern int zombieGrowlCooldown;
-
-
 // Plant Grid globals
 #define GRID_WIDTH 9
 #define GRID_HEIGHT 5
@@ -45,5 +29,17 @@ extern Vector2 gridDrawOffset;
 extern Vector2 gridCellSize;
 
 
+typedef struct {
+    Vector2 pos;
+    bool active;
+} Projectile;
+
+// Projectile globals
+#define MAX_PROJ 16
+extern Projectile projectiles[MAX_PROJ];
+extern int nextProjectile;
+
+void SpawnSun(Vector2 pos);
+void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint);
 
 #endif

@@ -10,24 +10,7 @@
 #include "particles.h"
 #include "plant.h"
 #include "seed_packets.h"
-
-
-typedef struct {
-    Vector2 pos;
-    bool active;
-} Projectile;
-
-// Projectile globals
-#define MAX_PROJ 16
-Projectile projectiles[MAX_PROJ] = {0};
-int nextProjectile = 0;
-
-
-void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos);
-void UpdateDrawSunflower(Plant* p, Vector2 screenPos);
-void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos);
-void SpawnSun(Vector2 pos);
-void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint);
+#include "zombie.h"
 
 
 int main(void)
@@ -44,6 +27,7 @@ int main(void)
     LoadAssets();
     CreateSeedPackets();
 
+    SetMusicVolume(themeSong, 0.5f);
     PlayMusicStream(themeSong);
 
     int fps = 60;
@@ -129,43 +113,7 @@ int main(void)
             }
         }
 
-        // Update and Draw plants
-        for (int x = 0; x < GRID_WIDTH; x++) {
-            for (int y = 0; y < GRID_HEIGHT; y++) {
-                if (gardenGrid[x][y].type != PT_NONE) {
-                    // TODO: get rid of gridCellGap, I'm not using it as far as I can tell.
-                    Vector2 screenPos = Vector2Add(gridDrawOffset, (Vector2){x*gridCellSize.x+gridCellSize.x/2, y*gridCellSize.y+gridCellSize.y*0.75f});
-                    Plant* p = &gardenGrid[x][y];
-
-                    if (p->health <= 0) {
-                        p->type = PT_NONE;
-                    }
-                    
-
-                    DrawTextureCentered(shadowSprite, screenPos, (Vector2){(float)shadowSprite.width/2, (float)shadowSprite.height/2}, WHITE);
-
-                    switch (p->type) {
-                        case PT_PSHOOTER:
-                            UpdateDrawPShooter(p, (Vector2){x, y}, screenPos);
-                            break;
-                        case PT_SUNFLOWER:
-                            UpdateDrawSunflower(p, screenPos);
-                            break;
-                        case PT_WALLNUT:
-                            {
-                                Vector2 origin = {(float)wallnutSprite.width/2, wallnutSprite.height-4};
-                                DrawTextureCentered(wallnutSprite, screenPos, origin, WHITE);
-                            }
-                            break;
-                        case PT_CHERRYBOMB:
-                            UpdateDrawCherryBomb(p, (Vector2){x, y,}, screenPos);
-                            break;
-                        default:
-                            continue;
-                    }
-                }
-            }
-        }
+        UpdateDrawPlants();
 
         // Update and draw Projectiles
         for (int i = 0; i < MAX_PROJ; i++) {
@@ -190,88 +138,10 @@ int main(void)
         Vector2 trayEnd = {trayStart.x+8*SEEDPACKET_SIZE.x+margin, seedPackets[0].origin.y+SEEDPACKET_SIZE.y};
         DrawRectangleV(trayStart, trayEnd, (Color){46, 40, 34, 255});
 
-        // Spawn zombies
-        zombieSpawnCooldown--;
-        if (zombieSpawnCooldown <= 0) {
-            zombieSpawnCooldown = currentZombieSpawnRate;
-            float xSpawn = GetRandomValue(12, 14) + rand()/(float)RAND_MAX;
-            // TODO: use constant for getrandom value max
-            Vector2 gridPos = {xSpawn, GetRandomValue(0, 4)};
-
-            // TODO: This is a duplicate of the sun spawning code. Consider refactoring.
-            if (nextZombie == MAX_ZOMBIES) {
-                nextZombie = 0;
-            }
-
-            zombies[nextZombie].active = true;
-            zombies[nextZombie].health = 1.0f;
-            zombies[nextZombie].gridPos = gridPos;
-
-            nextZombie++;
-        }
-
-        zombieGrowlCooldown--;
-        // Update and draw zombies
-        for (int i = 0; i < MAX_ZOMBIES; i++) {
-            if (zombies[i].active) {
-                if (zombieGrowlCooldown < 0) {
-                    PlaySound(zombieGrowlSounds[GetRandomValue(0, ZOMBIE_GROWL_SOUND_COUNT-1)]);
-                    zombieGrowlCooldown = GetRandomValue(60*10, 60*15);
-                }
-
-
-                if (zombies[i].gridPos.x > 0 && zombies[i].gridPos.x < GRID_WIDTH) {
-                    int frontOfZombieRounded = (int)roundf(zombies[i].gridPos.x)-1;
-                    if (gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y].type != PT_NONE) {
-                        gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y].health -= 0.5f;
-                        // TODO: Play eating sounds
-                    } else {
-                        // TODO: get rid of this duplicate code. Either with a constant or by restructuring these statements.
-                        zombies[i].gridPos.x -= 0.002f;
-                    }
-
-                } else {
-                    zombies[i].gridPos.x -= 0.002f;
-                }
-
-
-                int x = gridDrawOffset.x + zombies[i].gridPos.x*gridCellSize.x;
-                int y = gridDrawOffset.y + zombies[i].gridPos.y*gridCellSize.y;
-                Rectangle box = {x-8, y-16, (float)zombieSprite.width/2, zombieSprite.height};
-
-                for (int j = 0; j < MAX_PROJ; j++) {
-                    if (projectiles[j].active) {
-                        if (CheckCollisionPointRec(projectiles[j].pos, box)) {
-                            projectiles[j].active = false;
-                            zombies[i].health -= 0.1f;
-                            PlaySound(popSound);
-                            PlaySound(zombieHitSounds[GetRandomValue(0, ZOMBIE_HIT_SOUND_COUNT-1)]);
-                            CreateParticleExplosion(projectiles[j].pos, (Vector2){3,3}, 3, 15, 16, (Color){100, 0, 0, 255});
-                        }
-                    } 
-                }
-
-                if (zombies[i].health <= 0) {
-                    zombies[i].active = false;
-                }
-
-                // TODO: Draw shadow
-
-                Rectangle src = {0,0,zombieSprite.width, zombieSprite.height};
-                Rectangle dst = {x-(float)zombieSprite.width/2, y-16, zombieSprite.width, zombieSprite.height};
-                DrawTexturePro(zombieSprite, src, dst, Vector2Zero(), 0, WHITE);
-
-                // Zombie collider debug
-                //DrawRectangleRec(box, (Color){100, 100, 255, 100});
-            }
-        }
-
         UpdateDrawParticles();
-
-
-        UpdateSeedPackets();
-        DrawSeedPackets();
-
+        UpdateDrawSeedPackets();
+        UpdateDrawZombies();
+        
         // Spawn suns
         sunCooldown--;
         if (sunCooldown <= 0) {
@@ -325,95 +195,4 @@ int main(void)
     CloseWindow();
 
     return 0;
-}
-
-
-void SpawnSun(Vector2 pos)
-{
-    if (nextSun == MAX_SUNS) {
-        nextSun = 0;
-    }
-
-    suns[nextSun].active = true;
-    suns[nextSun].pos = pos;
-    PlaySound(sunAppearSound);
-
-    nextSun++;
-}
-
-void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
-{
-    p->cooldown--;
-    if (p->cooldown <= 0) {
-
-        for (int i = 0; i < MAX_ZOMBIES; i++) {
-            if (zombies[i].active) {
-                Zombie* z = &zombies[i];
-                if (fabs((int)z->gridPos.x - gridPos.x) < 2 && fabs((int)z->gridPos.y - gridPos.y) < 2) {
-                    z->health = 0;
-                }
-            }
-        }
-
-        CreateParticleExplosion(screenPos, (Vector2){8, 8}, 5, 30, 48, DARKBROWN);
-
-        p->health = 0;
-    }
-
-    Vector2 origin = {(float)wallnutSprite.width/2, wallnutSprite.height-4};
-    DrawTextureCentered(wallnutSprite, screenPos, origin, WHITE);
-}
-
-void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint)
-{
-    Rectangle src = {0, 0, sprite.width, sprite.height};
-    Rectangle dst = {EXPAND_V2(pos), sprite.width, sprite.height};
-    DrawTexturePro(sprite, src, dst, origin, 0, tint);
-}
-
-void UpdateDrawSunflower(Plant* p, Vector2 screenPos)
-{
-    Vector2 sunSpawnPos = Vector2Subtract(screenPos, (Vector2){0, 18});
-    p->cooldown--;
-    if (p->cooldown <= 0) {
-        p->cooldown = plantCooldownLUT[PT_SUNFLOWER];
-        SpawnSun(sunSpawnPos);
-    }
-
-    Vector2 origin = {(float)sunflowerSprite.width/2, sunflowerSprite.height-4};
-    DrawTextureCentered(sunflowerSprite, screenPos, origin, WHITE);
-}
-
-void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
-{
-    // Look for a zombie in our row
-    bool zombieInRow = false;
-    for (int i = 0; i < MAX_ZOMBIES; i++) {
-        if (zombies[i].active && zombies[i].gridPos.y == gridPos.y && zombies[i].gridPos.x >= gridPos.x && zombies[i].gridPos.x <= GRID_WIDTH+2) {
-            zombieInRow = true;
-            break;
-        }
-    }
-
-    // Shoot pea if a zombie is in our row
-    if (zombieInRow) {
-        p->cooldown--;
-        if (p->cooldown <= 0) {
-            p->cooldown = plantCooldownLUT[PT_PSHOOTER];
-            if (nextProjectile == MAX_PROJ) {
-                nextProjectile = 0;
-            }
-
-            Vector2 peaSpawnPos = Vector2Add(screenPos, (Vector2){18, -42});
-            projectiles[nextProjectile].active = true;
-            projectiles[nextProjectile].pos = peaSpawnPos;
-            nextProjectile++;
-
-            PlaySound(peaShootSound);
-            CreateParticleExplosion(peaSpawnPos, (Vector2){2, 2}, 3, 15, 8, (Color){200, 255, 200, 255});
-        }
-    }
-
-    Vector2 origin = {(float)pShooterSprite.width/2, pShooterSprite.height-4};
-    DrawTextureCentered(pShooterSprite, screenPos, origin, WHITE);
 }

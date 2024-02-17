@@ -22,6 +22,7 @@ extern SeedPacket seedPackets[SEEDPACKET_COUNT];
 extern bool draggingSeedPacket;
 
 void CreateSeedPackets();
+void UpdateDrawSeedPackets();
 void UpdateSeedPackets();
 void DrawSeedPackets();
 

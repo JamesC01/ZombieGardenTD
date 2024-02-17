@@ -17,6 +17,9 @@ extern Texture2D zombieSprite;
 extern Texture2D shadowSprite;
 extern Texture2D smallShadowSprite;
 
+// TODO: Consider making a function that takes in a sprite and returns the center point
+#define SHADOW_ORIGIN (Vector2){(float)shadowSprite.width/2, (float)shadowSprite.height/2}
+
 // Sounds
 #define ZOMBIE_GROWL_SOUND_COUNT 4
 #define ZOMBIE_HIT_SOUND_COUNT 4

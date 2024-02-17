@@ -1,4 +1,5 @@
 #include "globals.h"
+#include "assets.h"
 
 Plant gardenGrid[GRID_WIDTH][GRID_HEIGHT] = {0};
 Vector2 gridDrawOffset = {40, 80};
@@ -12,9 +13,27 @@ int sunCooldown = 60;
 int sunsCollectedCount = SUN_VALUE*2; // in PvZ, you start out with enough sun to buy a sunflower
 
 
-Zombie zombies[MAX_ZOMBIES] = {0};
-int nextZombie = 0;
 
-int currentZombieSpawnRate = 60*20;
-int zombieSpawnCooldown = 60*30;
-int zombieGrowlCooldown = 60*2;
+Projectile projectiles[MAX_PROJ] = {0};
+int nextProjectile = 0;
+
+void SpawnSun(Vector2 pos)
+{
+    if (nextSun == MAX_SUNS) {
+        nextSun = 0;
+    }
+
+    suns[nextSun].active = true;
+    suns[nextSun].pos = pos;
+    PlaySound(sunAppearSound);
+
+    nextSun++;
+}
+
+
+void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint)
+{
+    Rectangle src = {0, 0, sprite.width, sprite.height};
+    Rectangle dst = {EXPAND_V2(pos), sprite.width, sprite.height};
+    DrawTexturePro(sprite, src, dst, origin, 0, tint);
+}

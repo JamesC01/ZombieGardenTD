@@ -18,6 +18,12 @@ void CreateSeedPackets()
     seedPackets[4] = (SeedPacket){ PT_CHERRYBOMB, (Vector2){100 + SEEDPACKET_SIZE.x*4 + 8*4, 10}, SUN_VALUE*6, 0, SEEDPACKET_COOLDOWN_SLOW};
 }
 
+void UpdateDrawSeedPackets()
+{
+    UpdateSeedPackets();
+    DrawSeedPackets();
+}
+
 void UpdateSeedPackets()
 {
     for (int i = 0; i < SEEDPACKET_COUNT; i++) {
