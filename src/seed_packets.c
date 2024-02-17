@@ -10,7 +10,7 @@ const Vector2 SEEDPACKET_SIZE = {40, 50};
 void CreateSeedPackets()
 {
     // Implementation detail, the shovel is also a seedpacket. It just works.
-    // TODO: get rid of hardcoded positions
+    // TODO: get rid of hardcoded positions (set the other settings first, then loop over to set positions.)
     seedPackets[0] = (SeedPacket){ PT_NONE, (Vector2){100, 10}, 0};
     seedPackets[1] = (SeedPacket){ PT_SUNFLOWER, (Vector2){100 + SEEDPACKET_SIZE.x + 8, 10}, SUN_VALUE*2, 0, SEEDPACKET_COOLDOWN_FAST};
     seedPackets[2] = (SeedPacket){ PT_PSHOOTER, (Vector2){100 + SEEDPACKET_SIZE.x*2 + 8*2, 10}, SUN_VALUE*4, 0, SEEDPACKET_COOLDOWN_FAST};

@@ -140,3 +140,10 @@ was getting quite big at 700 lines, and I have to keep jumping from the bottom t
 efficient and enjoyable, I'll probably have to learn about using tabs in vim, so I can switch between my working files fairly quickly. I've just tried
 to split up the files logically, so if some of the code inside of game.c gets quite big, I pulled it off into a seperate file. For the smaller things,
 they can probably stay in game.c. It's good to look at other people's code and see how they're seperated the files.
+
+
+17/02/2024
+
+(Note: I spent 51 minutes working on the theme song, I haven't added this to the time below, though.)
+
+

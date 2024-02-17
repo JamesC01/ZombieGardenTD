@@ -12,3 +12,7 @@ Make a B section to music, add more transitional elements, and make drums quiete
 drum parts less busy.
 
 Make zombies groan more often, maybe multiple at the same time.
+
+Consider making zombie waves happen based on the number of zombies killed, rather than a time.
+
+Consider making the game infinite, since I don't plan on adding levels.
