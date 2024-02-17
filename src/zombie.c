@@ -13,7 +13,7 @@ int currentZombieSpawnRate = 60*20;
 int zombieSpawnCooldown = 60*30;
 int zombieGrowlCooldown = 60*2;
 
-void UpdateDrawZombies()
+void UpdateDrawZombies(void)
 {
     // Spawn zombies
     zombieSpawnCooldown--;

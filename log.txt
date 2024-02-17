@@ -146,4 +146,9 @@ they can probably stay in game.c. It's good to look at other people's code and s
 
 (Note: I spent 51 minutes working on the theme song, I haven't added this to the time below, though.)
 
-
+I spent around 1 hour today (exluding the music). Not a very productive day, but I reorganized the project a bit more, gaves zombies shadows and improved
+their positioning a bit (like I did with plants last time), I changed the rate that the zombies groan/growl. With the restructure, it's getting a bit harder
+to think about the code, since it's all in seperate files, but when I know exactly what I want to change, it's nicer to be able to go to that specific file.
+For example, if I know that I want to do some debugging/tweaks to the zombies, I can just easily go to their file, and tweak the values. Previously, their
+variables and code were scattered all over the game.c file. I haven't made a seperate file for some things, or even seperate functions, because there isn't
+much code.

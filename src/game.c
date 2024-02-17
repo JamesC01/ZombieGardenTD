@@ -12,6 +12,8 @@
 #include "seed_packets.h"
 #include "zombie.h"
 
+void UpdateDrawProjectiles(void);
+
 
 int main(void)
 {
@@ -115,18 +117,6 @@ int main(void)
 
         UpdateDrawPlants();
 
-        // Update and draw Projectiles
-        for (int i = 0; i < MAX_PROJ; i++) {
-            if (projectiles[i].active) {
-                projectiles[i].pos.x += 5;
-                DrawTextureCentered(smallShadowSprite, Vector2Add(projectiles[i].pos, (Vector2){0, 42}), Vector2Zero(), WHITE);
-                DrawTextureV(peaSprite, projectiles[i].pos, WHITE);
-
-                if (projectiles[i].pos.x > 640) {
-                    projectiles[i].active = false;
-                }
-            }
-        }
 
 
         // Draw top bar
@@ -141,6 +131,8 @@ int main(void)
         UpdateDrawParticles();
         UpdateDrawSeedPackets();
         UpdateDrawZombies();
+
+        UpdateDrawProjectiles();
         
         // Spawn suns
         sunCooldown--;
@@ -195,4 +187,19 @@ int main(void)
     CloseWindow();
 
     return 0;
+}
+
+void UpdateDrawProjectiles(void)
+{
+    for (int i = 0; i < MAX_PROJ; i++) {
+        if (projectiles[i].active) {
+            projectiles[i].pos.x += 5;
+            DrawTextureCentered(smallShadowSprite, Vector2Add(projectiles[i].pos, (Vector2){0, 42}), Vector2Zero(), WHITE);
+            DrawTextureV(peaSprite, projectiles[i].pos, WHITE);
+
+            if (projectiles[i].pos.x > 640) {
+                projectiles[i].active = false;
+            }
+        }
+    }
 }

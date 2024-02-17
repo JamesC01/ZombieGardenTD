@@ -25,7 +25,7 @@ void CreateParticleExplosion(Vector2 pos, Vector2 size, int maxSpeed, int lifeti
     }
 }
 
-void UpdateDrawParticles()
+void UpdateDrawParticles(void)
 {
     for (int i = 0; i < MAX_PARTICLES; i++) {
         if (particles[i].active) {
