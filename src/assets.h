@@ -30,5 +30,6 @@ extern Sound sunAppearSound;
 extern Music themeSong;
 
 void LoadAssets();
+void UnloadAssets();
 
 #endif

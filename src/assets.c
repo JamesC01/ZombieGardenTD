@@ -57,3 +57,34 @@ void LoadAssets()
         zombieGrowlSounds[i] = LoadSound(path);
     }
 }
+
+void UnloadAssets()
+{
+    UnloadTexture(seedPacketSprite);
+    UnloadTexture(lawnBackgroundSprite );
+    UnloadTexture(pShooterSprite);
+    UnloadTexture(peaSprite);
+    UnloadTexture(sunSprite);
+    UnloadTexture(shovelSprite);
+    UnloadTexture(sunflowerSprite);
+    UnloadTexture(wallnutSprite);
+    UnloadTexture(cherrySprite);
+    UnloadTexture(zombieSprite);
+    UnloadTexture(shadowSprite);
+    UnloadTexture(smallShadowSprite);
+
+    UnloadMusicStream(themeSong);
+
+
+    UnloadSound(peaShootSound);
+    UnloadSound(popSound);
+    UnloadSound(sunAppearSound);
+
+    for (int i = 0; i < ZOMBIE_HIT_SOUND_COUNT; i++) {
+        UnloadSound(zombieHitSounds[i]);
+    }
+
+    for (int i = 0; i < ZOMBIE_GROWL_SOUND_COUNT; i++) {
+        UnloadSound(zombieGrowlSounds[i]);
+    }
+}

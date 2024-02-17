@@ -320,8 +320,8 @@ int main(void)
 
     }
 
-    // TODO: Properly unload assets
-
+    UnloadAssets();
+    CloseAudioDevice();
     CloseWindow();
 
     return 0;
@@ -402,8 +402,6 @@ void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
             p->cooldown = plantCooldownLUT[PT_PSHOOTER];
             if (nextProjectile == MAX_PROJ) {
                 nextProjectile = 0;
-
-
             }
 
             Vector2 peaSpawnPos = Vector2Add(screenPos, (Vector2){18, -42});
