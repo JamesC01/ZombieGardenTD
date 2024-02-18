@@ -6,12 +6,21 @@
 #include <raymath.h>
 #include "particles.h"
 
+//#define ZOMBIE_DEBUG
+
 Zombie zombies[MAX_ZOMBIES] = {0};
 int nextZombie = 0;
 
 int currentZombieSpawnRate = 60*20;
+
+#ifdef ZOMBIE_DEBUG
+int zombieSpawnCooldown = 0;
+#else
 int zombieSpawnCooldown = 60*30;
+#endif
+
 int zombieGrowlCooldown = 60*2;
+int lastZombieGrowlIndex = -1;
 
 void UpdateDrawZombies(void)
 {
@@ -19,7 +28,11 @@ void UpdateDrawZombies(void)
     zombieSpawnCooldown--;
     if (zombieSpawnCooldown <= 0) {
         zombieSpawnCooldown = currentZombieSpawnRate;
+#ifdef ZOMBIE_DEBUG
+        float xSpawn = 8;
+#else
         float xSpawn = GetRandomValue(12, 14) + rand()/(float)RAND_MAX;
+#endif
         // TODO: use constant for getrandom value max
         Vector2 gridPos = {xSpawn, GetRandomValue(0, 4)};
 
@@ -40,7 +53,13 @@ void UpdateDrawZombies(void)
     for (int i = 0; i < MAX_ZOMBIES; i++) {
         if (zombies[i].active) {
             if (zombieGrowlCooldown < 0) {
-                PlaySound(zombieGrowlSounds[GetRandomValue(0, ZOMBIE_GROWL_SOUND_COUNT-1)]);
+                int random;
+                do {
+                    random = GetRandomValue(0, ZOMBIE_GROWL_SOUND_COUNT-1);
+                } while (random == lastZombieGrowlIndex);
+                lastZombieGrowlIndex = random;
+                SetSoundPitch(zombieGrowlSounds[random], GetRandomValue(0.9f, 1.1f));
+                PlaySound(zombieGrowlSounds[random]);
                 // One in five chance that the cooldown will be shorter, else, it should be longer
                 if (GetRandomValue(0, 4)) {
                     zombieGrowlCooldown = GetRandomValue(30, 60*5);
@@ -67,7 +86,7 @@ void UpdateDrawZombies(void)
 
             int x = gridDrawOffset.x + zombies[i].gridPos.x*gridCellSize.x;
             int y = gridDrawOffset.y + zombies[i].gridPos.y*gridCellSize.y;
-            Rectangle box = {x-8, y-16, (float)zombieSprite.width/2, zombieSprite.height};
+            Rectangle box = {x-16, y-16, (float)zombieSprite.width/2, zombieSprite.height};
 
             for (int j = 0; j < MAX_PROJ; j++) {
                 if (projectiles[j].active) {

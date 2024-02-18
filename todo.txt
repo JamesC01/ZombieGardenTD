@@ -10,4 +10,5 @@ Consider making zombie waves happen based on the number of zombies killed, rathe
 
 Consider making the game infinite, since I don't plan on adding levels.
 
-Make peas go behind zombies, or hit the zombie earlier
+Consider making a properly float random function (it's not necessary, but I got stuck on it, so it
+could be a good challenge.)

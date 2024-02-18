@@ -1,5 +1,6 @@
 #include "globals.h"
 #include "assets.h"
+#include <stdlib.h>
 
 Plant gardenGrid[GRID_WIDTH][GRID_HEIGHT] = {0};
 Vector2 gridDrawOffset = {40, 80};

@@ -20,6 +20,7 @@ int main(void)
     const int screenWidth = 640;
     const int screenHeight = 480;
 
+
     InitWindow(screenWidth, screenHeight, "Plants Vs Zombies Clone");
 
     InitAudioDevice();
@@ -128,11 +129,11 @@ int main(void)
         Vector2 trayEnd = {trayStart.x+8*SEEDPACKET_SIZE.x+margin, seedPackets[0].origin.y+SEEDPACKET_SIZE.y};
         DrawRectangleV(trayStart, trayEnd, (Color){46, 40, 34, 255});
 
+        UpdateDrawProjectiles();
         UpdateDrawParticles();
         UpdateDrawSeedPackets();
         UpdateDrawZombies();
 
-        UpdateDrawProjectiles();
         
         // Spawn suns
         sunCooldown--;
