@@ -33,22 +33,12 @@ int main(void)
     SetMusicVolume(themeSong, 0.5f);
     PlayMusicStream(themeSong);
 
-    int fps = 60;
     int frameCount = 0;
     bool waveStarted = false;
 
     while (!WindowShouldClose()) {
 
         UpdateMusicStream(themeSong);
-
-        if (IsKeyPressed(KEY_UP)) {
-            fps += 60;
-            SetTargetFPS(fps);
-        }
-        else if (IsKeyPressed(KEY_DOWN)) {
-            fps = 60;
-            SetTargetFPS(fps);
-        }
 
         // Control zombie spawn rate during waves
         int seconds = frameCount/60;
@@ -192,6 +182,7 @@ int main(void)
 
 void UpdateDrawProjectiles(void)
 {
+    // Collision behaviour is done inside zombie update
     for (int i = 0; i < MAX_PROJ; i++) {
         if (projectiles[i].active) {
             projectiles[i].pos.x += 5;

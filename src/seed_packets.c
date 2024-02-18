@@ -10,12 +10,17 @@ const Vector2 SEEDPACKET_SIZE = {40, 50};
 void CreateSeedPackets()
 {
     // Implementation detail, the shovel is also a seedpacket. It just works.
-    // TODO: get rid of hardcoded positions (set the other settings first, then loop over to set positions.)
-    seedPackets[0] = (SeedPacket){ PT_NONE, (Vector2){100, 10}, 0};
-    seedPackets[1] = (SeedPacket){ PT_SUNFLOWER, (Vector2){100 + SEEDPACKET_SIZE.x + 8, 10}, SUN_VALUE*2, 0, SEEDPACKET_COOLDOWN_FAST};
-    seedPackets[2] = (SeedPacket){ PT_PSHOOTER, (Vector2){100 + SEEDPACKET_SIZE.x*2 + 8*2, 10}, SUN_VALUE*4, 0, SEEDPACKET_COOLDOWN_FAST};
-    seedPackets[3] = (SeedPacket){ PT_WALLNUT, (Vector2){100 + SEEDPACKET_SIZE.x*3 + 8*3, 10}, SUN_VALUE*2, 0, SEEDPACKET_COOLDOWN_SLOW};
-    seedPackets[4] = (SeedPacket){ PT_CHERRYBOMB, (Vector2){100 + SEEDPACKET_SIZE.x*4 + 8*4, 10}, SUN_VALUE*6, 0, SEEDPACKET_COOLDOWN_SLOW};
+    seedPackets[0] = (SeedPacket){ PT_NONE, Vector2Zero(), 0};
+    seedPackets[1] = (SeedPacket){ PT_SUNFLOWER, Vector2Zero(), SUN_VALUE*2, 0, SEEDPACKET_COOLDOWN_FAST};
+    seedPackets[2] = (SeedPacket){ PT_PSHOOTER, Vector2Zero(), SUN_VALUE*4, 0, SEEDPACKET_COOLDOWN_FAST};
+    seedPackets[3] = (SeedPacket){ PT_WALLNUT, Vector2Zero(), SUN_VALUE*2, 0, SEEDPACKET_COOLDOWN_SLOW};
+    seedPackets[4] = (SeedPacket){ PT_CHERRYBOMB, Vector2Zero(), SUN_VALUE*6, 0, SEEDPACKET_COOLDOWN_SLOW};
+
+    const int spacing = 8;
+    const int leftEdge = 100;
+    for (int i = 0; i < SEEDPACKET_COUNT; i++) {
+        seedPackets[i].origin = (Vector2){leftEdge + SEEDPACKET_SIZE.x*i + spacing*i, 10};
+    }
 }
 
 void UpdateDrawSeedPackets()
@@ -47,18 +52,20 @@ void UpdateSeedPackets()
 
                 if (x >= 0 && y >= 0
                         && x < 9 && y < 5) {
-                    // TODO: put gardengrid(x, y) into a variable
-                    if (gardenGrid[(int)x][(int)y].type == PT_NONE) {
-                        gardenGrid[(int)x][(int)y].type = seedPackets[i].type;
-                        gardenGrid[(int)x][(int)y].cooldown = plantCooldownLUT[seedPackets[i].type];
-                        gardenGrid[(int)x][(int)y].health = plantHealthLUT[seedPackets[i].type];
+
+                    Plant* plant = &gardenGrid[(int)x][(int)y];
+                    // Grid spot is empty
+                    if (plant->type == PT_NONE) {
+                        plant->type = seedPackets[i].type;
+                        plant->cooldown = plantCooldownLUT[seedPackets[i].type];
+                        plant->health = plantHealthLUT[seedPackets[i].type];
                         sunsCollectedCount -= seedPackets[i].cost;
                         if (seedPackets[i].type != PT_NONE) {
                             // TODO: consider making a lookup table where the PlantType is the index
                             seedPackets[i].buyCooldown = seedPackets[i].buyCooldownMax;
                         }
                     } else if (seedPackets[i].type == PT_NONE) {
-                        gardenGrid[(int)x][(int)y].type = PT_NONE;
+                        plant->type = PT_NONE;
                     }
                 }
             }

@@ -6,14 +6,14 @@
 #include <raymath.h>
 #include "particles.h"
 
-//#define ZOMBIE_DEBUG
+#define ZOMBIE_DEBUG false
 
 Zombie zombies[MAX_ZOMBIES] = {0};
 int nextZombie = 0;
 
 int currentZombieSpawnRate = 60*20;
 
-#ifdef ZOMBIE_DEBUG
+#if ZOMBIE_DEBUG
 int zombieSpawnCooldown = 0;
 #else
 int zombieSpawnCooldown = 60*30;
@@ -28,7 +28,7 @@ void UpdateDrawZombies(void)
     zombieSpawnCooldown--;
     if (zombieSpawnCooldown <= 0) {
         zombieSpawnCooldown = currentZombieSpawnRate;
-#ifdef ZOMBIE_DEBUG
+#if ZOMBIE_DEBUG
         float xSpawn = 8;
 #else
         float xSpawn = GetRandomValue(12, 14) + rand()/(float)RAND_MAX;
@@ -51,14 +51,16 @@ void UpdateDrawZombies(void)
     // Update and draw zombies
     zombieGrowlCooldown--;
     for (int i = 0; i < MAX_ZOMBIES; i++) {
-        if (zombies[i].active) {
+        Zombie* zombie = &zombies[i];
+        if (zombie->active) {
+            // Growl
             if (zombieGrowlCooldown < 0) {
                 int random;
                 do {
                     random = GetRandomValue(0, ZOMBIE_GROWL_SOUND_COUNT-1);
                 } while (random == lastZombieGrowlIndex);
                 lastZombieGrowlIndex = random;
-                SetSoundPitch(zombieGrowlSounds[random], GetRandomValue(0.9f, 1.1f));
+                // TODO: Randomise pitch. Will need to make a good random float function
                 PlaySound(zombieGrowlSounds[random]);
                 // One in five chance that the cooldown will be shorter, else, it should be longer
                 if (GetRandomValue(0, 4)) {
@@ -68,26 +70,28 @@ void UpdateDrawZombies(void)
                 }
             }
 
+            // Move and eat plants
+            float moveAmount = 0.002f;
 
             if (zombies[i].gridPos.x > 0 && zombies[i].gridPos.x < GRID_WIDTH) {
                 int frontOfZombieRounded = (int)roundf(zombies[i].gridPos.x)-1;
-                if (gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y].type != PT_NONE) {
-                    gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y].health -= 0.5f;
-                    // TODO: Play eating sounds
-                } else {
-                    // TODO: get rid of this duplicate code. Either with a constant or by restructuring these statements.
-                    zombies[i].gridPos.x -= 0.002f;
-                }
+                Plant* p = &gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y];
 
-            } else {
-                zombies[i].gridPos.x -= 0.002f;
+                if (p->type != PT_NONE) {
+                    p->health -= 0.5f;
+                    moveAmount = 0;
+                    // TODO: Play eating sounds
+                }
             }
+
+            zombies[i].gridPos.x -= moveAmount;
 
 
             int x = gridDrawOffset.x + zombies[i].gridPos.x*gridCellSize.x;
             int y = gridDrawOffset.y + zombies[i].gridPos.y*gridCellSize.y;
             Rectangle box = {x-16, y-16, (float)zombieSprite.width/2, zombieSprite.height};
 
+            // Handle collisions with projectiles
             for (int j = 0; j < MAX_PROJ; j++) {
                 if (projectiles[j].active) {
                     if (CheckCollisionPointRec(projectiles[j].pos, box)) {
@@ -104,11 +108,10 @@ void UpdateDrawZombies(void)
                 zombies[i].active = false;
             }
 
+            // Draw
             Vector2 drawPos = {x, y+gridCellSize.y*0.75f};
-
-            DrawTextureCentered(shadowSprite, drawPos, SHADOW_ORIGIN, WHITE);
-
             Vector2 origin = {(float)zombieSprite.width*0.75f, zombieSprite.height-4};
+            DrawTextureCentered(shadowSprite, drawPos, SHADOW_ORIGIN, WHITE);
             DrawTextureCentered(zombieSprite, drawPos, origin, WHITE);
 
             // Zombie collider debug

@@ -95,7 +95,7 @@ void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
     }
 
     Vector2 origin = {(float)wallnutSprite.width/2, wallnutSprite.height-4};
-    DrawTextureCentered(wallnutSprite, screenPos, origin, WHITE);
+    DrawTextureCentered(wallnutSprite, screenPos, origin, RED);
 }
 
 
