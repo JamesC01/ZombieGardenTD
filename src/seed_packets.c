@@ -61,7 +61,6 @@ void UpdateSeedPackets()
                         plant->health = plantHealthLUT[seedPackets[i].type];
                         sunsCollectedCount -= seedPackets[i].cost;
                         if (seedPackets[i].type != PT_NONE) {
-                            // TODO: consider making a lookup table where the PlantType is the index
                             seedPackets[i].buyCooldown = seedPackets[i].buyCooldownMax;
                         }
                     } else if (seedPackets[i].type == PT_NONE) {
