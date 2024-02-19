@@ -83,6 +83,7 @@ int main(void)
                 UpdateDrawGame();
                 break;
             case GAME_SCREEN_GAMEOVER:
+                UpdateDrawGameOver();
                 break;
             case GAME_SCREEN_EXIT:
                 shouldClose = true;

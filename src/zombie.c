@@ -118,18 +118,21 @@ void UpdateDrawZombies(void)
 
             if (zombies[i].gridPos.x > 0 && zombies[i].gridPos.x < GRID_WIDTH) {
                 int frontOfZombieRounded = (int)roundf(zombies[i].gridPos.x)-1;
-                Plant* p = &gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y];
+                if (frontOfZombieRounded > 0) {
+                    Plant* p = &gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y];
 
-                if (p->type != PT_NONE) {
-                    p->health -= 0.5f;
-                    moveAmount = 0;
-                    // TODO: Play eating sounds
+                    if (p->type != PT_NONE) {
+                        p->health -= 0.5f;
+                        moveAmount = 0;
+                        printf("eating\n");
+                        // TODO: Play eating sounds
+                    }
                 }
             }
 
             zombies[i].gridPos.x -= moveAmount;
 
-            if (zombies[i].gridPos.x <= -2) {
+            if (zombies[i].gridPos.x <= -1) {
                 GameOver();
             }
 

@@ -21,3 +21,6 @@ particles and play some nice rain sounds (maybe do some sound design with white 
 Implement a way to game over (zombies reach the left side of screen)
 
 Fix zombies being clustered together during waves
+
+
+Fix zombie positioning (it seems like it's accessing stuff outside of array)
