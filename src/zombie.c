@@ -8,7 +8,7 @@
 #include "particles.h"
 #include "game.h"
 
-#define ZOMBIE_DEBUG true
+#define ZOMBIE_DEBUG false
 
 Zombie zombies[MAX_ZOMBIES] = {0};
 int nextZombie = 0;
@@ -20,6 +20,8 @@ int zombieSpawnTimer;
 
 int zombieGrowlTimer;
 int lastZombieGrowlIndex = -1;
+
+int lastZombieSpawnYIndex = -1;
 
 // Wave variables
 bool waveStarted;
@@ -77,7 +79,9 @@ void UpdateDrawZombies(void)
         float xSpawn = GetRandomValue(10, 11) + rand()/(float)RAND_MAX;
 #endif
         // TODO: use constant for getrandom value max
-        Vector2 gridPos = {xSpawn, GetRandomValue(0, 4)};
+        float ySpawn = GetUniqueRandomValue(lastZombieSpawnYIndex, 0, 4);
+        lastZombieSpawnYIndex = ySpawn;
+        Vector2 gridPos = {xSpawn, ySpawn};
 
         // TODO: This is a duplicate of the sun spawning code. Consider refactoring.
         if (nextZombie == MAX_ZOMBIES) {
@@ -98,10 +102,7 @@ void UpdateDrawZombies(void)
         if (zombie->active) {
             // Growl
             if (zombieGrowlTimer < 0) {
-                int random;
-                do {
-                    random = GetRandomValue(0, ZOMBIE_GROWL_SOUND_COUNT-1);
-                } while (random == lastZombieGrowlIndex);
+                int random = GetUniqueRandomValue(lastZombieGrowlIndex, 0, ZOMBIE_GROWL_SOUND_COUNT-1);
                 lastZombieGrowlIndex = random;
                 // TODO: Randomise pitch. Will need to make a good random float function
                 PlaySound(zombieGrowlSounds[random]);
@@ -124,7 +125,6 @@ void UpdateDrawZombies(void)
                     if (p->type != PT_NONE) {
                         p->health -= 0.5f;
                         moveAmount = 0;
-                        printf("eating\n");
                         // TODO: Play eating sounds
                     }
                 }

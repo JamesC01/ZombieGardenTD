@@ -18,6 +18,15 @@ int sunsCollectedCount = SUN_VALUE*2; // in PvZ, you start out with enough sun t
 Projectile projectiles[MAX_PROJ] = {0};
 int nextProjectile = 0;
 
+int GetUniqueRandomValue(int exludedValue, int min, int max)
+{
+    int random;
+    do {
+        random = GetRandomValue(min, max);
+    } while (random == exludedValue);
+
+    return random;
+}
 
 void SpawnSun(Vector2 pos)
 {

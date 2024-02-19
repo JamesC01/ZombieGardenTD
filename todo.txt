@@ -23,4 +23,4 @@ Implement a way to game over (zombies reach the left side of screen)
 Fix zombies being clustered together during waves
 
 
-Fix zombie positioning (it seems like it's accessing stuff outside of array)
+Add a framerate limit remover key for debugging to speed up gameplay to the fastest possible
