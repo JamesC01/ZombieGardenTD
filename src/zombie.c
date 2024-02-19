@@ -1,5 +1,6 @@
 #include "zombie.h"
 #include <raylib.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include "assets.h"
 #include "globals.h"
@@ -11,39 +12,64 @@
 Zombie zombies[MAX_ZOMBIES] = {0};
 int nextZombie = 0;
 
+const int defaultZombieSpawnRate = 60 * 20;
+
 int currentZombieSpawnRate;
+int zombieSpawnTimer;
 
-int zombieSpawnCooldown;
-int zombieSpawnCooldown;
-
-int zombieGrowlCooldown;
+int zombieGrowlTimer;
 int lastZombieGrowlIndex = -1;
+
+// Wave variables
+bool waveStarted;
+int waveTimer;
+int killsRequiredForNextWave;
+int currentKillsRequiredForNextWave;
+
+int zombiesKilledCount;
+
+
+void ZombieKilled(void);
 
 void InitZombies(void)
 {
+    waveTimer = 0;
+    waveStarted = false;
+    killsRequiredForNextWave = 5;
+    currentKillsRequiredForNextWave = killsRequiredForNextWave;
+    zombiesKilledCount = 0;
+
     // Init zombies array
     for (int i = 0; i < MAX_ZOMBIES; i++) {
         zombies[i].active = false;
     }
     nextZombie = 0;
 
-    currentZombieSpawnRate = 60*20;
+    currentZombieSpawnRate = defaultZombieSpawnRate;
 
 #if ZOMBIE_DEBUG
     zombieSpawnCooldown = 0;
 #else
-    zombieSpawnCooldown = 60*30;
+    zombieSpawnTimer = 60*30;
 #endif
 
-    zombieGrowlCooldown = 60*2;
+    zombieGrowlTimer = 60*2;
 }
 
 void UpdateDrawZombies(void)
 {
+    // Tick wave timer
+    waveTimer--;
+    if (waveTimer <= 0) {
+        waveStarted = false;
+        currentZombieSpawnRate = defaultZombieSpawnRate;
+    }
+
     // Spawn zombies
-    zombieSpawnCooldown--;
-    if (zombieSpawnCooldown <= 0) {
-        zombieSpawnCooldown = currentZombieSpawnRate;
+    zombieSpawnTimer--;
+    if (zombieSpawnTimer <= 0) {
+        zombieSpawnTimer = currentZombieSpawnRate;
+
 #if ZOMBIE_DEBUG
         float xSpawn = 8;
 #else
@@ -65,12 +91,12 @@ void UpdateDrawZombies(void)
     }
 
     // Update and draw zombies
-    zombieGrowlCooldown--;
+    zombieGrowlTimer--;
     for (int i = 0; i < MAX_ZOMBIES; i++) {
         Zombie* zombie = &zombies[i];
         if (zombie->active) {
             // Growl
-            if (zombieGrowlCooldown < 0) {
+            if (zombieGrowlTimer < 0) {
                 int random;
                 do {
                     random = GetRandomValue(0, ZOMBIE_GROWL_SOUND_COUNT-1);
@@ -80,9 +106,9 @@ void UpdateDrawZombies(void)
                 PlaySound(zombieGrowlSounds[random]);
                 // One in five chance that the cooldown will be shorter, else, it should be longer
                 if (GetRandomValue(0, 4)) {
-                    zombieGrowlCooldown = GetRandomValue(30, 60*5);
+                    zombieGrowlTimer = GetRandomValue(30, 60*5);
                 } else {
-                    zombieGrowlCooldown = GetRandomValue(60*5, 60*15);
+                    zombieGrowlTimer = GetRandomValue(60*5, 60*15);
                 }
             }
 
@@ -122,6 +148,7 @@ void UpdateDrawZombies(void)
 
             if (zombies[i].health <= 0) {
                 zombies[i].active = false;
+                ZombieKilled();
             }
 
             // Draw
@@ -134,4 +161,33 @@ void UpdateDrawZombies(void)
             //DrawRectangleRec(box, (Color){100, 100, 255, 100});
         }
     }
+}
+
+void ZombieKilled(void)
+{
+    zombiesKilledCount++;
+
+    if (!waveStarted) {
+        currentKillsRequiredForNextWave--;
+
+        // Start wave
+        if (currentKillsRequiredForNextWave <= 0) {
+            printf("Wave started!\n");
+            waveStarted = true;
+
+            zombieSpawnTimer = 0;
+            // TODO: Consider varying wave size as game goes on
+            currentZombieSpawnRate = 60 * 3;
+            waveTimer = 60 * 30;
+
+            int zombiesThisWave = waveTimer/currentZombieSpawnRate;
+
+            // You have to kill *all* the zombies this wave, plus the ever increasing count required for the next wave
+            // TODO: consider changing this to make it easier to understand
+            killsRequiredForNextWave += 5;
+            currentKillsRequiredForNextWave = zombiesThisWave + killsRequiredForNextWave;
+
+        }
+    }
+
 }

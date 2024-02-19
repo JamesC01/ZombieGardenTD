@@ -38,14 +38,9 @@ int main(void)
 
     InitializeGame();
 
-    bool waveStarted = false; // TODO: restart this when game starts if this is still used once infinite waves are done
     bool playingMusic = false; // TODO: should be true by default
 
     while (!WindowShouldClose()) {
-
-        if (playingMusic) {
-            UpdateMusicStream(themeSong);
-        }
 
         if (IsKeyPressed(KEY_M)) {
             playingMusic = !playingMusic;
@@ -55,34 +50,9 @@ int main(void)
             InitializeGame();
         }
 
-        // Control zombie spawn rate during waves
-        int seconds = frameCount/60;
-        switch (seconds) {
-            case 120:
-                if (!waveStarted) {
-                    waveStarted = true;
-                    currentZombieSpawnRate = 60*3;
-                    zombieSpawnCooldown = 0;
-                }
-                break;
-            case 120+30:
-                currentZombieSpawnRate = 60*20;
-                waveStarted = false;
-                break;
-
-            case 240:
-                if (!waveStarted) {
-                    waveStarted = true;
-                    currentZombieSpawnRate = 60*2;
-                    zombieSpawnCooldown = 0;
-                }
-                break;
-            case 240+30:
-                currentZombieSpawnRate = 60*20;
-                waveStarted = false;
-                break;
+        if (playingMusic) {
+            UpdateMusicStream(themeSong);
         }
-
 
         BeginDrawing();
 
@@ -220,7 +190,6 @@ void InitializeGame(void)
 
     SeekMusicStream(themeSong, 0);
 
-    frameCount = 0;
 }
 
 void UpdateDrawProjectiles(void)

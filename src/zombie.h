@@ -14,8 +14,8 @@ extern Zombie zombies[MAX_ZOMBIES];
 extern int nextZombie;
 
 extern int currentZombieSpawnRate;
-extern int zombieSpawnCooldown;
-extern int zombieGrowlCooldown;
+extern int zombieSpawnTimer;
+extern int zombieGrowlTimer;
 
 void InitZombies(void);
 void UpdateDrawZombies(void);

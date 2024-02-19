@@ -18,6 +18,7 @@ int sunsCollectedCount = SUN_VALUE*2; // in PvZ, you start out with enough sun t
 Projectile projectiles[MAX_PROJ] = {0};
 int nextProjectile = 0;
 
+
 void SpawnSun(Vector2 pos)
 {
     if (nextSun == MAX_SUNS) {
