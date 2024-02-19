@@ -176,4 +176,51 @@ mostly it. Not massively productive, but I wasted quite a bit of time on the ran
 
 19/02/2024
 
-I spent 2 hours 47 minutes today, and got a decent bit done!
+I spent 2 hours 47 minutes today, and got a decent bit done! I added a music toggle (since I wanted to listen to music while working on the game.) I added
+an game init function to allow me to restart the game without actually exiting to the program. I implemented simple infinite waves. I changed the grid cell
+size, which surprisingly didn't really cause any issues (apart from one small tweak I had to make to the peashooter.) The grid now takes up the majority
+of the screen, like it does in the real plants vs zombies. I implemented a game over and start screen, and made it so game over happens when the zombie goes
+off the left edge of the screen. I encountered another funny bug where the zombie was accessing index -1 while eating the plant, and it was actually accessing
+the y position of one of the seed packets, so the cherry bomb seed packet started flying off screen when the zombie got to the edge! I also implemented a unique
+random function, where you can pass it a value to exlude, to get a unique value each time, which helps with spreading the zombies out along the rows. I think it
+might be a good idea to only use it during waves, though, since it's kind of fun when two zombies are in the same row occasionally. And when they're spawning
+slowly, it's fairly rare, so I might change it. I also added a frame limit toggle, and got rid of the old method of speeding up in increments. Now I can just
+toggle between targetting 60 fps and max fps. Finally I removed the default exit key (ESCAPE), because I wanted to use it for returning to the start screen.
+
+Overall, I got quite a bit done, and had a great fun time. It's so surprinsing how enjoyable the 19 hours and 17 minutes of working on this project have been.
+Going in with the mentality of having fun really helps. And I made sure not to get obsessed with planning for this, and it has been probably one of the most
+enjoyable programming projects I've worked on. Yesterday I did get a bit annoyed because I couldn't implement a certain function, so I need to make sure I never
+slip into that mentality again, though. But for basically 99% of the project, it has been great fun! It's very enjoyable not having this high pressure mentality
+of having to make a "good" game, and to just enjoy the programming side of things. It's got me to do a bit of (albeit pretty bad) pixel art, and I had a great
+time making the theme song, which I'll probably continue tweaking.
+
+I've learned that I love the approach to programming where you avoid premature abstraction. Casey Muratori really was right. This project has been fun as hell so
+far. And it's not like this is just some honeymoon phase (not completely, at least), because when I wanted to make a game with C++ a year ago, I had a much worse
+time dealing with the standard library and struggling with the planning on design of classes and stuff like that. I do think C++ has some good stuff, though, so
+I may use it for future projects, for stuff like operator overloading.
+
+This has probably been the most consistent I've ever worked on the project, and the most I've enjoyed working on a project. I really think it is because of the
+lack of worrying about doing things the "right way", like planning everything carefully using object oriented techniques and what not. I'm just writing the code
+that I know will do the things I want it to, and it's working, and I'm loving it. Of course, I may run into something that I really struggle with, but I will make
+sure to avoid that negative mindset. This project really hasn't been challenging, though. It has been a great way to exercise my current skills, and just enjoy
+programming in general, but it hasn't pushed me. That's not a bad thing, though. This was meant to be a side project purely for fun, plus a little bit of experience.
+
+I think it's important to work on the things that you find interesting. Of course, sometimes you should push yourself out of your comfort zone, and ideally making
+the things that interest you will automatically do that. I think if anything, though, the fact that I haven't struggled is a sign that I'm doing things right, probably.
+If I had made this project in Monogame, and had gone with an object-oriented and heavy planning approach, it absolutely would've taken longer, and I probably would've
+run into many problems that weren't really logic related, but problems with the structure of the programming, and how objects interact. The way I've done it here has
+been straight forward, and it has been fun as hell!
+
+For future projects, I think I will try to make something smaller, and explore individual ideas (conways game of life), little coding challenges to push me a bit.
+Pushing myself a bit will be a great exercise in enjoying the process of problem solving and will hopefully teach me to not get angry when I'm stuck. Eventually,
+I would like to make something like a simulation game. Nothing big, but something similar to the original simcity, but maybe a bit cut down. That would likely be
+challenging, but also enjoyable.
+
+I would like to also get back with Godot, and try some of these ideas, at least a bit, the idea of avoiding premature abstraction, and hopefully reprogram the way I
+respond to godot. I've developed such a negative mentality to the engine, when it doesn't do things the way I want, and I want to get over it. Because if I want to
+make 3D games, godot is very nice, and plenty of people I respect have managed to make cool stuff with it, so I really just need to learn to stop getting mad when
+I get stuck, and learn that programming isn't always "clean". Sometimes the solution is a bit dirty, but what matters is you found a solution. Just make stuff.
+
+Of course, for these C projects, they are much more programming-oriented, since they're done to enjoy coding, rather than to focus on making a game.
+
+I've still got more planned for this project, and will keep working on it until I get bored of it, or feel that it's complete.
