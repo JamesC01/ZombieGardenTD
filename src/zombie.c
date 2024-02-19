@@ -8,7 +8,7 @@
 #include "particles.h"
 #include "game.h"
 
-#define ZOMBIE_DEBUG false
+#define ZOMBIE_DEBUG true
 
 Zombie zombies[MAX_ZOMBIES] = {0};
 int nextZombie = 0;
@@ -119,7 +119,7 @@ void UpdateDrawZombies(void)
 
             if (zombies[i].gridPos.x > 0 && zombies[i].gridPos.x < GRID_WIDTH) {
                 int frontOfZombieRounded = (int)roundf(zombies[i].gridPos.x)-1;
-                if (frontOfZombieRounded > 0) {
+                if (frontOfZombieRounded >= 0) {
                     Plant* p = &gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y];
 
                     if (p->type != PT_NONE) {

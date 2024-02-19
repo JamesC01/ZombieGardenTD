@@ -6,21 +6,12 @@ older software in-general.
 Make a B section to music, add more transitional elements, and make drums quieter, and make certain
 drum parts less busy.
 
-Consider making zombie waves happen based on the number of zombies killed, rather than a time.
-
-Consider making the game infinite, since I don't plan on adding levels.
-
 Consider making a properly float random function (it's not necessary, but I got stuck on it, so it
 could be a good challenge.)
-
-After implementing a proper infinite gamemode/score, add a start screen and game over screen.
 
 On new game, in a 1 in 5 chance the weather should be rainy. Figure out how to implement some simple rain
 particles and play some nice rain sounds (maybe do some sound design with white noise.)
 
-Implement a way to game over (zombies reach the left side of screen)
-
-Fix zombies being clustered together during waves
-
-
 Add a framerate limit remover key for debugging to speed up gameplay to the fastest possible
+
+Improve zombie waves
