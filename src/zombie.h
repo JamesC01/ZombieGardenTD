@@ -17,6 +17,8 @@ extern int currentZombieSpawnRate;
 extern int zombieSpawnTimer;
 extern int zombieGrowlTimer;
 
+extern int zombiesKilledCount;
+
 void InitZombies(void);
 void UpdateDrawZombies(void);
 

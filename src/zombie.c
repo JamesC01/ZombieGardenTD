@@ -6,8 +6,9 @@
 #include "globals.h"
 #include <raymath.h>
 #include "particles.h"
+#include "game.h"
 
-#define ZOMBIE_DEBUG false
+#define ZOMBIE_DEBUG true
 
 Zombie zombies[MAX_ZOMBIES] = {0};
 int nextZombie = 0;
@@ -71,7 +72,7 @@ void UpdateDrawZombies(void)
         zombieSpawnTimer = currentZombieSpawnRate;
 
 #if ZOMBIE_DEBUG
-        float xSpawn = 8;
+        float xSpawn = 2;
 #else
         float xSpawn = GetRandomValue(10, 11) + rand()/(float)RAND_MAX;
 #endif
@@ -127,6 +128,10 @@ void UpdateDrawZombies(void)
             }
 
             zombies[i].gridPos.x -= moveAmount;
+
+            if (zombies[i].gridPos.x <= -2) {
+                GameOver();
+            }
 
 
             int x = gridDrawOffset.x + zombies[i].gridPos.x*gridCellSize.x;
