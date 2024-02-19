@@ -11,16 +11,32 @@
 Zombie zombies[MAX_ZOMBIES] = {0};
 int nextZombie = 0;
 
-int currentZombieSpawnRate = 60*20;
+int currentZombieSpawnRate;
+
+int zombieSpawnCooldown;
+int zombieSpawnCooldown;
+
+int zombieGrowlCooldown;
+int lastZombieGrowlIndex = -1;
+
+void InitZombies(void)
+{
+    // Init zombies array
+    for (int i = 0; i < MAX_ZOMBIES; i++) {
+        zombies[i].active = false;
+    }
+    nextZombie = 0;
+
+    currentZombieSpawnRate = 60*20;
 
 #if ZOMBIE_DEBUG
-int zombieSpawnCooldown = 0;
+    zombieSpawnCooldown = 0;
 #else
-int zombieSpawnCooldown = 60*30;
+    zombieSpawnCooldown = 60*30;
 #endif
 
-int zombieGrowlCooldown = 60*2;
-int lastZombieGrowlIndex = -1;
+    zombieGrowlCooldown = 60*2;
+}
 
 void UpdateDrawZombies(void)
 {

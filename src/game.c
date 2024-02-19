@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <stdbool.h>
+#include <string.h>
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -12,7 +13,10 @@
 #include "seed_packets.h"
 #include "zombie.h"
 
+int frameCount = 0;
+
 void UpdateDrawProjectiles(void);
+void InitializeGame(void);
 
 
 int main(void)
@@ -28,15 +32,14 @@ int main(void)
     SetTargetFPS(60);
 
     LoadAssets();
-    CreateSeedPackets();
 
     SetMusicVolume(themeSong, 0.5f);
     PlayMusicStream(themeSong);
 
-    int frameCount = 0;
-    bool waveStarted = false;
+    InitializeGame();
 
-    bool playingMusic = true;
+    bool waveStarted = false; // TODO: restart this when game starts if this is still used once infinite waves are done
+    bool playingMusic = false; // TODO: should be true by default
 
     while (!WindowShouldClose()) {
 
@@ -46,6 +49,10 @@ int main(void)
 
         if (IsKeyPressed(KEY_M)) {
             playingMusic = !playingMusic;
+        }
+
+        if (IsKeyPressed(KEY_R)) {
+            InitializeGame();
         }
 
         // Control zombie spawn rate during waves
@@ -186,6 +193,34 @@ int main(void)
     CloseWindow();
 
     return 0;
+}
+
+void InitializeGame(void)
+{
+    CreateSeedPackets();
+
+
+    // Init sun variables
+    // TODO: if the sun code is ever moved out of globals.c, this code should be put in a seperate InitSuns function
+    memset(suns, 0, MAX_SUNS * sizeof(Sun));
+    nextSun = 0;
+
+    sunCooldown = 60;
+    sunsCollectedCount = SUN_VALUE*2; // in PvZ, you start out with enough sun to buy a sunflower
+
+
+    InitZombies();
+
+    // Init plant grid
+    for (int i = 0; i < GRID_WIDTH; i++) {
+        for (int j = 0; j < GRID_HEIGHT; j++) {
+            gardenGrid[i][j].type = PT_NONE;
+        }
+    }
+
+    SeekMusicStream(themeSong, 0);
+
+    frameCount = 0;
 }
 
 void UpdateDrawProjectiles(void)
