@@ -48,7 +48,7 @@ void InitZombies(void)
     currentZombieSpawnRate = defaultZombieSpawnRate;
 
 #if ZOMBIE_DEBUG
-    zombieSpawnCooldown = 0;
+    zombieSpawnTimer = 0;
 #else
     zombieSpawnTimer = 60*30;
 #endif
@@ -73,7 +73,7 @@ void UpdateDrawZombies(void)
 #if ZOMBIE_DEBUG
         float xSpawn = 8;
 #else
-        float xSpawn = GetRandomValue(12, 14) + rand()/(float)RAND_MAX;
+        float xSpawn = GetRandomValue(10, 11) + rand()/(float)RAND_MAX;
 #endif
         // TODO: use constant for getrandom value max
         Vector2 gridPos = {xSpawn, GetRandomValue(0, 4)};

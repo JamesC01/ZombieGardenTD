@@ -4,7 +4,7 @@
 
 Plant gardenGrid[GRID_WIDTH][GRID_HEIGHT] = {0};
 Vector2 gridDrawOffset = {40, 80};
-Vector2 gridCellSize = {55, 70};
+Vector2 gridCellSize = {65, 78};
 
 
 Sun suns[MAX_SUNS] = {0};
