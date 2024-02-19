@@ -47,6 +47,7 @@ int main(void)
     InitAudioDevice();
 
     SetTargetFPS(defaultFps);
+    SetExitKey(KEY_NULL);
 
     LoadAssets();
 
@@ -55,13 +56,13 @@ int main(void)
 
     InitializeGame();
 
-    bool playingMusic = false; // TODO: should be true by default
+    bool playingMusic = true; // TODO: should be true by default
 
 
     bool shouldClose = false;
     while (!WindowShouldClose() && !shouldClose) {
 
-        // Toggle max fps
+        // Toggle frame limiter
         if (IsKeyPressed(KEY_S)) {
             limitFrameRate = !limitFrameRate;
             if (limitFrameRate) {

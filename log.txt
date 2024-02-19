@@ -172,3 +172,8 @@ made a single #define called ZOMBIE_DEBUG, which I can just set to true or false
 
 I also did a decent bit of code cleanup. I finally automated the positioning of the seedpackets, replaced some ugly array accesses with a pointer. That's
 mostly it. Not massively productive, but I wasted quite a bit of time on the random function which I couldn't get working.
+
+
+19/02/2024
+
+I spent 2 hours 47 minutes today, and got a decent bit done!
