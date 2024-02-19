@@ -26,6 +26,8 @@ GameScreen currentScreen = GAME_SCREEN_START;
 const int screenWidth = 640;
 const int screenHeight = 480;
 
+const int defaultFps = 60;
+bool limitFrameRate = true;
 int frameCount = 0;
 
 void UpdateDrawStart(void);
@@ -44,7 +46,7 @@ int main(void)
 
     InitAudioDevice();
 
-    SetTargetFPS(60);
+    SetTargetFPS(defaultFps);
 
     LoadAssets();
 
@@ -59,6 +61,16 @@ int main(void)
     bool shouldClose = false;
     while (!WindowShouldClose() && !shouldClose) {
 
+        // Toggle max fps
+        if (IsKeyPressed(KEY_S)) {
+            limitFrameRate = !limitFrameRate;
+            if (limitFrameRate) {
+                SetTargetFPS(defaultFps);
+            } else {
+                SetTargetFPS(0);
+            }
+        }
+
         if (IsKeyPressed(KEY_M)) {
             playingMusic = !playingMusic;
         }
@@ -68,9 +80,6 @@ int main(void)
             UpdateMusicStream(themeSong);
         }
 
-        if (IsKeyPressed(KEY_R)) {
-            InitializeGame();
-        }
 
         BeginDrawing();
 
@@ -123,7 +132,7 @@ void UpdateDrawGameOver(void)
     DrawBackground();
 
 
-    DrawText("YOU DIED!\n\nGAME OVER :(", 16, 16, 50, WHITE);
+    DrawText("YOU DIED!\n\n\nGAME OVER :(", 16, 16, 50, WHITE);
 
     char killCountText[32];
     sprintf(killCountText, "You killed %i zombies!", zombiesKilledCount);
@@ -138,6 +147,10 @@ void UpdateDrawGameOver(void)
 
 void UpdateDrawGame(void)
 {
+    if (IsKeyPressed(KEY_ESCAPE)) {
+        currentScreen = GAME_SCREEN_START;
+    }
+
     DrawBackground();
 
     // Draw lawn grid

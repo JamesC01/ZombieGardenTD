@@ -8,7 +8,7 @@
 #include "particles.h"
 #include "game.h"
 
-#define ZOMBIE_DEBUG true
+#define ZOMBIE_DEBUG false
 
 Zombie zombies[MAX_ZOMBIES] = {0};
 int nextZombie = 0;
