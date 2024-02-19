@@ -36,9 +36,17 @@ int main(void)
     int frameCount = 0;
     bool waveStarted = false;
 
+    bool playingMusic = true;
+
     while (!WindowShouldClose()) {
 
-        UpdateMusicStream(themeSong);
+        if (playingMusic) {
+            UpdateMusicStream(themeSong);
+        }
+
+        if (IsKeyPressed(KEY_M)) {
+            playingMusic = !playingMusic;
+        }
 
         // Control zombie spawn rate during waves
         int seconds = frameCount/60;

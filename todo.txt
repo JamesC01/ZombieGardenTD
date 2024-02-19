@@ -12,3 +12,5 @@ Consider making the game infinite, since I don't plan on adding levels.
 
 Consider making a properly float random function (it's not necessary, but I got stuck on it, so it
 could be a good challenge.)
+
+After implementing a proper infinite gamemode/score, add a start screen and game over screen.
