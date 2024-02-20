@@ -20,3 +20,10 @@ figure out why (just for fun.)
 Make unique rand function only call during waves or when spawn speed is fast.
 
 Reduce non-wave zombie spawn time by a bit after each wave to increase difficulty
+
+Make peas not started shooting off screen
+
+Add pause mechanic
+
+Split up update and draw code to allow pausing while still drawing everything. Or maybe just cache the previous
+frame in a texture and render that.

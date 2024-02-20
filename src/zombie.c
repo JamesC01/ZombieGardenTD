@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 #include "assets.h"
 #include "globals.h"
 #include <raymath.h>
@@ -13,7 +14,10 @@
 Zombie zombies[MAX_ZOMBIES] = {0};
 int nextZombie = 0;
 
-int defaultZombieSpawnRate = 60 * 20;
+int defaultZombieSpawnRate;
+int defaultWaveZombieSpawnRate;
+
+float zombieMoveSpeed;
 
 int currentZombieSpawnRate;
 int zombieSpawnTimer;
@@ -25,9 +29,12 @@ int lastZombieSpawnYIndex = -1;
 
 // Wave variables
 bool waveStarted;
-int waveTimer;
-int killsRequiredForNextWave;
+int fastSpawningTimer; // How long should zombies spawn quickly during a wave
+const int killsRequiredForNextWave = 5;
 int currentKillsRequiredForNextWave;
+
+int killsRequiredToEndWave;
+int currentKillsRequiredToEndWave;
 
 int zombiesKilledCount;
 
@@ -36,12 +43,13 @@ void ZombieKilled(void);
 
 void InitZombies(void)
 {
-    waveTimer = 0;
+    zombieMoveSpeed = 0.002f;
     waveStarted = false;
-    killsRequiredForNextWave = 5;
     currentKillsRequiredForNextWave = killsRequiredForNextWave;
     zombiesKilledCount = 0;
 
+    killsRequiredToEndWave = 10;
+    currentKillsRequiredToEndWave = 0;
     // Init zombies array
     for (int i = 0; i < MAX_ZOMBIES; i++) {
         zombies[i].active = false;
@@ -57,16 +65,29 @@ void InitZombies(void)
 #endif
 
     zombieGrowlTimer = 60*2;
+
+    defaultZombieSpawnRate = 60 * 20;
+    defaultWaveZombieSpawnRate = 60 * 3;
 }
 
 void UpdateDrawZombies(void)
 {
-    // Tick wave timer
-    waveTimer--;
-    if (waveTimer <= 0 && waveStarted) {
+    // Handle ending wave
+    if (waveStarted && currentKillsRequiredToEndWave <= 0) {
+        printf("Wave ended.\n");
         waveStarted = false;
-        defaultZombieSpawnRate -= 60 * 2;
+        defaultZombieSpawnRate -= 60 * 3;
+        defaultWaveZombieSpawnRate -= 30;
         currentZombieSpawnRate = defaultZombieSpawnRate;
+        zombieSpawnTimer = 0;
+        zombieMoveSpeed += 0.0005f;
+    }
+
+    if (waveStarted) {
+        fastSpawningTimer--;
+        if (fastSpawningTimer <= 0) {
+            currentZombieSpawnRate = INT_MAX; // Stop zombies spawning once all in the wave have spawned
+        }
     }
 
     // Spawn zombies
@@ -116,7 +137,7 @@ void UpdateDrawZombies(void)
             }
 
             // Move and eat plants
-            float moveAmount = 0.002f;
+            float moveAmount = zombieMoveSpeed;
 
             if (zombies[i].gridPos.x > 0 && zombies[i].gridPos.x < GRID_WIDTH) {
                 int frontOfZombieRounded = (int)roundf(zombies[i].gridPos.x)-1;
@@ -176,6 +197,8 @@ void ZombieKilled(void)
 {
     zombiesKilledCount++;
 
+    // TODO: Consider only ended wave once an certain number of zombies is killed. This number can increase as
+    // the waves go on. It would be a better wave of determining the end of a wave compared to a timer.
     if (!waveStarted) {
         currentKillsRequiredForNextWave--;
 
@@ -185,18 +208,17 @@ void ZombieKilled(void)
             waveStarted = true;
 
             zombieSpawnTimer = 0;
-            // TODO: Consider varying wave size as game goes on
-            currentZombieSpawnRate = 60 * 3;
-            waveTimer = 60 * 30;
+            currentZombieSpawnRate = defaultWaveZombieSpawnRate;
 
-            int zombiesThisWave = waveTimer/currentZombieSpawnRate;
+            fastSpawningTimer = currentZombieSpawnRate * killsRequiredToEndWave;
 
-            // You have to kill *all* the zombies this wave, plus the ever increasing count required for the next wave
-            // TODO: consider changing this to make it easier to understand
-            killsRequiredForNextWave += 5;
-            currentKillsRequiredForNextWave = zombiesThisWave + killsRequiredForNextWave;
+            currentKillsRequiredForNextWave = killsRequiredForNextWave;
 
+            currentKillsRequiredToEndWave = killsRequiredToEndWave;
+            killsRequiredToEndWave += 5;
         }
+    } else {
+        currentKillsRequiredToEndWave--;
     }
 
 }

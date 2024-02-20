@@ -28,6 +28,7 @@ const int screenHeight = 480;
 
 const int defaultFps = 60;
 bool limitFrameRate = true;
+bool paused = false;
 int frameCount = 0;
 
 void UpdateDrawStart(void);
@@ -156,6 +157,13 @@ void UpdateDrawGame(void)
     if (IsKeyPressed(KEY_ESCAPE)) {
         currentScreen = GAME_SCREEN_START;
     }
+
+    if (IsKeyPressed(KEY_P)) {
+        paused = !paused;
+    }
+
+    if (paused)
+        return;
 
     DrawBackground();
 
