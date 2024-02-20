@@ -223,4 +223,5 @@ I get stuck, and learn that programming isn't always "clean". Sometimes the solu
 
 Of course, for these C projects, they are much more programming-oriented, since they're done to enjoy coding, rather than to focus on making a game.
 
+I love these programming focused projects. Some inspirations I can think of are: minecraft, dwarf fortress, factorio. You know, those types of games, made by programmers who probably enjoyed the hell out of programming them.
 I've still got more planned for this project, and will keep working on it until I get bored of it, or feel that it's complete.

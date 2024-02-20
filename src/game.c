@@ -100,8 +100,13 @@ int main(void)
                 break;
         }
 
+        // Draw FPS
+        char fpsText[32];
+        sprintf(fpsText, "%ifps", GetFPS());
+        DrawText(fpsText, 16, screenHeight-30, 25, WHITE);
 
         EndDrawing();
+
 
     }
 
