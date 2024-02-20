@@ -223,5 +223,33 @@ I get stuck, and learn that programming isn't always "clean". Sometimes the solu
 
 Of course, for these C projects, they are much more programming-oriented, since they're done to enjoy coding, rather than to focus on making a game.
 
-I love these programming focused projects. Some inspirations I can think of are: minecraft, dwarf fortress, factorio. You know, those types of games, made by programmers who probably enjoyed the hell out of programming them.
-I've still got more planned for this project, and will keep working on it until I get bored of it, or feel that it's complete.
+I love these programming focused projects. Some inspirations I can think of are: minecraft, dwarf fortress, factorio. You know, those types of games, made by programmers
+who probably enjoyed the hell out of programming them. I've still got more planned for this project, and will keep working on it until I get bored of it, or feel that
+it's complete.
+
+
+20/02/2024
+
+I spent 1 hour 30 minutes today, and got barely anything done. Wasn't a bad time, though, it was just kind of difficult to figure things out. The parts I'm working
+on have gotten a bit jumbled, and may need some reorganizing. Also, the project has gotten to that point where the basic gameplay is pretty much fully implemented,
+so there's less and less visible changes each time I work on it. I don't really plan on adding much extra content, either, apart from some fun visual effects. I can
+sense that the end of the project is near.
+
+Anyway, I implemented a simple fps counter at the bottom of the screen, which prompted me to maybe start working on the performance, since a simple 2d game like this
+shouldn't only run at 300 fps, I don't think. Maybe it's not too bad, or maybe raylib is the bottleneck. Either way, it would be just for fun, since it isn't necessary.
+It runs at a fine 60fps on my terrible laptop.
+
+I improved the way waves work. It will spawn a certain amount of zombies for each wave, and then stop once they're spawned, and then once they're all killed, their speed
+will increase slightly, to increase difficulty, and the spawn rate of non-wave zombies will also increase. I also added a simple way to pause the game, but realised that
+if I want to pause the game and still see the game in the background, either I'll have to copy the previously renderered frame into a texture and draw that while it's
+paused, or I'll have to split up the update and draw code, which probably isn't a bad idea anyway. That's the standard in every other framework. I suppose since the project
+started fairly simply, I just didn't do it. All of the raylib examples split rendering and update, so clearly it's a decent idea. Also keeps the logic on its own so I can
+focus on it easier when I'm working on it, not having to worry about the rendering code being right next or mixed in with it.
+
+I also fixed when peashooters start shooting at zombies. Previously they were starting to shoot the zombie slightly off screen, which would despawn before hitting the zombie.
+I think I fixed it, now.
+
+Overall, not a very productive day, but that's just how it is sometimes. Some features or problems take longer than they seem like they should, and as you start getting further
+on with a project, less and less things need to be changed, so you see less and less visual/big features being added. Although in this case, I actually just took longer to solve
+the problem for what it was, partly because the code is spread around quite a bit. I've had to jump around quite a bit. Might be time to put some of the variables into a struct
+to keep them all together, or just try to simplify stuff in general.

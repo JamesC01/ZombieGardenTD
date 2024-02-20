@@ -12,18 +12,12 @@ could be a good challenge.)
 On new game, in a 1 in 5 chance the weather should be rainy. Figure out how to implement some simple rain
 particles and play some nice rain sounds (maybe do some sound design with white noise.)
 
-Improve zombie waves
-
 Improve max FPS. Right now it seems like rendering is limiting the frame rate quite a bit, see if you can
 figure out why (just for fun.)
 
 Make unique rand function only call during waves or when spawn speed is fast.
 
-Reduce non-wave zombie spawn time by a bit after each wave to increase difficulty
-
-Make peas not started shooting off screen
-
-Add pause mechanic
-
 Split up update and draw code to allow pausing while still drawing everything. Or maybe just cache the previous
 frame in a texture and render that.
+
+Continue tweaking zombie waves/difficulty curve
