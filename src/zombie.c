@@ -13,7 +13,7 @@
 Zombie zombies[MAX_ZOMBIES] = {0};
 int nextZombie = 0;
 
-const int defaultZombieSpawnRate = 60 * 20;
+int defaultZombieSpawnRate = 60 * 20;
 
 int currentZombieSpawnRate;
 int zombieSpawnTimer;
@@ -63,8 +63,9 @@ void UpdateDrawZombies(void)
 {
     // Tick wave timer
     waveTimer--;
-    if (waveTimer <= 0) {
+    if (waveTimer <= 0 && waveStarted) {
         waveStarted = false;
+        defaultZombieSpawnRate -= 60 * 2;
         currentZombieSpawnRate = defaultZombieSpawnRate;
     }
 
