@@ -125,14 +125,11 @@ void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
     // Shoot pea if a zombie is in our row
     if (zombieInRow) {
         if (TickCooldown(p)) {
-            if (nextProjectile == MAX_PROJ) {
-                nextProjectile = 0;
-            }
-
             Vector2 peaSpawnPos = Vector2Add(screenPos, (Vector2){18, -42});
             projectiles[nextProjectile].active = true;
             projectiles[nextProjectile].pos = peaSpawnPos;
-            nextProjectile++;
+
+            NextObject(&nextProjectile, MAX_PROJ);
 
             PlaySound(peaShootSound);
             CreateParticleExplosion(peaSpawnPos, (Vector2){2, 2}, 3, 15, 8, (Color){200, 255, 200, 255});

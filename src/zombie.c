@@ -105,16 +105,11 @@ void UpdateDrawZombies(void)
         lastZombieSpawnYIndex = ySpawn;
         Vector2 gridPos = {xSpawn, ySpawn};
 
-        // TODO: This is a duplicate of the sun spawning code. Consider refactoring.
-        if (nextZombie == MAX_ZOMBIES) {
-            nextZombie = 0;
-        }
-
         zombies[nextZombie].active = true;
         zombies[nextZombie].health = 1.0f;
         zombies[nextZombie].gridPos = gridPos;
 
-        nextZombie++;
+        NextObject(&nextZombie, MAX_ZOMBIES);
     }
 
     // Update and draw zombies

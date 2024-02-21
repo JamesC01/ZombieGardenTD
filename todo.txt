@@ -22,12 +22,6 @@ frame in a texture and render that.
 
 Continue tweaking zombie waves/difficulty curve
 
-Create a function for handling the object spawning code. The wrap around to 0 can just come after the increment,
-and it can go into a single function, called Next... something. I don't really need to create a struct, although
-that could be a nice option, to kind of unify all of the seperate instances of the 3 variables, the array, the
-next, and the max.
-
-
 Consider moving some stuff from globals into game
 
 Consider putting sun code into its own function, and also make a generic timer function, similar to TickCooldown,

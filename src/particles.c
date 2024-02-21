@@ -10,8 +10,6 @@ int nextParticle = 0;
 void CreateParticleExplosion(Vector2 pos, Vector2 size, int maxSpeed, int lifetime, int particleCount, Color colour)
 {
     for (int i = 0; i < particleCount; i++) {
-        if (nextParticle == MAX_PARTICLES)
-            nextParticle = 0;
 
         particles[nextParticle].pos = pos;
         particles[nextParticle].size = size;
@@ -22,7 +20,7 @@ void CreateParticleExplosion(Vector2 pos, Vector2 size, int maxSpeed, int lifeti
         particles[nextParticle].active = true;
 
 
-        nextParticle++;
+        NextObject(&nextParticle, MAX_PARTICLES);
     }
 }
 
