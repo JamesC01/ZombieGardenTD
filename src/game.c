@@ -13,6 +13,7 @@
 #include "zombie.h"
 #include "game.h"
 #include "sun.h"
+#include <assert.h>
 
 typedef enum {
     GAME_SCREEN_START,
@@ -48,7 +49,6 @@ void DrawBackground(void);
 
 int main(void)
 {
-
     InitWindow(screenWidth, screenHeight, "Plants Vs Zombies Clone");
 
     InitAudioDevice();
@@ -64,7 +64,8 @@ int main(void)
     InitializeGame();
 
     bool playingMusic = true; // TODO: should be true by default
-
+                              //
+    
 
     bool shouldClose = false;
     while (!WindowShouldClose() && !shouldClose) {
@@ -293,6 +294,20 @@ int GetUniqueRandomValue(int exludedValue, int min, int max)
     } while (random == exludedValue);
 
     return random;
+}
+
+float GetRandomFloatValue(float min, float max)
+{
+    assert(min < max && "min less than max");
+
+    int wholeDifference = fabs(min-max);
+    float fractionalDifference = fabs(min-max) - wholeDifference; 
+
+    float wholeRandom = (rand()/(float)RAND_MAX) * wholeDifference;
+    float fracRandom = (rand()/(float)RAND_MAX) * fractionalDifference;
+
+
+    return min + wholeRandom + fracRandom;
 }
 
 void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint)

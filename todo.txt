@@ -6,9 +6,6 @@ older software in-general.
 Make a B section to music, add more transitional elements, and make drums quieter, and make certain
 drum parts less busy.
 
-Consider making a properly float random function (it's not necessary, but I got stuck on it, so it
-could be a good challenge.)
-
 On new game, in a 1 in 5 chance the weather should be rainy. Figure out how to implement some simple rain
 particles and play some nice rain sounds (maybe do some sound design with white noise.)
 
@@ -17,14 +14,7 @@ figure out why (just for fun.)
 
 Make unique rand function only call during waves or when spawn speed is fast.
 
-Split up update and draw code to allow pausing while still drawing everything. Or maybe just cache the previous
+Maybe Split up update and draw code to allow pausing while still drawing everything. Or maybe just cache the previous
 frame in a texture and render that.
 
 Continue tweaking zombie waves/difficulty curve
-
-Consider putting sun code into its own function, and also make a generic timer function, similar to TickCooldown,
-but for the sun cooldown, and maybe other cooldowns used in the program.
-
-Look through the code and find any global variables that are declared in headers, and see if they actually need
-to be global. I think there's a lot of cases where I thought that they did, but in reality, they didn't need to be
-at all.

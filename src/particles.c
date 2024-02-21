@@ -13,8 +13,8 @@ void CreateParticleExplosion(Vector2 pos, Vector2 size, int maxSpeed, int lifeti
 
         particles[nextParticle].pos = pos;
         particles[nextParticle].size = size;
-        Vector2 randDir = Vector2Normalize((Vector2){(float)rand()/(float)RAND_MAX-0.5f, (float)rand()/(float)RAND_MAX-0.5f});
-        particles[nextParticle].velocity = Vector2Scale(randDir, GetRandomValue(0, maxSpeed-1)+(float)rand()/(float)RAND_MAX);
+        Vector2 randDir = Vector2Normalize((Vector2){GetRandomFloatValue(-1, 1), GetRandomFloatValue(-1, 1)});
+        particles[nextParticle].velocity = Vector2Scale(randDir, GetRandomFloatValue(0, maxSpeed));
         particles[nextParticle].colour = colour;
         particles[nextParticle].lifetime = lifetime;
         particles[nextParticle].active = true;

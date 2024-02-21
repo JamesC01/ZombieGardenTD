@@ -33,6 +33,7 @@ extern int nextProjectile;
 void NextObject(int *next, int max);
 bool TickCooldown(int *timer, int cooldownTime);
 int GetUniqueRandomValue(int exludedValue, int min, int max);
+float GetRandomFloatValue(float min, float max);
 void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint);
 
 #endif
