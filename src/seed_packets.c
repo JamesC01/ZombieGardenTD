@@ -1,6 +1,7 @@
 #include "seed_packets.h"
 #include "globals.h"
 #include "assets.h"
+#include "sun.h"
 #include <raylib.h>
 #include <raymath.h>
 

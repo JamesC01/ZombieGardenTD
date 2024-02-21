@@ -14,9 +14,6 @@ typedef struct {
 const extern Vector2 SEEDPACKET_SIZE;
 
 // Seed Packet globals
-#define SEEDPACKET_COOLDOWN_SLOW 60*20
-#define SEEDPACKET_COOLDOWN_NORMAL 60*15
-#define SEEDPACKET_COOLDOWN_FAST 60*10
 #define SEEDPACKET_COUNT 5 // +1 because of the shovel
 extern SeedPacket seedPackets[SEEDPACKET_COUNT];
 extern bool draggingSeedPacket;

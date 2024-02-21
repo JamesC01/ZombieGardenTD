@@ -7,14 +7,6 @@ Vector2 gridDrawOffset = {40, 80};
 Vector2 gridCellSize = {65, 78};
 
 
-Sun suns[MAX_SUNS] = {0};
-int nextSun = 0;
-
-int sunCooldown = 60;
-int sunsCollectedCount = SUN_VALUE*2; // in PvZ, you start out with enough sun to buy a sunflower
-
-
-
 Projectile projectiles[MAX_PROJ] = {0};
 int nextProjectile = 0;
 
@@ -34,16 +26,6 @@ int GetUniqueRandomValue(int exludedValue, int min, int max)
 
     return random;
 }
-
-void SpawnSun(Vector2 pos)
-{
-    suns[nextSun].active = true;
-    suns[nextSun].pos = pos;
-    PlaySound(sunAppearSound);
-
-    NextObject(&nextSun, MAX_SUNS);
-}
-
 
 void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint)
 {

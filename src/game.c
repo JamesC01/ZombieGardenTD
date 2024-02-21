@@ -13,6 +13,7 @@
 #include "seed_packets.h"
 #include "zombie.h"
 #include "game.h"
+#include "sun.h"
 
 typedef enum {
     GAME_SCREEN_START,
@@ -190,6 +191,10 @@ void UpdateDrawGame(void)
     }
 
     UpdateDrawPlants();
+    UpdateDrawProjectiles();
+    UpdateDrawParticles();
+    UpdateDrawZombies();
+    UpdateDrawSuns();
 
     // Draw top bar
     DrawRectangle(0, 0, screenWidth, SEEDPACKET_SIZE.y+20, DARKBROWN);
@@ -200,43 +205,7 @@ void UpdateDrawGame(void)
     Vector2 trayEnd = {trayStart.x+8*SEEDPACKET_SIZE.x+margin, seedPackets[0].origin.y+SEEDPACKET_SIZE.y};
     DrawRectangleV(trayStart, trayEnd, (Color){46, 40, 34, 255});
 
-    UpdateDrawProjectiles();
-    UpdateDrawParticles();
     UpdateDrawSeedPackets();
-    UpdateDrawZombies();
-
-
-    // Spawn suns
-    sunCooldown--;
-    if (sunCooldown <= 0) {
-        sunCooldown = SUN_SPAWN_TIME;
-        Vector2 pos = {GetRandomValue(64, screenWidth-64), SEEDPACKET_SIZE.y+32};
-        SpawnSun(pos);
-    }
-
-    // Update and draw Suns
-    for (int i = 0; i < MAX_SUNS; i++) {
-        if (suns[i].active) {
-            suns[i].pos.y += 0.25f;
-
-            const int sunSize = sunSprite.width;
-            Vector2 sunHalfSize = {(float)sunSize/2, (float)sunSize/2};
-
-            // Handle sun being clicked on
-            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !draggingSeedPacket) {
-                Rectangle sunBox = {EXPAND_V2(Vector2Subtract(suns[i].pos, sunHalfSize)), sunSize, sunSize};
-                if (CheckCollisionPointRec(GetMousePosition(), sunBox)) {
-                    suns[i].active = false;
-                    sunsCollectedCount += SUN_VALUE;
-                }
-            }
-
-            // Draw sun
-            Rectangle src = {0,0,sunSize, sunSize};
-            Rectangle dst = { EXPAND_V2(suns[i].pos), sunSize, sunSize};
-            DrawTexturePro(sunSprite, src, dst, sunHalfSize, GetTime()*10, WHITE);
-        }
-    }
 
     // Draw sun count
     char sunCountText[32];
@@ -255,15 +224,7 @@ void InitializeGame(void)
 {
     CreateSeedPackets();
 
-
-    // Init sun variables
-    // TODO: if the sun code is ever moved out of globals.c, this code should be put in a seperate InitSuns function
-    memset(suns, 0, MAX_SUNS * sizeof(Sun));
-    nextSun = 0;
-
-    sunCooldown = 60;
-    sunsCollectedCount = SUN_VALUE*2; // in PvZ, you start out with enough sun to buy a sunflower
-
+    InitSuns();
 
     InitZombies();
 

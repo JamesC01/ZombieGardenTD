@@ -5,22 +5,6 @@
 
 #define EXPAND_V2(v2) v2.x, v2.y
 
-typedef struct {
-    Vector2 pos;
-    bool active;
-} Sun;
-
-// Sun globals
-#define SUN_VALUE 25
-#define SUN_SPAWN_TIME 60*15
-#define MAX_SUNS 8
-extern Sun suns[MAX_SUNS];
-extern int nextSun;
-
-extern int sunCooldown;
-extern int sunsCollectedCount; // in PvZ, you start out with enough sun to buy a sunflower
-
-
 // Plant Grid globals
 #define GRID_WIDTH 9
 #define GRID_HEIGHT 5
@@ -41,7 +25,6 @@ extern int nextProjectile;
 
 void NextObject(int *next, int max);
 int GetUniqueRandomValue(int exludedValue, int min, int max);
-void SpawnSun(Vector2 pos);
 void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint);
 
 #endif

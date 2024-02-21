@@ -4,6 +4,7 @@
 #include "assets.h"
 #include "particles.h"
 #include "zombie.h"
+#include "sun.h"
 
 int plantCooldownLUT[PT_COUNT] = {
     0, // PT_NONE,
