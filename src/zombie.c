@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include "assets.h"
-#include "globals.h"
+#include "game.h"
 #include <raymath.h>
 #include "particles.h"
 #include "game.h"

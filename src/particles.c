@@ -1,7 +1,7 @@
 #include "particles.h"
 #include <raymath.h>
 #include <stdlib.h>
-#include "globals.h"
+#include "game.h"
 
 Particle particles[MAX_PARTICLES] = {0};
 int nextParticle = 0;

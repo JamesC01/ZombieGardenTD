@@ -1,6 +1,6 @@
 #include "plant.h"
 #include <raymath.h>
-#include "globals.h"
+#include "game.h"
 #include "assets.h"
 #include "particles.h"
 #include "zombie.h"

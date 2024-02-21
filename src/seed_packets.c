@@ -1,5 +1,5 @@
 #include "seed_packets.h"
-#include "globals.h"
+#include "game.h"
 #include "assets.h"
 #include "sun.h"
 #include <raylib.h>

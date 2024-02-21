@@ -2,7 +2,6 @@
 #include "seed_packets.h"
 #include "assets.h"
 #include <string.h>
-#include "globals.h"
 #include "game.h"
 #include <raymath.h>
 
