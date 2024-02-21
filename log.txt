@@ -253,3 +253,22 @@ Overall, not a very productive day, but that's just how it is sometimes. Some fe
 on with a project, less and less things need to be changed, so you see less and less visual/big features being added. Although in this case, I actually just took longer to solve
 the problem for what it was, partly because the code is spread around quite a bit. I've had to jump around quite a bit. Might be time to put some of the variables into a struct
 to keep them all together, or just try to simplify stuff in general.
+
+
+21/02/2024
+
+I spent around 1 hour 30 minutes (plus up to ten minutes of untimed work) today. I had fun! I changed seed packets to be click dragged more like the real PvZ, where you click
+to pick it up, then click to plant it, rather than holding left click and dragging. It will make it nicer for a laptop touch pad. I made a function to increment the next "pointer",
+for object "pools". I seperated the sun code into a seperate file, and also got rid of globals.c/h, and merged most of it into game.c/h instead. I implemented a cooldown timer,
+similar to the one used by plants, but able to be used with simple ints instead, and got rid of the plant specific one. And I finally implemented a working random float function,
+and it really wasn't that hard. I just had to break it down and think about it a bit more. I had fun doing it! I'm not 100% sure if it's good, but it at least functions for what
+I want to do with it. And when I break it down and walk through the code, it seems to make sense with multiple different values, negative and positive.
+
+Not a very flashy update, but I feel satisfied with the amount I did. I think next time I really need to finally start work on the last couple of sprites, the zombie and cherrybomb.
+Once those are done, all of the sound effects, music, and graphics will be by me. I'd also like to update the font used, the current one is pretty crap. I won't be making my own
+font, though!
+
+The game is really starting to reach its final point, at least for what I wanted to make. Of course I could expand and start adding levels, new plants, new zombie types, but
+that isn't what I set out to do. I wanted to create a simple plants vs zombies clone, and so far I've got it, and have had a lot of fun writing the code. This is literally
+the most I've ever enjoyed working on a project. It's just been pure problem solving, with no negative emotions, apart from a single 10-20 minutes earlier on trying to make a random
+random, that I implemented today, without any negative feelings.
