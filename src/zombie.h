@@ -13,10 +13,6 @@ typedef struct {
 extern Zombie zombies[MAX_ZOMBIES];
 extern int nextZombie;
 
-extern int currentZombieSpawnRate;
-extern int zombieSpawnTimer;
-extern int zombieGrowlTimer;
-
 extern int zombiesKilledCount;
 
 void InitZombies(void);

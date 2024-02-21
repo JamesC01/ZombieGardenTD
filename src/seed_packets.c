@@ -1,7 +1,12 @@
 #include "seed_packets.h"
 #include "globals.h"
 #include "assets.h"
+#include <raylib.h>
 #include <raymath.h>
+
+#define SEEDPACKET_COOLDOWN_SLOW 60*20
+#define SEEDPACKET_COOLDOWN_NORMAL 60*15
+#define SEEDPACKET_COOLDOWN_FAST 60*10
 
 SeedPacket seedPackets[SEEDPACKET_COUNT];
 bool draggingSeedPacket = false;
@@ -44,7 +49,7 @@ void UpdateSeedPackets()
         }
 
         // Handle dropping the seed packet
-        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+        else if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && seedPackets[i].dragging) {
             if (seedPackets[i].dragging && sunsCollectedCount >= seedPackets[i].cost && seedPackets[i].buyCooldown <= 0) {
                 Vector2 mpos = GetMousePosition();
                 float x = (mpos.x - gridDrawOffset.x) / gridCellSize.x;
@@ -71,6 +76,9 @@ void UpdateSeedPackets()
             seedPackets[i].dragging = false;
             draggingSeedPacket = false;
             ShowCursor();
+        } else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && seedPackets[i].dragging) {
+            seedPackets[i].dragging = false;
+            draggingSeedPacket = false;
         }
     }
 }

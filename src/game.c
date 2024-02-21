@@ -42,7 +42,6 @@ void DrawBackground(void);
 int main(void)
 {
 
-
     InitWindow(screenWidth, screenHeight, "Plants Vs Zombies Clone");
 
     InitAudioDevice();
@@ -181,7 +180,7 @@ void UpdateDrawGame(void)
 
             Vector2 gridCellPos = Vector2Add(gridDrawOffset, (Vector2){x*gridCellSize.x, y*gridCellSize.y});
 
-            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && draggingSeedPacket) {
+            if (draggingSeedPacket) {
                 if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){gridCellPos.x, gridCellPos.y, gridCellSize.x, gridCellSize.y})) {
                     c = (Color){255, 255, 255, 100};
                 }
@@ -224,7 +223,7 @@ void UpdateDrawGame(void)
             Vector2 sunHalfSize = {(float)sunSize/2, (float)sunSize/2};
 
             // Handle sun being clicked on
-            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !draggingSeedPacket) {
                 Rectangle sunBox = {EXPAND_V2(Vector2Subtract(suns[i].pos, sunHalfSize)), sunSize, sunSize};
                 if (CheckCollisionPointRec(GetMousePosition(), sunBox)) {
                     suns[i].active = false;
