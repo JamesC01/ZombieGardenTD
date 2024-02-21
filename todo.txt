@@ -22,8 +22,6 @@ frame in a texture and render that.
 
 Continue tweaking zombie waves/difficulty curve
 
-Consider moving some stuff from globals into game
-
 Consider putting sun code into its own function, and also make a generic timer function, similar to TickCooldown,
 but for the sun cooldown, and maybe other cooldowns used in the program.
 

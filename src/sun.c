@@ -33,9 +33,7 @@ void SpawnSun(Vector2 pos)
 void UpdateDrawSuns(void)
 {
     // Spawn suns
-    sunCooldown--;
-    if (sunCooldown <= 0) {
-        sunCooldown = SUN_SPAWN_TIME;
+    if (TickCooldown(&sunCooldown, SUN_SPAWN_TIME)) {
         Vector2 pos = {GetRandomValue(64, screenWidth-64), SEEDPACKET_SIZE.y+32};
         SpawnSun(pos);
     }

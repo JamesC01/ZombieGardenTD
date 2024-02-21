@@ -24,8 +24,6 @@ int plantHealthLUT[PT_COUNT] = {
     //PT_COUNT
 };
 
-bool TickCooldown(Plant* p);
-
 void UpdateDrawPlants()
 {
     for (int x = 0; x < GRID_WIDTH; x++) {
@@ -66,21 +64,9 @@ void UpdateDrawPlants()
     }
 }
 
-bool TickCooldown(Plant* p)
-{
-    p->cooldown--;
-    if (p->cooldown <= 0) {
-        p->cooldown = plantCooldownLUT[p->type];
-        return true;
-    }
-
-    return false;
-}
-
-
 void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
 {
-    if (TickCooldown(p)) {
+    if (TickCooldown(&p->cooldown, plantCooldownLUT[p->type])) {
         for (int i = 0; i < MAX_ZOMBIES; i++) {
             if (zombies[i].active) {
                 Zombie* z = &zombies[i];
@@ -104,7 +90,7 @@ void UpdateDrawSunflower(Plant* p, Vector2 screenPos)
 {
     Vector2 sunSpawnPos = Vector2Subtract(screenPos, (Vector2){0, 18});
 
-    if (TickCooldown(p))
+    if (TickCooldown(&p->cooldown, plantCooldownLUT[p->type]))
         SpawnSun(sunSpawnPos);
 
     Vector2 origin = {(float)sunflowerSprite.width/2, sunflowerSprite.height-4};
@@ -125,7 +111,7 @@ void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
 
     // Shoot pea if a zombie is in our row
     if (zombieInRow) {
-        if (TickCooldown(p)) {
+        if (TickCooldown(&p->cooldown, plantCooldownLUT[p->type])) {
             Vector2 peaSpawnPos = Vector2Add(screenPos, (Vector2){18, -42});
             projectiles[nextProjectile].active = true;
             projectiles[nextProjectile].pos = peaSpawnPos;

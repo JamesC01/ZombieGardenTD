@@ -301,3 +301,14 @@ void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color ti
     Rectangle dst = {EXPAND_V2(pos), sprite.width, sprite.height};
     DrawTexturePro(sprite, src, dst, origin, 0, tint);
 }
+
+bool TickCooldown(int *timer, int cooldownTime)
+{
+    (*timer)--;
+    if (*timer <= 0) {
+        *timer = cooldownTime;
+        return true;
+    }
+
+    return false;
+}

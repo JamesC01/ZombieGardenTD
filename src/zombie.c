@@ -91,9 +91,7 @@ void UpdateDrawZombies(void)
     }
 
     // Spawn zombies
-    zombieSpawnTimer--;
-    if (zombieSpawnTimer <= 0) {
-        zombieSpawnTimer = currentZombieSpawnRate;
+    if (TickCooldown(&zombieSpawnTimer, currentZombieSpawnRate)) {
 
 #if ZOMBIE_DEBUG
         float xSpawn = 2;
