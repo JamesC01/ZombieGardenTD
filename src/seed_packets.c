@@ -109,16 +109,16 @@ void DrawSeedPackets()
 
         switch (seedPackets[i].type) {
             case PT_PSHOOTER:
-                DrawTextureEx(pShooterSprite, Vector2Add(seedPacketUIPos, (Vector2){11, 12}), 0, 0.5f, WHITE);
+                DrawTextureEx(pShooterSprite, Vector2Add(seedPacketUIPos, (Vector2){14, 12}), 0, 0.5f, WHITE);
                 break;
             case PT_SUNFLOWER:
-                DrawTextureEx(sunflowerSprite, Vector2Add(seedPacketUIPos, (Vector2){5, 12}), 0, 0.75f, WHITE);
+                DrawTextureEx(sunflowerSprite, Vector2Add(seedPacketUIPos, (Vector2){5, 12}), 0, 0.6f, WHITE);
                 break;
             case PT_WALLNUT:
-                DrawTextureEx(wallnutSprite, Vector2Add(seedPacketUIPos, (Vector2){5, 13}), 0, 0.7f, WHITE);
+                DrawTextureEx(wallnutSprite, Vector2Add(seedPacketUIPos, (Vector2){5, 13}), 0, 0.6f, WHITE);
                 break;
             case PT_CHERRYBOMB:
-                DrawTextureEx(wallnutSprite, Vector2Add(seedPacketUIPos, (Vector2){5, 13}), 0, 0.7f, RED);
+                DrawTextureEx(cherrySprite, Vector2Add(seedPacketUIPos, (Vector2){5, 13}), 0, 0.6f, RED);
                 break;
             default:
                 break;

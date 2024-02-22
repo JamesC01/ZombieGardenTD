@@ -129,9 +129,21 @@ void UpdateDrawStart(void)
 {
     DrawBackground();
 
-    DrawText("Raylib\n\n\nPlants Vs Zombies\n\n\nClone", 16, 16, 50, WHITE);
-    DrawText("Press Enter to Start Game", 16, screenHeight/2, 25, WHITE);
-    DrawText("Press Q to Quit Game", 16, screenHeight/2+25, 25, WHITE);
+    const int shadowOffset = 4;
+    Color shadowColour = {0, 0, 0, 150};
+
+    DrawTextWithShadow(bigFont, "Raylib\n\n\nPlants Vs Zombies\n\n\nClone", 16, 32, 50, 4, WHITE);
+
+    int x = 16;
+    int y = screenHeight/2;
+    int height = 35;
+
+    DrawTextWithShadow(smallFont, "Press Enter to Start Game", x, y, 35, 2, WHITE);
+    y += height;
+
+    DrawTextWithShadow(smallFont, "Press Q to Quit Game", x, y, 35, 2, WHITE);
+    y += height;
+
 
     if (IsKeyPressed(KEY_ENTER)) {
         currentScreen = GAME_SCREEN_PLAYING;
@@ -214,17 +226,20 @@ void UpdateDrawGame(void)
 
     UpdateDrawSeedPackets();
 
+    const int fSize = 30;
     // Draw sun count
     char sunCountText[32];
-    sprintf(sunCountText, "Sun:\n\n%i", sunsCollectedCount);
-    DrawText(sunCountText, 32, 10, 20, WHITE);
+    sprintf(sunCountText, "%i", sunsCollectedCount);
+    int sY = 10;
+    DrawTextWithShadow(smallFont, "Sun:", 32, sY, fSize, 1, WHITE);
+    DrawTextWithShadow(smallFont, sunCountText, 32, sY+fSize*0.75f, fSize, 1, WHITE);
 
 
     // Draw timer
     frameCount++;
     char timerText[32];
     sprintf(timerText, "%i", frameCount/60);
-    DrawText(timerText, screenWidth-64, 10, 20, WHITE);
+    DrawTextWithShadow(smallFont, timerText, screenWidth-100, 10, 40, 1, WHITE);
 }
 
 void InitializeGame(void)
@@ -326,4 +341,11 @@ bool TickCooldown(int *timer, int cooldownTime)
     }
 
     return false;
+}
+
+void DrawTextWithShadow(Font font, const char *text, int x, int y, float fontSize, float shadowOffset, Color tint)
+{
+    const Color shadowColour = {0, 0, 0, 150};
+    DrawTextEx(font, text, (Vector2){x+shadowOffset, y+shadowOffset}, fontSize, 0, shadowColour);
+    DrawTextEx(font, text, (Vector2){x, y}, fontSize, 0, tint);
 }

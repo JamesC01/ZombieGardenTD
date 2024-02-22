@@ -17,6 +17,9 @@ extern Texture2D zombieSprite;
 extern Texture2D shadowSprite;
 extern Texture2D smallShadowSprite;
 
+extern Font bigFont;
+extern Font smallFont;
+
 // TODO: Consider making a function that takes in a sprite and returns the center point
 #define SHADOW_ORIGIN (Vector2){(float)shadowSprite.width/2, (float)shadowSprite.height/2}
 

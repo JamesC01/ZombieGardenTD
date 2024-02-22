@@ -22,6 +22,9 @@ Sound peaShootSound;
 Sound popSound;
 Sound sunAppearSound;
 
+Font bigFont;
+Font smallFont;
+
 Music themeSong;
 
 void LoadAssets()
@@ -34,7 +37,7 @@ void LoadAssets()
     shovelSprite = LoadTexture("sprites/shovel.png");
     sunflowerSprite = LoadTexture("sprites/sunflower.png");
     wallnutSprite = LoadTexture("sprites/wallnut.png");
-    cherrySprite = LoadTexture("sprites/wallnut.png");
+    cherrySprite = LoadTexture("sprites/cherrybomb.png");
     zombieSprite = LoadTexture("sprites/zombie.png");
     shadowSprite = LoadTexture("sprites/shadow.png");
     smallShadowSprite = LoadTexture("sprites/small_shadow.png");
@@ -56,6 +59,10 @@ void LoadAssets()
         sprintf(path, "sounds/zombie_growl%i.wav", i+1);
         zombieGrowlSounds[i] = LoadSound(path);
     }
+
+    bigFont = LoadFont("big_font.ttf");
+    smallFont = LoadFont("small_font.ttf");
+    while (!IsFontReady(bigFont) || !IsFontReady(smallFont)) {}
 }
 
 void UnloadAssets()

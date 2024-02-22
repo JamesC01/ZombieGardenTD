@@ -18,3 +18,8 @@ Maybe Split up update and draw code to allow pausing while still drawing everyth
 frame in a texture and render that.
 
 Continue tweaking zombie waves/difficulty curve
+
+Look for code that is commenting an if statement, and see if you can put the condition inside a bool, to make the comment
+redundant.
+
+Consider highlighting certain sprites when they're being hovered (sun, seeds etc.)
