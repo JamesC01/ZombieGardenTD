@@ -38,47 +38,55 @@ void UpdateDrawSeedPackets()
 void UpdateSeedPackets()
 {
     for (int i = 0; i < SEEDPACKET_COUNT; i++) {
+        SeedPacket* packet = &seedPackets[i];
         // Set packet dragging true if mouse clicked inside it.
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !seedPackets[i].dragging) {
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !packet->dragging) {
             Vector2 mPos = GetMousePosition();
 
-            if (CheckCollisionPointRec(mPos, (Rectangle){seedPackets[i].origin.x, seedPackets[i].origin.y, SEEDPACKET_SIZE.x, SEEDPACKET_SIZE.y})) {
-                seedPackets[i].dragging = true;
+            if (CheckCollisionPointRec(mPos, (Rectangle){packet->origin.x, packet->origin.y, SEEDPACKET_SIZE.x, SEEDPACKET_SIZE.y})) {
+                packet->dragging = true;
                 draggingSeedPacket = true;
                 HideCursor();
             }
         }
 
         // Handle dropping the seed packet
-        else if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && seedPackets[i].dragging) {
-            if (seedPackets[i].dragging && sunsCollectedCount >= seedPackets[i].cost && seedPackets[i].buyCooldown <= 0) {
+        else if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && packet->dragging) {
+            bool canBuySeedPacket = sunsCollectedCount >= packet->cost && packet->buyCooldown <= 0;
+            if (canBuySeedPacket) {
                 Vector2 mpos = GetMousePosition();
-                float x = (mpos.x - gridDrawOffset.x) / gridCellSize.x;
-                float y = (mpos.y - gridDrawOffset.y) / gridCellSize.y;
+                float gridX = (mpos.x - gridDrawOffset.x) / gridCellSize.x;
+                float gridY = (mpos.y - gridDrawOffset.y) / gridCellSize.y;
 
-                if (x >= 0 && y >= 0
-                        && x < 9 && y < 5) {
+                bool insideGrid = gridX >= 0 && gridY >= 0 && gridX < GRID_WIDTH && gridY < GRID_HEIGHT;
+                if (insideGrid) {
 
-                    Plant* plant = &gardenGrid[(int)x][(int)y];
-                    // Grid spot is empty
-                    if (plant->type == PT_NONE) {
-                        plant->type = seedPackets[i].type;
-                        plant->cooldown = plantCooldownLUT[seedPackets[i].type];
-                        plant->health = plantHealthLUT[seedPackets[i].type];
-                        sunsCollectedCount -= seedPackets[i].cost;
-                        if (seedPackets[i].type != PT_NONE) {
-                            seedPackets[i].buyCooldown = seedPackets[i].buyCooldownMax;
+                    Plant* plant = &gardenGrid[(int)gridX][(int)gridY];
+
+                    bool noPlantInCell = plant->type == PT_NONE;
+                    bool usingShovel = packet->type == PT_NONE;
+
+                    if (noPlantInCell) {
+                        // Plant the plant
+                        plant->type = packet->type;
+                        plant->cooldown = plantCooldownLUT[packet->type];
+                        plant->health = plantHealthLUT[packet->type];
+                        sunsCollectedCount -= packet->cost;
+
+                        if (!usingShovel) {
+                            packet->buyCooldown = packet->buyCooldownMax;
                         }
-                    } else if (seedPackets[i].type == PT_NONE) {
+                    } else if (usingShovel) {
                         plant->type = PT_NONE;
                     }
                 }
             }
-            seedPackets[i].dragging = false;
+
+            packet->dragging = false;
             draggingSeedPacket = false;
             ShowCursor();
-        } else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && seedPackets[i].dragging) {
-            seedPackets[i].dragging = false;
+        } else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && packet->dragging) {
+            packet->dragging = false;
             draggingSeedPacket = false;
         }
     }
@@ -130,8 +138,13 @@ void DrawSeedPackets()
         }
         if (seedPackets[i].buyCooldown > 0 && seedPackets[i].type != PT_NONE) {
             seedPackets[i].buyCooldown--;
-            Rectangle overlayRect = (Rectangle){EXPAND_V2(seedPacketUIPos), SEEDPACKET_SIZE.x, SEEDPACKET_SIZE.y*((float)seedPackets[i].buyCooldown/(float)seedPackets[i].buyCooldownMax)};
-            DrawRectangleRec(overlayRect, (Color){50, 50, 50, 100});
+
+            Rectangle cooldownRect = {
+                EXPAND_V2(seedPacketUIPos),
+                SEEDPACKET_SIZE.x,
+                SEEDPACKET_SIZE.y*((float)seedPackets[i].buyCooldown/(float)seedPackets[i].buyCooldownMax)
+            };
+            DrawRectangleRec(cooldownRect, (Color){50, 50, 50, 100});
         }
     }
 }

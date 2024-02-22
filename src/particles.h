@@ -8,6 +8,7 @@ typedef struct {
     Vector2 size;
     Vector2 velocity;
     Color colour;
+    int startLifetime;
     int lifetime;
     bool active;
 } Particle;

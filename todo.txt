@@ -23,3 +23,5 @@ Look for code that is commenting an if statement, and see if you can put the con
 redundant.
 
 Consider highlighting certain sprites when they're being hovered (sun, seeds etc.)
+
+Consider making the plant icons on the seed packets positions automatically calculate.

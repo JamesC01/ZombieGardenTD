@@ -82,7 +82,7 @@ void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
     }
 
     Vector2 origin = {(float)cherrySprite.width/2, cherrySprite.height-2};
-    DrawTextureCentered(cherrySprite, screenPos, origin, RED);
+    DrawTextureCentered(cherrySprite, screenPos, origin, WHITE);
 }
 
 

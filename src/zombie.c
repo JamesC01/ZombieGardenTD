@@ -121,8 +121,9 @@ void UpdateDrawZombies(void)
                 lastZombieGrowlIndex = random;
                 // TODO: Randomise pitch. Will need to make a good random float function
                 PlaySound(zombieGrowlSounds[random]);
-                // One in five chance that the cooldown will be shorter, else, it should be longer
-                if (GetRandomValue(0, 4)) {
+
+                bool shortCooldown = GetRandomValue(0, 4) == 0;
+                if (shortCooldown) {
                     zombieGrowlTimer = GetRandomValue(30, 60*5);
                 } else {
                     zombieGrowlTimer = GetRandomValue(60*5, 60*15);

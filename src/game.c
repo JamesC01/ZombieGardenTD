@@ -135,10 +135,10 @@ void UpdateDrawStart(void)
     int y = screenHeight/2;
     int height = 35;
 
-    DrawTextWithShadow(smallFont, "Press Enter to Start Game", x, y, 35, 2, WHITE);
+    DrawTextWithShadow(smallFont, "Press Enter to Start Game", x, y, 35, 2, GREEN);
     y += height;
 
-    DrawTextWithShadow(smallFont, "Press Q to Quit Game", x, y, 35, 2, WHITE);
+    DrawTextWithShadow(smallFont, "Press Q to Quit Game", x, y, 35, 2, RED);
 
     y += height;
     y += height;
@@ -282,13 +282,15 @@ void UpdateDrawProjectiles(void)
 {
     // Collision behaviour is done inside zombie update
     for (int i = 0; i < MAX_PROJ; i++) {
-        if (projectiles[i].active) {
-            projectiles[i].pos.x += 5;
-            DrawTextureCentered(smallShadowSprite, Vector2Add(projectiles[i].pos, (Vector2){0, 42}), Vector2Zero(), WHITE);
-            DrawTextureV(peaSprite, projectiles[i].pos, WHITE);
+        Projectile* proj = &projectiles[i];
 
-            if (projectiles[i].pos.x > 640) {
-                projectiles[i].active = false;
+        if (proj->active) {
+            proj->pos.x += 5;
+            DrawTextureCentered(smallShadowSprite, Vector2Add(proj->pos, (Vector2){0, 42}), Vector2Zero(), WHITE);
+            DrawTextureV(peaSprite, proj->pos, WHITE);
+
+            if (proj->pos.x > 640) {
+                proj->active = false;
             }
         }
     }

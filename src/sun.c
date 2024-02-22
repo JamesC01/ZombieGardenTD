@@ -18,7 +18,7 @@ void InitSuns(void)
     nextSun = 0;
 
     sunCooldown = 60;
-    sunsCollectedCount = SUN_VALUE*2; // in PvZ, you start out with enough sun to buy a sunflower
+    sunsCollectedCount = 9999;//SUN_VALUE*2; // in PvZ, you start out with enough sun to buy a sunflower
 }
 
 void SpawnSun(Vector2 pos)
