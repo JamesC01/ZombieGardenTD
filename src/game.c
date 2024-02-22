@@ -22,7 +22,7 @@ typedef enum {
     GAME_SCREEN_EXIT
 } GameScreen;
 
-GameScreen currentScreen = GAME_SCREEN_GAMEOVER;
+GameScreen currentScreen = GAME_SCREEN_START;
 
 const int screenWidth = 640;
 const int screenHeight = 480;
@@ -325,6 +325,7 @@ float GetRandomFloatValue(float min, float max)
     return min + wholeRandom + fracRandom;
 }
 
+// TODO: This doesn't seem to do any centering?
 void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint)
 {
     Rectangle src = {0, 0, sprite.width, sprite.height};
