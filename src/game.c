@@ -22,7 +22,7 @@ typedef enum {
     GAME_SCREEN_EXIT
 } GameScreen;
 
-GameScreen currentScreen = GAME_SCREEN_START;
+GameScreen currentScreen = GAME_SCREEN_GAMEOVER;
 
 const int screenWidth = 640;
 const int screenHeight = 480;
@@ -111,7 +111,7 @@ int main(void)
         // Draw FPS
         char fpsText[32];
         sprintf(fpsText, "%ifps", GetFPS());
-        DrawText(fpsText, 16, screenHeight-30, 25, WHITE);
+        DrawTextWithShadow(smallFont, fpsText, 16, screenHeight-35, 35, 2, WHITE);
 
         EndDrawing();
 
@@ -129,9 +129,6 @@ void UpdateDrawStart(void)
 {
     DrawBackground();
 
-    const int shadowOffset = 4;
-    Color shadowColour = {0, 0, 0, 150};
-
     DrawTextWithShadow(bigFont, "Raylib\n\n\nPlants Vs Zombies\n\n\nClone", 16, 32, 50, 4, WHITE);
 
     int x = 16;
@@ -142,7 +139,11 @@ void UpdateDrawStart(void)
     y += height;
 
     DrawTextWithShadow(smallFont, "Press Q to Quit Game", x, y, 35, 2, WHITE);
+
     y += height;
+    y += height;
+
+    DrawTextWithShadow(smallFont, "Game by James Czekaj", x, y, 25, 2, WHITE);
 
 
     if (IsKeyPressed(KEY_ENTER)) {
@@ -157,14 +158,13 @@ void UpdateDrawGameOver(void)
 {
     DrawBackground();
 
-
-    DrawText("YOU DIED!\n\n\nGAME OVER :(", 16, 16, 50, WHITE);
+    DrawTextWithShadow(bigFont, "YOU DIED!\n\n\n\nGAME OVER :(", 16, 16, 50, 4, WHITE);
 
     char killCountText[32];
     sprintf(killCountText, "You killed %i zombies!", zombiesKilledCount);
-    DrawText(killCountText, 16, screenHeight/2-25, 25, WHITE);
+    DrawTextWithShadow(smallFont, killCountText, 16, screenHeight/2-40, 40, 2, WHITE);
 
-    DrawText("Press Enter to return to Start\n", 16, screenHeight/2, 25, WHITE);
+    DrawTextWithShadow(smallFont, "Press Enter to return to Start", 16, screenHeight/2, 40, 2, WHITE);
 
     if (IsKeyPressed(KEY_ENTER)) {
         currentScreen = GAME_SCREEN_START;
