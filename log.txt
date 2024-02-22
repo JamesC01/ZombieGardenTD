@@ -272,3 +272,33 @@ The game is really starting to reach its final point, at least for what I wanted
 that isn't what I set out to do. I wanted to create a simple plants vs zombies clone, and so far I've got it, and have had a lot of fun writing the code. This is literally
 the most I've ever enjoyed working on a project. It's just been pure problem solving, with no negative emotions, apart from a single 10-20 minutes earlier on trying to make a random
 random, that I implemented today, without any negative feelings.
+
+
+
+22/02/2024
+
+I spent 30 minutes drawing sprites today, and 1 hour 29 minutes working on the code. I drew a cherrybomb sprite, and improved the look of the seedpacket sprite. I also started using
+2 new fonts for big and small text, which looks much better, although, not very good. I also spent a decent bit of time refactoring code. Reducing the semantic complexity of it. One
+of the things I did is something that I learned recently. In an if statement, if the condition is complex, it's good to seperate it out into a seperate bool variable, with a good
+name. So instead of having code like:
+
+// Check if pos is within bounds
+if (pos.x > 0 && pos.x < WIDTH && pos.y > 0 && pos.y < HEIGHT) {
+    // code
+}
+
+You should instead do:
+
+bool withinBounds = pos.x > 0 && pos.x < WIDTH && pos.y > 0 && pos.y < HEIGHT;
+if (withinBounds) {
+    // code
+}
+
+As you can see, it's just a bit nicer, and avoids using a comment. I also got rid of a lot of cases where I was repeating a variable name in a for loop, like gardenGrid[i][j]. Instead
+I put that in a pointer, like:
+
+Plant* p = gardenGrid[i][j];
+
+Which makes referring to it in many places much shorter.
+
+Overall, didn't do a massive amount today, but I still enjoyed myself.
