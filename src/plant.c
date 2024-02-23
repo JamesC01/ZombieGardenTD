@@ -77,7 +77,7 @@ void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
             }
         }
 
-        CreateParticleExplosion(screenPos, (Vector2){8, 8}, 5, 30, 48, DARKBROWN);
+        CreateParticleExplosion(screenPos, (Vector2){8, 8}, 7, 30, 48, DARKBROWN);
 
         p->health = 0;
     }

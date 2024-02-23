@@ -1,4 +1,5 @@
 #include "sun.h"
+#include "particles.h"
 #include "seed_packets.h"
 #include "assets.h"
 #include <string.h>
@@ -49,12 +50,13 @@ void UpdateDrawSuns(void)
             const int sunSize = sunSprite.width;
             Vector2 sunHalfSize = {(float)sunSize/2, (float)sunSize/2};
 
-            // Handle sun being clicked on
-            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !draggingSeedPacket) {
-                Rectangle sunBox = {EXPAND_V2(Vector2Subtract(sunArr[i].pos, sunHalfSize)), sunSize, sunSize};
-                if (CheckCollisionPointRec(GetMousePosition(), sunBox)) {
+            Rectangle sunBox = {EXPAND_V2(Vector2Subtract(sunArr[i].pos, sunHalfSize)), sunSize, sunSize};
+            if (CheckCollisionPointRec(GetMousePosition(), sunBox)) {
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !draggingSeedPacket) {
                     sunArr[i].active = false;
                     sunsCollectedCount += SUN_VALUE;
+                } else if (!draggingSeedPacket) {
+                    CreateParticleExplosion(sunArr[i].pos, (Vector2){4, 4}, 4, 10, 2, WHITE);
                 }
             }
 

@@ -27,9 +27,9 @@ void CreateParticleConfetti(Vector2 pos, Vector2 size, int particleCount)
             GetRandomValue(0, 255),
             255
         };
-        Particle* p = CreateParticle(pos, size, 3*60, randC);
+        Particle* p = CreateParticle(pos, size, 60, randC);
         Vector2 randDir = Vector2Normalize((Vector2){GetRandomFloatValue(-1, 1), GetRandomFloatValue(-1, 1)});
-        p->velocity = Vector2Scale(randDir, GetRandomFloatValue(0, 5));
+        p->velocity = Vector2Scale(randDir, GetRandomFloatValue(2, 5));
     }
 }
 
@@ -61,7 +61,7 @@ void UpdateDrawParticles(void)
             p->pos = Vector2Add(p->pos, p->velocity);
             p->lifetime--;
 
-            //p->colour.a = 255 * (p->lifetime / p->startLifetime);
+            p->colour.a = 255 * (p->lifetime / (float)p->startLifetime);
 
             DrawRectangleV(p->pos, p->size, p->colour);
 
