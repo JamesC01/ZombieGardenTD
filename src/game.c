@@ -62,6 +62,9 @@ int main(void)
     SetMusicVolume(themeSong, 0.5f);
     PlayMusicStream(themeSong);
 
+    SetMusicVolume(rainLoop, 0.25f);
+    PlayMusicStream(rainLoop);
+
     projectiles = CreateFixedObjectArray(16, sizeof(Projectile));
     particles = CreateFixedObjectArray(2048, sizeof(Particle));
     zombies = CreateFixedObjectArray(32, sizeof(Zombie));
@@ -108,7 +111,7 @@ int main(void)
         }
 
         if (raining) {
-            // TODO: play rain sounds
+            UpdateMusicStream(rainLoop);
 
             // Spawn rain particles
             Vector2 randPos = {

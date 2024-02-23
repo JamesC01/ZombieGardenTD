@@ -34,6 +34,7 @@ extern Sound popSound;
 extern Sound sunAppearSound;
 
 extern Music themeSong;
+extern Music rainLoop;
 
 void LoadAssets();
 void UnloadAssets();

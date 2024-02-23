@@ -26,6 +26,7 @@ Font bigFont;
 Font smallFont;
 
 Music themeSong;
+Music rainLoop;
 
 void LoadAssets()
 {
@@ -43,6 +44,7 @@ void LoadAssets()
     smallShadowSprite = LoadTexture("sprites/small_shadow.png");
 
     themeSong = LoadMusicStream("sounds/theme.mp3");
+    rainLoop = LoadMusicStream("sounds/rain.mp3");
 
     peaShootSound = LoadSound("sounds/shoot_pea.wav");
     popSound = LoadSound("sounds/pop.wav");
