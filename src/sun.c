@@ -13,8 +13,10 @@ int sunsCollectedCount;// in PvZ, you start out with enough sun to buy a sunflow
 void InitSuns(void)
 {
     // Init sun variables
-    memset(suns, 0, MAX_SUNS * sizeof(Sun));
-    nextSun = 0;
+    Sun* sunArr = (Sun*)suns.array;
+    for (int i = 0; i < suns.fixedSize; i++) {
+        sunArr[i].active = false;
+    }
 
     sunCooldown = 60;
     sunsCollectedCount = 9999;//SUN_VALUE*2; // in PvZ, you start out with enough sun to buy a sunflower
@@ -27,7 +29,7 @@ void SpawnSun(Vector2 pos)
     sunArr[suns.next].pos = pos;
     PlaySound(sunAppearSound);
 
-    NextObject(suns);
+    NextObject(&suns);
 }
 
 void UpdateDrawSuns(void)
@@ -40,7 +42,7 @@ void UpdateDrawSuns(void)
 
     // Update and draw Suns
     Sun *sunArr = (Sun*)suns.array;
-    for (int i = 0; i < MAX_SUNS; i++) {
+    for (int i = 0; i < suns.fixedSize; i++) {
         if (sunArr[i].active) {
             sunArr[i].pos.y += 0.25f;
 

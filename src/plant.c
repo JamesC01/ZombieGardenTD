@@ -67,9 +67,10 @@ void UpdateDrawPlants()
 void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
 {
     if (TickCooldown(&p->cooldown, plantCooldownLUT[p->type])) {
-        for (int i = 0; i < MAX_ZOMBIES; i++) {
-            if (zombies[i].active) {
-                Zombie* z = &zombies[i];
+        Zombie* zArr = (Zombie*)zombies.array;
+        for (int i = 0; i < zombies.fixedSize; i++) {
+            if (zArr[i].active) {
+                Zombie* z = &zArr[i];
                 if (fabs((int)z->gridPos.x - gridPos.x) < 2 && fabs((int)z->gridPos.y - gridPos.y) < 2) {
                     z->health = 0;
                 }
@@ -101,9 +102,10 @@ void UpdateDrawSunflower(Plant* p, Vector2 screenPos)
 void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
 {
     // Look for a zombie in our row
+    Zombie* zArr = (Zombie*)zombies.array;
     bool zombieInRow = false;
-    for (int i = 0; i < MAX_ZOMBIES; i++) {
-        if (zombies[i].active && zombies[i].gridPos.y == gridPos.y && zombies[i].gridPos.x >= gridPos.x && zombies[i].gridPos.x <= GRID_WIDTH+0.75f) {
+    for (int i = 0; i < zombies.fixedSize; i++) {
+        if (zArr[i].active && zArr[i].gridPos.y == gridPos.y && zArr[i].gridPos.x >= gridPos.x && zArr[i].gridPos.x <= GRID_WIDTH+0.75f) {
             zombieInRow = true;
             break;
         }
