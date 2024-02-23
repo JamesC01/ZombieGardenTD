@@ -70,6 +70,7 @@ int main(void)
     InitializeGame();
 
     bool playingMusic = true; // TODO: should be true by default
+    bool raining = false;
     
 
     bool shouldClose = false;
@@ -83,6 +84,10 @@ int main(void)
             } else {
                 SetTargetFPS(0);
             }
+        }
+
+        if (IsKeyPressed(KEY_R)) {
+            raining = !raining;
         }
 
         if (IsKeyPressed(KEY_M)) {
@@ -102,6 +107,22 @@ int main(void)
             CreateParticleExplosion(GetMousePosition(), (Vector2){4, 4}, 4, 10, 16, DARKBROWN);
         }
 
+        if (raining) {
+            // TODO: play rain sounds
+
+            // Spawn rain particles
+            Vector2 randPos = {
+                GetRandomValue(0, screenWidth),
+                GetRandomValue(-screenHeight/2, 0)
+            };
+            Vector2 randSize = Vector2Scale((Vector2){3, 8}, GetRandomFloatValue(0.5f, 1));
+            Particle* p = CreateParticle(P_RAIN, randPos, randSize, GetRandomValue(10, 60*5), (Color){50, 200, 220, 80});
+            p->velocity = (Vector2){
+                0,
+                    GetRandomFloatValue(8, 16)
+            };
+        }
+
         BeginDrawing();
 
         ClearBackground(WHITE);
@@ -118,6 +139,10 @@ int main(void)
             case GAME_SCREEN_EXIT:
                 shouldClose = true;
                 break;
+        }
+
+        if (raining) {
+            DrawRectangle(0, 0, screenWidth, screenHeight, (Color){0, 20, 50, 75});
         }
 
         // Draw FPS
