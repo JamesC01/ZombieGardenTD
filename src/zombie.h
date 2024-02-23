@@ -1,5 +1,6 @@
 #ifndef ZOMBIE_H
 #define ZOMBIE_H
+#include "game.h"
 #include <raylib.h>
 
 typedef struct {
@@ -8,10 +9,7 @@ typedef struct {
     bool active;
 } Zombie;
 
-// Zombie globals
-#define MAX_ZOMBIES 32
-extern Zombie zombies[MAX_ZOMBIES];
-extern int nextZombie;
+extern FixedObjectArray zombies;
 
 extern int zombiesKilledCount;
 

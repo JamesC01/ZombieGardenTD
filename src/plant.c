@@ -113,10 +113,12 @@ void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
     if (zombieInRow) {
         if (TickCooldown(&p->cooldown, plantCooldownLUT[p->type])) {
             Vector2 peaSpawnPos = Vector2Add(screenPos, (Vector2){18, -42});
-            projectiles[nextProjectile].active = true;
-            projectiles[nextProjectile].pos = peaSpawnPos;
 
-            NextObject(&nextProjectile, MAX_PROJ);
+            Projectile* projArr = (Projectile*)projectiles.array;
+            projArr[projectiles.next].active = true;
+            projArr[projectiles.next].pos = peaSpawnPos;
+
+            NextObject(&projectiles);
 
             PlaySound(peaShootSound);
             CreateParticleExplosion(peaSpawnPos, (Vector2){2, 2}, 3, 15, 8, (Color){200, 255, 200, 255});

@@ -1,6 +1,7 @@
 #ifndef PARTICLES_H
 #define PARTICLES_H
 
+#include "game.h"
 #include <raylib.h>
 
 typedef struct {
@@ -13,10 +14,7 @@ typedef struct {
     bool active;
 } Particle;
 
-// Particle globals
-#define MAX_PARTICLES 128
-extern Particle particles[MAX_PARTICLES];
-extern int nextParticle;
+extern FixedObjectArray particles;
 
 void CreateParticleExplosion(Vector2 pos, Vector2 size, int maxSpeed, int lifetime, int particleCount, Color colour);
 void UpdateDrawParticles(void);

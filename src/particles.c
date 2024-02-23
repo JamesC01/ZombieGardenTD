@@ -3,14 +3,15 @@
 #include <stdlib.h>
 #include "game.h"
 
-Particle particles[MAX_PARTICLES] = {0};
-int nextParticle = 0;
+FixedObjectArray particles;
 
 // TODO: Consider adding minSpeed
 void CreateParticleExplosion(Vector2 pos, Vector2 size, int maxSpeed, int lifetime, int particleCount, Color colour)
 {
+    Particle *partArr = (Particle*)particles.array;
     for (int i = 0; i < particleCount; i++) {
-        Particle* p = &particles[nextParticle];
+        Particle* p = &partArr[particles.next];
+
 
         p->pos = pos;
         p->size = size;
@@ -22,14 +23,15 @@ void CreateParticleExplosion(Vector2 pos, Vector2 size, int maxSpeed, int lifeti
         p->active = true;
 
 
-        NextObject(&nextParticle, MAX_PARTICLES);
+        NextObject(&particles);
     }
 }
 
 void UpdateDrawParticles(void)
 {
-    for (int i = 0; i < MAX_PARTICLES; i++) {
-        Particle *p = &particles[i];
+    Particle *partArr = (Particle*)particles.array;
+    for (int i = 0; i < particles.fixedSize; i++) {
+        Particle *p = &partArr[i];
         if (p->active) {
             p->pos = Vector2Add(p->pos, p->velocity);
             p->lifetime--;

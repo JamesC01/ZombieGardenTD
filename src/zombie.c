@@ -11,8 +11,7 @@
 
 #define ZOMBIE_DEBUG false
 
-Zombie zombies[MAX_ZOMBIES] = {0};
-int nextZombie = 0;
+FixedObjectArray zombies;
 
 int defaultZombieSpawnRate;
 int defaultWaveZombieSpawnRate;
@@ -51,10 +50,10 @@ void InitZombies(void)
     killsRequiredToEndWave = 10;
     currentKillsRequiredToEndWave = 0;
     // Init zombies array
-    for (int i = 0; i < MAX_ZOMBIES; i++) {
-        zombies[i].active = false;
+    Zombie *zomArr = (Zombie*)zombies.array;
+    for (int i = 0; i < zombies.fixedSize; i++) {
+        zomArr[i].active = false;
     }
-    nextZombie = 0;
 
     currentZombieSpawnRate = defaultZombieSpawnRate;
 
@@ -103,17 +102,21 @@ void UpdateDrawZombies(void)
         lastZombieSpawnYIndex = ySpawn;
         Vector2 gridPos = {xSpawn, ySpawn};
 
-        zombies[nextZombie].active = true;
-        zombies[nextZombie].health = 1.0f;
-        zombies[nextZombie].gridPos = gridPos;
+        Zombie* zombie = GET_NEXT_OBJECT(zombies, Zombie);
 
-        NextObject(&nextZombie, MAX_ZOMBIES);
+        zombie->active = true;
+        zombie->health = 1.0f;
+        zombie->gridPos = gridPos;
+
+        NextObject(&zombies);
     }
 
     // Update and draw zombies
+    Zombie* zArr = (Zombie*)zombies.array;
     zombieGrowlTimer--;
-    for (int i = 0; i < MAX_ZOMBIES; i++) {
-        Zombie* zombie = &zombies[i];
+    for (int i = 0; i < zombies.fixedSize; i++) {
+        Zombie* zombie = &zArr[i];
+
         if (zombie->active) {
             // Growl
             if (zombieGrowlTimer < 0) {
@@ -133,10 +136,10 @@ void UpdateDrawZombies(void)
             // Move and eat plants
             float moveAmount = zombieMoveSpeed;
 
-            if (zombies[i].gridPos.x > 0 && zombies[i].gridPos.x < GRID_WIDTH) {
-                int frontOfZombieRounded = (int)roundf(zombies[i].gridPos.x)-1;
+            if (zombie->gridPos.x > 0 && zombie->gridPos.x < GRID_WIDTH) {
+                int frontOfZombieRounded = (int)roundf(zombie->gridPos.x)-1;
                 if (frontOfZombieRounded >= 0) {
-                    Plant* p = &gardenGrid[frontOfZombieRounded][(int)zombies[i].gridPos.y];
+                    Plant* p = &gardenGrid[frontOfZombieRounded][(int)zombie->gridPos.y];
 
                     if (p->type != PT_NONE) {
                         p->health -= 0.5f;
@@ -146,32 +149,33 @@ void UpdateDrawZombies(void)
                 }
             }
 
-            zombies[i].gridPos.x -= moveAmount;
+            zombie->gridPos.x -= moveAmount;
 
-            if (zombies[i].gridPos.x <= -1) {
+            if (zombie->gridPos.x <= -1) {
                 GameOver();
             }
 
 
-            int x = gridDrawOffset.x + zombies[i].gridPos.x*gridCellSize.x;
-            int y = gridDrawOffset.y + zombies[i].gridPos.y*gridCellSize.y;
+            int x = gridDrawOffset.x + zombie->gridPos.x*gridCellSize.x;
+            int y = gridDrawOffset.y + zombie->gridPos.y*gridCellSize.y;
             Rectangle box = {x-16, y-16, (float)zombieSprite.width/2, zombieSprite.height};
 
             // Handle collisions with projectiles
-            for (int j = 0; j < MAX_PROJ; j++) {
-                if (projectiles[j].active) {
-                    if (CheckCollisionPointRec(projectiles[j].pos, box)) {
-                        projectiles[j].active = false;
-                        zombies[i].health -= 0.1f;
+            Projectile* projArr = (Projectile*)projectiles.array;
+            for (int j = 0; j < projectiles.fixedSize; j++) {
+                if (projArr[j].active) {
+                    if (CheckCollisionPointRec(projArr[j].pos, box)) {
+                        projArr[j].active = false;
+                        zombie->health -= 0.1f;
                         PlaySound(popSound);
                         PlaySound(zombieHitSounds[GetRandomValue(0, ZOMBIE_HIT_SOUND_COUNT-1)]);
-                        CreateParticleExplosion(projectiles[j].pos, (Vector2){3,3}, 3, 15, 16, (Color){100, 0, 0, 255});
+                        CreateParticleExplosion(projArr[j].pos, (Vector2){3,3}, 3, 15, 16, (Color){100, 0, 0, 255});
                     }
                 } 
             }
 
-            if (zombies[i].health <= 0) {
-                zombies[i].active = false;
+            if (zombie->health <= 0) {
+                zombie->active = false;
                 ZombieKilled();
             }
 

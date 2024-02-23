@@ -24,6 +24,8 @@ typedef enum {
 
 GameScreen currentScreen = GAME_SCREEN_START;
 
+FixedObjectArray projectiles;
+
 const int screenWidth = 640;
 const int screenHeight = 480;
 
@@ -36,9 +38,6 @@ Plant gardenGrid[GRID_WIDTH][GRID_HEIGHT] = {0};
 Vector2 gridDrawOffset = {40, 80};
 Vector2 gridCellSize = {65, 78};
 
-Projectile projectiles[MAX_PROJ] = {0};
-int nextProjectile = 0;
-
 void UpdateDrawStart(void);
 void UpdateDrawGame(void);
 void UpdateDrawGameOver(void);
@@ -46,6 +45,8 @@ void UpdateDrawProjectiles(void);
 void InitializeGame(void);
 void DrawBackground(void);
 
+
+FixedObjectArray CreateFixedObjectArray(int objMaxCount, int typeSizeBytes);
 
 int main(void)
 {
@@ -61,10 +62,14 @@ int main(void)
     SetMusicVolume(themeSong, 0.5f);
     PlayMusicStream(themeSong);
 
+    projectiles = CreateFixedObjectArray(16, sizeof(Projectile));
+    particles = CreateFixedObjectArray(128, sizeof(Particle));
+    zombies = CreateFixedObjectArray(32, sizeof(Zombie));
+    suns = CreateFixedObjectArray(8, sizeof(Sun));
+
     InitializeGame();
 
     bool playingMusic = true; // TODO: should be true by default
-                              //
     
 
     bool shouldClose = false;
@@ -281,8 +286,9 @@ void DrawBackground(void)
 void UpdateDrawProjectiles(void)
 {
     // Collision behaviour is done inside zombie update
-    for (int i = 0; i < MAX_PROJ; i++) {
-        Projectile* proj = &projectiles[i];
+    Projectile* projArr = (Projectile*)projectiles.array;
+    for (int i = 0; i < projectiles.fixedSize; i++) {
+        Projectile* proj = &projArr[i];
 
         if (proj->active) {
             proj->pos.x += 5;
@@ -296,11 +302,11 @@ void UpdateDrawProjectiles(void)
     }
 }
 
-void NextObject(int *next, int max)
+void NextObject(FixedObjectArray* array)
 {
-    (*next)++;
-    if (*next == max)
-        *next = 0;
+    array->next++;
+    if (array->next == array->fixedSize)
+        array->next = 0;
 }
 
 int GetUniqueRandomValue(int exludedValue, int min, int max)
@@ -351,4 +357,14 @@ void DrawTextWithShadow(Font font, const char *text, int x, int y, float fontSiz
     const Color shadowColour = {0, 0, 0, 150};
     DrawTextEx(font, text, (Vector2){x+shadowOffset, y+shadowOffset}, fontSize, 0, shadowColour);
     DrawTextEx(font, text, (Vector2){x, y}, fontSize, 0, tint);
+}
+
+FixedObjectArray CreateFixedObjectArray(int objMaxCount, int typeSizeBytes)
+{
+    FixedObjectArray objArray;
+    objArray.array = malloc(typeSizeBytes * objMaxCount);
+    objArray.fixedSize = objMaxCount;
+    objArray.next = 0;
+
+    return objArray;
 }

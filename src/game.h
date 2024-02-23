@@ -21,16 +21,22 @@ extern Vector2 gridCellSize;
 
 
 typedef struct {
+    int fixedSize;
+    void* array;
+    int next;
+} FixedObjectArray;
+
+// Get a pointer to the next free FixedObjectArray object
+#define GET_NEXT_OBJECT(fixedObjArray, type) &((type*)(fixedObjArray).array)[(fixedObjArray).next]
+
+typedef struct {
     Vector2 pos;
     bool active;
 } Projectile;
 
-// Projectile globals
-#define MAX_PROJ 16
-extern Projectile projectiles[MAX_PROJ];
-extern int nextProjectile;
+extern FixedObjectArray projectiles;
 
-void NextObject(int *next, int max);
+void NextObject(FixedObjectArray *array);
 bool TickCooldown(int *timer, int cooldownTime);
 int GetUniqueRandomValue(int exludedValue, int min, int max);
 float GetRandomFloatValue(float min, float max);
