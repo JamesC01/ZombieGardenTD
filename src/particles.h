@@ -16,6 +16,7 @@ typedef struct {
 
 extern FixedObjectArray particles;
 
+void CreateParticleConfetti(Vector2 pos, Vector2 size, int particleCount);
 void CreateParticleExplosion(Vector2 pos, Vector2 size, int maxSpeed, int lifetime, int particleCount, Color colour);
 void UpdateDrawParticles(void);
 

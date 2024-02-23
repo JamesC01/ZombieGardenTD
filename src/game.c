@@ -63,7 +63,7 @@ int main(void)
     PlayMusicStream(themeSong);
 
     projectiles = CreateFixedObjectArray(16, sizeof(Projectile));
-    particles = CreateFixedObjectArray(128, sizeof(Particle));
+    particles = CreateFixedObjectArray(2048, sizeof(Particle));
     zombies = CreateFixedObjectArray(32, sizeof(Zombie));
     suns = CreateFixedObjectArray(8, sizeof(Sun));
 
@@ -94,6 +94,10 @@ int main(void)
             UpdateMusicStream(themeSong);
         }
 
+        if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !draggingSeedPacket) {
+            CreateParticleConfetti(GetMousePosition(), (Vector2){4, 4}, 4);
+        }
+
 
         BeginDrawing();
 
@@ -122,6 +126,11 @@ int main(void)
 
 
     }
+
+    free(projectiles.array);
+    free(particles.array);
+    free(zombies.array);
+    free(suns.array);
 
     UnloadAssets();
     CloseAudioDevice();
@@ -363,6 +372,7 @@ FixedObjectArray CreateFixedObjectArray(int objMaxCount, int typeSizeBytes)
 {
     FixedObjectArray objArray;
     objArray.array = malloc(typeSizeBytes * objMaxCount);
+    memset(objArray.array, 0, typeSizeBytes * objMaxCount);
     objArray.fixedSize = objMaxCount;
     objArray.next = 0;
 
