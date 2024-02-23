@@ -302,3 +302,17 @@ Plant* p = gardenGrid[i][j];
 Which makes referring to it in many places much shorter.
 
 Overall, didn't do a massive amount today, but I still enjoyed myself.
+
+
+
+
+23/02/2024
+
+(Note: I spent 25 minutes creating the rain loop, and that time isn't added to the time said below.)
+
+Today I spent 2 hours 5 minutes working on the game (exluding the above note). I got a decent bit done. I refactored the object pool globals into its own struct, I implemented some
+fun secret things, like confetti particles when you right click and aren't holding a seed packet, I implemented particle fading, I implemented toggleable rain particles, along with
+a rain loop that plays that I made myself. Overall, I'm pretty happy. Again, I had a great time working on it. The refactoring at the start was a bit slow and somewhat boring, but
+it wasn't bad.
+
+The last thing that I *really* need to do is make my own zombie sprite. Then the entire thing will be made by me!
