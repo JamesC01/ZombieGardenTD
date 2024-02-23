@@ -16,7 +16,7 @@ const Vector2 SEEDPACKET_SIZE = {40, 50};
 void CreateSeedPackets()
 {
     // Implementation detail, the shovel is also a seedpacket. It just works.
-    seedPackets[0] = (SeedPacket){ PT_NONE, Vector2Zero(), 0};
+    seedPackets[0] = (SeedPacket){ PT_NONE, Vector2Zero()};
     seedPackets[1] = (SeedPacket){ PT_SUNFLOWER, Vector2Zero(), SUN_VALUE*2, 0, SEEDPACKET_COOLDOWN_FAST};
     seedPackets[2] = (SeedPacket){ PT_PSHOOTER, Vector2Zero(), SUN_VALUE*4, 0, SEEDPACKET_COOLDOWN_FAST};
     seedPackets[3] = (SeedPacket){ PT_WALLNUT, Vector2Zero(), SUN_VALUE*2, 0, SEEDPACKET_COOLDOWN_SLOW};

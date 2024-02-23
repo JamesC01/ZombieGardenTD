@@ -98,6 +98,9 @@ int main(void)
             CreateParticleConfetti(GetMousePosition(), (Vector2){4, 4}, 4);
         }
 
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            CreateParticleExplosion(GetMousePosition(), (Vector2){4, 4}, 4, 10, 16, DARKBROWN);
+        }
 
         BeginDrawing();
 
