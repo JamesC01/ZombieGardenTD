@@ -193,7 +193,7 @@ void UpdateDrawZombies(void)
             DrawTextureCentered(zombieSprite, drawPos, origin, WHITE);
 
             // Zombie collider debug
-            DrawRectangleRec(box, (Color){100, 100, 255, 100});
+            //DrawRectangleRec(box, (Color){100, 100, 255, 100});
         }
     }
 }

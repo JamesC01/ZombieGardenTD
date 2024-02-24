@@ -283,7 +283,7 @@ void UpdateDrawPauseMenu(void)
     DrawTextWithShadow(bigFont, "Paused", virtualScreenWidth/2-textHalfWidth, 64, 50, 4, WHITE);
 
     int x = virtualScreenWidth/2-textHalfWidth;
-    int y = virtualScreenHeight/2-30;
+    int y = virtualScreenHeight/2-80;
     int height = 50;
 
     TextOptions options = {
@@ -312,6 +312,14 @@ void UpdateDrawPauseMenu(void)
     sprintf(musicText, "Toggle Music (%s)", (playingMusic) ? "On" : "Off");
     if (TextButton(options, musicText, x, y, BROWN, btnShadow)) {
         playingMusic = !playingMusic;
+    }
+
+    y += height;
+
+    char fullScreenText[32];
+    sprintf(fullScreenText, "Fullscreen (%s)", (IsWindowFullscreen()) ? "Yes" : "No");
+    if (TextButton(options, fullScreenText, x, y, LIGHTGRAY, btnShadow)) {
+        ToggleFullscreen();
     }
 
     y += height;
