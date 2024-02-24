@@ -44,14 +44,27 @@ typedef struct {
     Color colour;
 } TextOptions;
 
+typedef struct {
+    Color colour;
+    Color outlineColour;
+    int shadowOffset;
+    int paddingX;
+    int paddingY;
+    int outlineThickness;
+    bool centered;
+} ButtonOptions;
+
+extern ButtonOptions defaultButtonOptions;
+
 void NextObject(FixedObjectArray *array);
 bool TickCooldown(int *timer, int cooldownTime);
 int GetUniqueRandomValue(int exludedValue, int min, int max);
 float GetRandomFloatValue(float min, float max);
 void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint);
 Vector2 GetMousePosVirtual(void);
-bool TextButton(TextOptions textOptions, char *text, int x, int y, Color buttonColor, int buttonShadowOffset);
+bool TextButton(ButtonOptions buttonOptions, TextOptions textOptions, char *text, int x, int y);
 
 void DrawTextWithShadow(Font font, const char *text, int x, int y, float fontSize, float shadowOffset, Color tint);
+int GetCenteredTextX(Font font, int size, char *text);
 
 #endif

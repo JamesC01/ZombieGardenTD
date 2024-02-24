@@ -25,6 +25,16 @@ typedef enum {
 
 GameScreen currentScreen = GAME_SCREEN_START;
 
+ButtonOptions defaultButtonOptions = {
+    LIGHTGRAY,
+    BLACK,
+    4,
+    16,
+    8,
+    2,
+    true
+};
+
 FixedObjectArray projectiles;
 
 const int virtualScreenWidth = 640;
@@ -188,55 +198,63 @@ int main(void)
     return 0;
 }
 
+
 // TODO: Maybe make it so you can't click outside the button, then move into the button and let go to click
-bool TextButton(TextOptions textOptions, char *text, int x, int y, Color buttonColour, int buttonShadowOffset)
+bool TextButton(ButtonOptions buttonOptions, TextOptions textOptions, char *text, int x, int y)
 {
-    const int paddingX = 16;
-    const int paddingY = 4;
+    if (buttonOptions.centered) {
+        int textCenterX = GetCenteredTextX(textOptions.font, textOptions.size, text);
+        x = textCenterX - buttonOptions.paddingX/2;
+    }
+
     Vector2 textSize = MeasureTextEx(textOptions.font, text, textOptions.size, 0);
     Rectangle button = {
         x, y,
-        textSize.x+paddingX, textSize.y+paddingY
+        textSize.x+buttonOptions.paddingX, textSize.y+buttonOptions.paddingY
     };
+
 
     Rectangle shadow = button;
     Rectangle outline = button;
-    const int outlineThickness = 2;
-    outline.x -= outlineThickness;
-    outline.y -= outlineThickness;
-    outline.width += outlineThickness*2;
-    outline.height += outlineThickness*2;
+
+    outline.x -= buttonOptions.outlineThickness;
+    outline.y -= buttonOptions.outlineThickness;
+    outline.width += buttonOptions.outlineThickness*2;
+    outline.height += buttonOptions.outlineThickness*2;
 
     bool pressed = false;
 
     if (CheckCollisionPointRec(virtualMousePosition, button)) {
         // TODO: clean this up
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && !draggingSeedPacket) {
-            buttonColour.r *= 0.5f;
-            buttonColour.g *= 0.5f;
-            buttonColour.b *= 0.5f;
+            buttonOptions.colour.r *= 0.5f;
+            buttonOptions.colour.g *= 0.5f;
+            buttonOptions.colour.b *= 0.5f;
         } else {
-            buttonColour.r *= 0.75f;
-            buttonColour.g *= 0.75f;
-            buttonColour.b *= 0.75f;
+            buttonOptions.colour.r *= 0.75f;
+            buttonOptions.colour.g *= 0.75f;
+            buttonOptions.colour.b *= 0.75f;
         }
 
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && !draggingSeedPacket) {
             pressed = true;
         }
 
-        shadow.x += (float)buttonShadowOffset/2;
-        shadow.y += (float)buttonShadowOffset/2;
+        shadow.x += (float)buttonOptions.shadowOffset/2;
+        shadow.y += (float)buttonOptions.shadowOffset/2;
     } else {
-        shadow.x += buttonShadowOffset;
-        shadow.y += buttonShadowOffset;
+        shadow.x += buttonOptions.shadowOffset;
+        shadow.y += buttonOptions.shadowOffset;
     }
 
     DrawRectangleRec(shadow, (Color){0, 0, 0, 100});
     DrawRectangleRec(outline, BLACK);
-    DrawRectangleRec(button, buttonColour);
+    DrawRectangleRec(button, buttonOptions.colour);
 
-    DrawTextWithShadow(textOptions.font, text, x+paddingX/2, y+paddingY/2, textOptions.size, textOptions.shadowOffset, textOptions.colour);
+    DrawTextWithShadow(textOptions.font, text,
+        x+buttonOptions.paddingX/2, y+buttonOptions.paddingY/2,
+        textOptions.size, textOptions.shadowOffset, textOptions.colour
+    );
 
     return pressed;
 }
@@ -245,44 +263,61 @@ void UpdateDrawStart(void)
 {
     DrawBackground();
 
-    DrawTextWithShadow(bigFont, "Raylib\n\n\nPlants Vs Zombies\n\n\nClone", 16, 32, 50, 4, WHITE);
+    char *titleText1 = "PvZ";
+    char *titleText2 = "Clone";
+    DrawTextWithShadow(bigFont, titleText1, GetCenteredTextX(bigFont, 75, titleText1), 32, 75, 4, WHITE);
+    DrawTextWithShadow(bigFont, titleText2, GetCenteredTextX(bigFont, 75, titleText2), 32+75, 75, 4, WHITE);
 
     int x = 16;
     int y = virtualScreenHeight/2-30;
-    int height = 50;
+    int height = 60;
 
     TextOptions options = {
         smallFont,
-        30,
+        40,
         2,
         WHITE
     };
 
+    ButtonOptions bOptions = defaultButtonOptions;
+    bOptions.centered = true;
+    bOptions.colour = GREEN;
+    bOptions.shadowOffset = 4;
+
     const int btnShadow = 4;
-    if (TextButton(options, "Start Game!", x, y, GREEN, btnShadow)) {
+    if (TextButton(bOptions, options, "Start Game!", x, y)) {
         currentScreen = GAME_SCREEN_PLAYING;
         InitializeGame();
     }
 
     y += height;
 
-    if (TextButton(options, "Quit Game", x, y, RED, btnShadow)) {
+    bOptions.colour = RED;
+
+    if (TextButton(bOptions, options, "Quit Game", x, y)) {
         currentScreen = GAME_SCREEN_EXIT;
     }
 
-    y += height*2.5f;
 
-    DrawTextWithShadow(smallFont, "Game by James Czekaj", x, y, 25, 2, WHITE);
+    char *creditText = "Game by James Czekaj";
+    DrawTextWithShadow(smallFont, creditText, GetCenteredTextX(smallFont, 25, creditText), virtualScreenHeight-32, 25, 2, WHITE);
+}
+
+int GetCenteredTextX(Font font, int size, char *text)
+{
+    int textHalfWidth = MeasureTextEx(font, text, size, 0).x/2;
+
+    return virtualScreenWidth/2-textHalfWidth;
 }
 
 void UpdateDrawPauseMenu(void)
 {
     DrawBackground();
 
-    int textHalfWidth = MeasureTextEx(bigFont, "Paused", 50, 0).x/2;
-    DrawTextWithShadow(bigFont, "Paused", virtualScreenWidth/2-textHalfWidth, 64, 50, 4, WHITE);
+    char *pausedText = "Paused";
+    DrawTextWithShadow(bigFont, pausedText, GetCenteredTextX(bigFont, 50, pausedText), 64, 50, 4, WHITE);
 
-    int x = virtualScreenWidth/2-textHalfWidth;
+    int x;
     int y = virtualScreenHeight/2-80;
     int height = 50;
 
@@ -293,38 +328,53 @@ void UpdateDrawPauseMenu(void)
         WHITE
     };
 
+    ButtonOptions bOpt = defaultButtonOptions;
+    bOpt.shadowOffset = 4;
+    bOpt.centered = true;
+    bOpt.colour = GREEN;
+
     const int btnShadow = 4;
-    if (TextButton(options, "Return to Game", x, y, GREEN, btnShadow)) {
+    char *returnText = "Return to Game";
+    if (TextButton(bOpt, options, "Return to Game", x, y)) {
         currentScreen = GAME_SCREEN_PLAYING;
     }
 
     y += height;
 
+    bOpt.colour = (Color){0, 150, 200, 255};
+
     char rainText[32];
     sprintf(rainText, "Toggle Rain (%s)", (raining) ? "On" : "Off");
-    if (TextButton(options, rainText, x, y, (Color){0, 150, 200, 255}, btnShadow)) {
+    x = GetCenteredTextX(options.font, options.size, rainText);
+    if (TextButton(bOpt, options, rainText, x, y)) {
         raining = !raining;
     }
 
     y += height;
 
+    bOpt.colour = BROWN;
+
     char musicText[32];
     sprintf(musicText, "Toggle Music (%s)", (playingMusic) ? "On" : "Off");
-    if (TextButton(options, musicText, x, y, BROWN, btnShadow)) {
+    if (TextButton(bOpt, options, musicText, x, y)) {
         playingMusic = !playingMusic;
     }
 
     y += height;
 
+    bOpt.colour = LIGHTGRAY;
+
     char fullScreenText[32];
     sprintf(fullScreenText, "Fullscreen (%s)", (IsWindowFullscreen()) ? "Yes" : "No");
-    if (TextButton(options, fullScreenText, x, y, LIGHTGRAY, btnShadow)) {
+    if (TextButton(bOpt, options, fullScreenText, x, y)) {
         ToggleFullscreen();
     }
 
     y += height;
 
-    if (TextButton(options, "Return to Start", x, y, RED, btnShadow)) {
+    bOpt.colour = RED;
+
+    if (TextButton(bOpt, options, "Return to Start", x, y)) {
         currentScreen = GAME_SCREEN_START;
     }
 }
@@ -333,11 +383,12 @@ void UpdateDrawGameOver(void)
 {
     DrawBackground();
 
-    DrawTextWithShadow(bigFont, "YOU DIED!\n\n\n\nGAME OVER :(", 16, 16, 50, 4, WHITE);
+    DrawTextWithShadow(bigFont, "YOU DIED!", GetCenteredTextX(bigFont, 50, "YOU DIED!"), 16, 50, 4, WHITE);
+    DrawTextWithShadow(bigFont, "GAME OVER", GetCenteredTextX(bigFont, 50, "GAME OVER"), 50, 50, 4, WHITE);
 
     char killCountText[32];
     sprintf(killCountText, "You killed %i zombies!", zombiesKilledCount);
-    DrawTextWithShadow(smallFont, killCountText, 16, virtualScreenHeight/2-80, 40, 2, WHITE);
+    DrawTextWithShadow(smallFont, killCountText, GetCenteredTextX(smallFont, 40, killCountText), virtualScreenHeight/2-80, 40, 2, WHITE);
 
     TextOptions options = {
         smallFont,
@@ -346,8 +397,11 @@ void UpdateDrawGameOver(void)
         BLACK
     };
 
-    const int btnShadow = 4;
-    if (TextButton(options, "Return to Start", 16, virtualScreenHeight/2-15, LIGHTGRAY, btnShadow)) {
+    ButtonOptions bOpt = defaultButtonOptions;
+    bOpt.colour = LIGHTGRAY;
+    bOpt.centered = true;
+
+    if (TextButton(bOpt, options, "Return to Start", 16, 0)) {
         currentScreen = GAME_SCREEN_START;
     }
 }
@@ -462,7 +516,10 @@ void UpdateDrawGame(void)
         WHITE
     };
 
-    if (TextButton(options, "||", virtualScreenWidth-32, virtualScreenHeight-32, GRAY, 4)) {
+    ButtonOptions bOpt = defaultButtonOptions;
+    bOpt.centered = false;
+
+    if (TextButton(bOpt, options, "||", virtualScreenWidth-32, virtualScreenHeight-32)) {
         currentScreen = GAME_SCREEN_PAUSE_MENU;
     }
 }
