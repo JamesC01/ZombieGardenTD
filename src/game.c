@@ -142,6 +142,7 @@ int main(void)
             };
         }
 
+
         BeginTextureMode(targetRT);
 
         ClearBackground(WHITE);
@@ -169,12 +170,20 @@ int main(void)
         sprintf(fpsText, "%ifps", GetFPS());
         DrawTextWithShadow(smallFont, fpsText, 16, virtualScreenHeight-35, 35, 2, WHITE);
 
-        char mPosText[32];
-        sprintf(mPosText, "%.f, %.f", GetMousePosVirtual().x, GetMousePosVirtual().y);
-        DrawTextWithShadow(smallFont, mPosText, virtualScreenWidth-100, virtualScreenHeight-40, 40, 2, WHITE);
+        TextOptions options = {
+            smallFont,
+            20,
+            2,
+            WHITE
+        };
+        
+        if (TextButton(options, "Growl!", 100, 100, GREEN, 8)) {
+            PlaySound(zombieGrowlSounds[0]);
+        }
 
         EndTextureMode();
 
+        // Scale render texture to screen
         BeginDrawing();
 
         // Strange bug, can't clear the screen, it messes with transparent stuff.
@@ -192,11 +201,65 @@ int main(void)
     free(zombies.array);
     free(suns.array);
 
+    UnloadRenderTexture(targetRT);
+
     UnloadAssets();
     CloseAudioDevice();
     CloseWindow();
 
     return 0;
+}
+
+// TODO: Maybe make it so you can't click outside the button, then move into the button and let go to click
+bool TextButton(TextOptions textOptions, char *text, int x, int y, Color buttonColour, int buttonShadowOffset)
+{
+    const int padding = 4;
+    Vector2 textSize = MeasureTextEx(textOptions.font, text, textOptions.size, 0);
+    Rectangle button = {
+        x, y,
+        textSize.x+padding, textSize.y+padding
+    };
+
+    Rectangle shadow = button;
+    Rectangle outline = button;
+    const int outlineThickness = 2;
+    outline.x -= outlineThickness;
+    outline.y -= outlineThickness;
+    outline.width += outlineThickness*2;
+    outline.height += outlineThickness*2;
+
+    bool pressed = false;
+
+    if (CheckCollisionPointRec(virtualMousePosition, button)) {
+        // TODO: clean this up
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && !draggingSeedPacket) {
+            buttonColour.r *= 0.5f;
+            buttonColour.g *= 0.5f;
+            buttonColour.b *= 0.5f;
+        } else {
+            buttonColour.r *= 0.75f;
+            buttonColour.g *= 0.75f;
+            buttonColour.b *= 0.75f;
+        }
+
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && !draggingSeedPacket) {
+            pressed = true;
+        }
+
+        shadow.x += (float)buttonShadowOffset/2;
+        shadow.y += (float)buttonShadowOffset/2;
+    } else {
+        shadow.x += buttonShadowOffset;
+        shadow.y += buttonShadowOffset;
+    }
+
+    DrawRectangleRec(shadow, (Color){0, 0, 0, 100});
+    DrawRectangleRec(outline, BLACK);
+    DrawRectangleRec(button, buttonColour);
+
+    DrawTextWithShadow(textOptions.font, text, x+padding/2, y+padding/2, textOptions.size, textOptions.shadowOffset, textOptions.colour);
+
+    return pressed;
 }
 
 void UpdateDrawStart(void)

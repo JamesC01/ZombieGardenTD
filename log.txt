@@ -319,3 +319,8 @@ The last thing that I *really* need to do is make my own zombie sprite. Then the
 just pure code. This is what feels good to me for making certain things. It's just fun as hell to work on, and it feels like I can keep coming up with ways to improve/polish the
 game, and have fun implementing those things. I really need to try to apply some of this mentality to future games I make in godot, because I developed a horrible attitude towards
 that engine. I should try to implmement things simply and just enjoy the process.
+
+
+24/02/2024
+
+Spent 57 minutes just to add screen resizing, but it weirdly didn't feel like a long time.
