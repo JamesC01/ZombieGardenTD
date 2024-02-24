@@ -36,6 +36,7 @@ const int defaultFps = 60;
 bool limitFrameRate = true;
 bool paused = false;
 bool playingMusic = true;
+bool raining = false;
 int frameCount = 0;
 
 Plant gardenGrid[GRID_WIDTH][GRID_HEIGHT] = {0};
@@ -82,7 +83,6 @@ int main(void)
 
     targetRT = LoadRenderTexture(640, 480);
 
-    bool raining = false;
     
 
     bool shouldClose = false;
@@ -297,6 +297,22 @@ void UpdateDrawPauseMenu(void)
     const int btnShadow = 4;
     if (TextButton(options, "Return to Game", x, y, GREEN, btnShadow)) {
         currentScreen = GAME_SCREEN_PLAYING;
+    }
+
+    y += height;
+
+    char rainText[32];
+    sprintf(rainText, "Toggle Rain (%s)", (raining) ? "On" : "Off");
+    if (TextButton(options, rainText, x, y, (Color){0, 150, 200, 255}, btnShadow)) {
+        raining = !raining;
+    }
+
+    y += height;
+
+    char musicText[32];
+    sprintf(musicText, "Toggle Music (%s)", (playingMusic) ? "On" : "Off");
+    if (TextButton(options, musicText, x, y, BROWN, btnShadow)) {
+        playingMusic = !playingMusic;
     }
 
     y += height;
