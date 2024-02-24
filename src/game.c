@@ -18,6 +18,7 @@
 typedef enum {
     GAME_SCREEN_START,
     GAME_SCREEN_PLAYING,
+    GAME_SCREEN_PAUSE_MENU,
     GAME_SCREEN_GAMEOVER,
     GAME_SCREEN_EXIT
 } GameScreen;
@@ -34,6 +35,7 @@ Vector2 virtualMousePosition;
 const int defaultFps = 60;
 bool limitFrameRate = true;
 bool paused = false;
+bool playingMusic = true;
 int frameCount = 0;
 
 Plant gardenGrid[GRID_WIDTH][GRID_HEIGHT] = {0};
@@ -42,6 +44,7 @@ Vector2 gridCellSize = {65, 78};
 
 RenderTexture2D targetRT;
 
+void UpdateDrawPauseMenu(void);
 void UpdateDrawStart(void);
 void UpdateDrawGame(void);
 void UpdateDrawGameOver(void);
@@ -79,7 +82,6 @@ int main(void)
 
     targetRT = LoadRenderTexture(640, 480);
 
-    bool playingMusic = true; // TODO: should be true by default
     bool raining = false;
     
 
@@ -108,14 +110,6 @@ int main(void)
             raining = !raining;
         }
 
-        if (IsKeyPressed(KEY_M)) {
-            playingMusic = !playingMusic;
-        }
-
-
-        if (playingMusic) {
-            UpdateMusicStream(themeSong);
-        }
 
 
         if (raining) {
@@ -144,6 +138,9 @@ int main(void)
                 break;
             case GAME_SCREEN_PLAYING:
                 UpdateDrawGame();
+                break;
+            case GAME_SCREEN_PAUSE_MENU:
+                UpdateDrawPauseMenu();
                 break;
             case GAME_SCREEN_GAMEOVER:
                 UpdateDrawGameOver();
@@ -279,6 +276,36 @@ void UpdateDrawStart(void)
     DrawTextWithShadow(smallFont, "Game by James Czekaj", x, y, 25, 2, WHITE);
 }
 
+void UpdateDrawPauseMenu(void)
+{
+    DrawBackground();
+
+    int textHalfWidth = MeasureTextEx(bigFont, "Paused", 50, 0).x/2;
+    DrawTextWithShadow(bigFont, "Paused", virtualScreenWidth/2-textHalfWidth, 64, 50, 4, WHITE);
+
+    int x = virtualScreenWidth/2-textHalfWidth;
+    int y = virtualScreenHeight/2-30;
+    int height = 50;
+
+    TextOptions options = {
+        smallFont,
+        30,
+        2,
+        WHITE
+    };
+
+    const int btnShadow = 4;
+    if (TextButton(options, "Return to Game", x, y, GREEN, btnShadow)) {
+        currentScreen = GAME_SCREEN_PLAYING;
+    }
+
+    y += height;
+
+    if (TextButton(options, "Return to Start", x, y, RED, btnShadow)) {
+        currentScreen = GAME_SCREEN_START;
+    }
+}
+
 void UpdateDrawGameOver(void)
 {
     DrawBackground();
@@ -304,6 +331,14 @@ void UpdateDrawGameOver(void)
 
 void UpdateDrawGame(void)
 {
+    if (IsKeyPressed(KEY_M)) {
+        playingMusic = !playingMusic;
+    }
+
+
+    if (playingMusic) {
+        UpdateMusicStream(themeSong);
+    }
 
     if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !draggingSeedPacket) {
         CreateParticleConfetti(GetMousePosVirtual(), (Vector2){4, 4}, 4);
@@ -314,7 +349,7 @@ void UpdateDrawGame(void)
     }
 
     if (IsKeyPressed(KEY_ESCAPE)) {
-        currentScreen = GAME_SCREEN_START;
+        currentScreen = GAME_SCREEN_PAUSE_MENU;
     }
 
     if (IsKeyPressed(KEY_P)) {
@@ -381,6 +416,16 @@ void UpdateDrawGame(void)
     sprintf(timerText, "%i", frameCount/60);
     DrawTextWithShadow(smallFont, timerText, virtualScreenWidth-100, 10, 40, 1, WHITE);
 
+    TextOptions options = {
+        smallFont,
+        20,
+        2,
+        WHITE
+    };
+
+    if (TextButton(options, "||", virtualScreenWidth-32, virtualScreenHeight-32, GRAY, 4)) {
+        currentScreen = GAME_SCREEN_PAUSE_MENU;
+    }
 }
 
 void InitializeGame(void)
