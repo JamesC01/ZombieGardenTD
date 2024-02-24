@@ -111,7 +111,13 @@ void DrawSeedPackets()
             seedPacketUIPos = seedPackets[i].origin;
         }
 
+        // TODO: Clean up
         DrawTextureV(shovelOrSeedPacket, seedPacketUIPos, WHITE);
+
+        Rectangle rect = {EXPAND_V2(seedPacketUIPos), EXPAND_V2(SEEDPACKET_SIZE)};
+        if (CheckCollisionPointRec(GetMousePosVirtual(), rect) && !draggingSeedPacket) {
+            DrawRectangleV(seedPacketUIPos, SEEDPACKET_SIZE, (Color){255, 255, 255, 50});
+        }
 
         switch (seedPackets[i].type) {
             case PT_PSHOOTER:

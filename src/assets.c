@@ -4,6 +4,7 @@
 
 Texture2D seedPacketSprite;
 Texture2D lawnBackgroundSprite;
+Texture2D woodBackgroundSprite;
 Texture2D pShooterSprite;
 Texture2D peaSprite;
 Texture2D sunSprite;
@@ -32,6 +33,9 @@ void LoadAssets()
 {
     seedPacketSprite = LoadTexture("sprites/seedpacket.png");
     lawnBackgroundSprite = LoadTexture("sprites/lawn.png");
+    SetTextureWrap(lawnBackgroundSprite, TEXTURE_WRAP_REPEAT);
+    woodBackgroundSprite = LoadTexture("sprites/wood.png");
+    SetTextureWrap(woodBackgroundSprite, TEXTURE_WRAP_REPEAT);
     pShooterSprite = LoadTexture("sprites/pshooter.png");
     peaSprite = LoadTexture("sprites/pea.png");
     sunSprite = LoadTexture("sprites/sun.png");

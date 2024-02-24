@@ -6,6 +6,7 @@
 // Textures
 extern Texture2D seedPacketSprite;
 extern Texture2D lawnBackgroundSprite;
+extern Texture2D woodBackgroundSprite;
 extern Texture2D pShooterSprite;
 extern Texture2D peaSprite;
 extern Texture2D sunSprite;

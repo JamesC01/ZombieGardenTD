@@ -17,16 +17,11 @@ frame in a texture and render that.
 
 Continue tweaking zombie waves/difficulty curve
 
-Consider highlighting certain sprites when they're being hovered (sun, seeds etc.)
-
 Consider making the plant icons on the seed packets positions automatically calculate.
 
 Fix the peas not colliding off screen again.
 
 Implement spawn rate limit
-
-Write some simple UI buttons instead of having to press keys, and make a simple pause menu with options like
-toggle music or rain.
 
 Add hit flash to zombies and maybe plants when they're being eaten.
 

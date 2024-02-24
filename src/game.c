@@ -407,7 +407,9 @@ void UpdateDrawGame(void)
     UpdateDrawSuns();
 
     // Draw top bar
-    DrawRectangle(0, 0, virtualScreenWidth, SEEDPACKET_SIZE.y+20, DARKBROWN);
+    Rectangle src = {0,0,woodBackgroundSprite.width,woodBackgroundSprite.height};
+    Rectangle dst = {0 , 0, virtualScreenWidth, SEEDPACKET_SIZE.y+20};
+    DrawTexturePro(woodBackgroundSprite, src, dst, Vector2Zero(), 0, WHITE);
 
     // Draw seed tray
     int margin = 4;
@@ -470,6 +472,13 @@ void GameOver(void)
 
 void DrawBackground(void)
 {
+    // TODO: Figure out how to wrap textures like this
+    /*
+    Rectangle src = {0, 0, lawnBackgroundSprite.width, lawnBackgroundSprite.height};
+    Rectangle dst = {0,0, virtualScreenWidth, virtualScreenHeight};
+    DrawTexturePro(lawnBackgroundSprite, src, dst, Vector2Zero(), 0, WHITE);
+    */
+
     int tilesX = virtualScreenWidth/32;
     int tilesY = virtualScreenHeight/32;
 
@@ -478,6 +487,7 @@ void DrawBackground(void)
             DrawTexture(lawnBackgroundSprite, x * 32, y * 32, WHITE);
         }
     }
+
 }
 
 void UpdateDrawProjectiles(void)
