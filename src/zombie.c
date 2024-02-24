@@ -75,8 +75,15 @@ void UpdateDrawZombies(void)
     if (waveStarted && currentKillsRequiredToEndWave <= 0) {
         printf("Wave ended.\n");
         waveStarted = false;
+
         defaultZombieSpawnRate -= 60 * 3;
+        if (defaultZombieSpawnRate < 60*2)
+            defaultZombieSpawnRate = 60 * 2;
+
         defaultWaveZombieSpawnRate -= 30;
+        if (defaultWaveZombieSpawnRate < 60)
+            defaultWaveZombieSpawnRate = 60;
+
         currentZombieSpawnRate = defaultZombieSpawnRate;
         zombieSpawnTimer = 0;
         zombieMoveSpeed += 0.0005f;
@@ -156,9 +163,9 @@ void UpdateDrawZombies(void)
             }
 
 
-            int x = gridDrawOffset.x + zombie->gridPos.x*gridCellSize.x;
-            int y = gridDrawOffset.y + zombie->gridPos.y*gridCellSize.y;
-            Rectangle box = {x-16, y-16, (float)zombieSprite.width/2, zombieSprite.height};
+            int sX = gridDrawOffset.x + zombie->gridPos.x*gridCellSize.x;
+            int sY = gridDrawOffset.y + zombie->gridPos.y*gridCellSize.y;
+            Rectangle box = {sX-16, sY-16, (float)zombieSprite.width/2, zombieSprite.height};
 
             // Handle collisions with projectiles
             Projectile* projArr = (Projectile*)projectiles.array;
@@ -180,13 +187,13 @@ void UpdateDrawZombies(void)
             }
 
             // Draw
-            Vector2 drawPos = {x, y+gridCellSize.y*0.75f};
+            Vector2 drawPos = {sX, sY+gridCellSize.y*0.75f};
             Vector2 origin = {(float)zombieSprite.width*0.75f, zombieSprite.height-4};
             DrawTextureCentered(shadowSprite, drawPos, SHADOW_ORIGIN, WHITE);
             DrawTextureCentered(zombieSprite, drawPos, origin, WHITE);
 
             // Zombie collider debug
-            //DrawRectangleRec(box, (Color){100, 100, 255, 100});
+            DrawRectangleRec(box, (Color){100, 100, 255, 100});
         }
     }
 }

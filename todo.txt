@@ -50,7 +50,3 @@ Improve look of title/gameover screen. Pretty bland right now.
 
 Consider setting a deltatime global to allow treating certain values as "per second", rather than per frame. But only consider this,
 since a lot of the code depends on the fps, so it might be a pain to do, and not really beneficial at this point.
-
-
-For fun, implement something that creates a texture from the bytes of the plant array, or maybe any of the arrays. It would be fascinating
-to see what the memory looks like as a texture.
