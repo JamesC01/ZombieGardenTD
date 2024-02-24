@@ -83,6 +83,8 @@ int main(void)
 
     targetRT = LoadRenderTexture(640, 480);
 
+    RenderTexture2D memoryRT = LoadRenderTexture(128, 256);
+
     
 
     bool shouldClose = false;
@@ -128,6 +130,18 @@ int main(void)
             };
         }
 
+        BeginTextureMode(memoryRT);
+
+
+        for (int r = 0; r < memoryRT.texture.width; r++) {
+            for (int c = 0; c < memoryRT.texture.height; c++) {
+                DrawPixel(r, c, *((Color*)&particles.array[r*memoryRT.texture.width+c]));
+            }
+        }
+
+
+        EndTextureMode();
+
 
         BeginTextureMode(targetRT);
 
@@ -159,6 +173,10 @@ int main(void)
         sprintf(fpsText, "%ifps", GetFPS());
         DrawTextWithShadow(smallFont, fpsText, 16, virtualScreenHeight-35, 35, 2, WHITE);
 
+        DrawTexture(memoryRT.texture, 0, 0, WHITE);
+        Rectangle src = {0 ,0, memoryRT.texture.width, memoryRT.texture.height};
+        Rectangle dst = {0, 0, src.width*4, src.height*4};
+        DrawTexturePro(memoryRT.texture, src, dst, Vector2Zero(), 0, WHITE);
 
         EndTextureMode();
 
@@ -167,8 +185,9 @@ int main(void)
 
         // Strange bug, can't clear the screen, it messes with transparent stuff.
 
-        Rectangle src = {0, 0, virtualScreenWidth, -virtualScreenHeight};
+        src = (Rectangle){0, 0, virtualScreenWidth, -virtualScreenHeight};
         DrawTexturePro(targetRT.texture, src, GetRenderRect(), Vector2Zero(), 0, WHITE);
+
 
         EndDrawing();
 
