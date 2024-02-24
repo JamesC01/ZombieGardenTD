@@ -323,4 +323,4 @@ that engine. I should try to implmement things simply and just enjoy the process
 
 24/02/2024
 
-Spent 57 minutes just to add screen resizing, but it weirdly didn't feel like a long time.
+Spent 57 minutes just to add screen resizing, but it weirdly didn't feel like a long time. Spent only about 25 minutes implementing an immediate-mode button.

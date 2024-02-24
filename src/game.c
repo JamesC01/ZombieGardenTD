@@ -78,7 +78,6 @@ int main(void)
     InitializeGame();
 
     targetRT = LoadRenderTexture(640, 480);
-    SetTextureFilter(targetRT.texture, TEXTURE_FILTER_BILINEAR);
 
     bool playingMusic = true; // TODO: should be true by default
     bool raining = false;
@@ -118,13 +117,6 @@ int main(void)
             UpdateMusicStream(themeSong);
         }
 
-        if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !draggingSeedPacket) {
-            CreateParticleConfetti(GetMousePosVirtual(), (Vector2){4, 4}, 4);
-        }
-
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            CreateParticleExplosion(GetMousePosVirtual(), (Vector2){4, 4}, 4, 10, 16, DARKBROWN);
-        }
 
         if (raining) {
             UpdateMusicStream(rainLoop);
@@ -170,16 +162,6 @@ int main(void)
         sprintf(fpsText, "%ifps", GetFPS());
         DrawTextWithShadow(smallFont, fpsText, 16, virtualScreenHeight-35, 35, 2, WHITE);
 
-        TextOptions options = {
-            smallFont,
-            20,
-            2,
-            WHITE
-        };
-        
-        if (TextButton(options, "Growl!", 100, 100, GREEN, 8)) {
-            PlaySound(zombieGrowlSounds[0]);
-        }
 
         EndTextureMode();
 
@@ -213,11 +195,12 @@ int main(void)
 // TODO: Maybe make it so you can't click outside the button, then move into the button and let go to click
 bool TextButton(TextOptions textOptions, char *text, int x, int y, Color buttonColour, int buttonShadowOffset)
 {
-    const int padding = 4;
+    const int paddingX = 16;
+    const int paddingY = 4;
     Vector2 textSize = MeasureTextEx(textOptions.font, text, textOptions.size, 0);
     Rectangle button = {
         x, y,
-        textSize.x+padding, textSize.y+padding
+        textSize.x+paddingX, textSize.y+paddingY
     };
 
     Rectangle shadow = button;
@@ -257,7 +240,7 @@ bool TextButton(TextOptions textOptions, char *text, int x, int y, Color buttonC
     DrawRectangleRec(outline, BLACK);
     DrawRectangleRec(button, buttonColour);
 
-    DrawTextWithShadow(textOptions.font, text, x+padding/2, y+padding/2, textOptions.size, textOptions.shadowOffset, textOptions.colour);
+    DrawTextWithShadow(textOptions.font, text, x+paddingX/2, y+paddingY/2, textOptions.size, textOptions.shadowOffset, textOptions.colour);
 
     return pressed;
 }
@@ -269,26 +252,31 @@ void UpdateDrawStart(void)
     DrawTextWithShadow(bigFont, "Raylib\n\n\nPlants Vs Zombies\n\n\nClone", 16, 32, 50, 4, WHITE);
 
     int x = 16;
-    int y = virtualScreenHeight/2;
-    int height = 35;
+    int y = virtualScreenHeight/2-30;
+    int height = 50;
 
-    DrawTextWithShadow(smallFont, "Press Enter to Start Game", x, y, 35, 2, GREEN);
-    y += height;
+    TextOptions options = {
+        smallFont,
+        30,
+        2,
+        WHITE
+    };
 
-    DrawTextWithShadow(smallFont, "Press Q to Quit Game", x, y, 35, 2, RED);
-
-    y += height;
-    y += height;
-
-    DrawTextWithShadow(smallFont, "Game by James Czekaj", x, y, 25, 2, WHITE);
-
-
-    if (IsKeyPressed(KEY_ENTER)) {
+    const int btnShadow = 4;
+    if (TextButton(options, "Start Game!", x, y, GREEN, btnShadow)) {
         currentScreen = GAME_SCREEN_PLAYING;
         InitializeGame();
-    } else if (IsKeyPressed(KEY_Q)) {
+    }
+
+    y += height;
+
+    if (TextButton(options, "Quit Game", x, y, RED, btnShadow)) {
         currentScreen = GAME_SCREEN_EXIT;
     }
+
+    y += height*2.5f;
+
+    DrawTextWithShadow(smallFont, "Game by James Czekaj", x, y, 25, 2, WHITE);
 }
 
 void UpdateDrawGameOver(void)
@@ -299,17 +287,32 @@ void UpdateDrawGameOver(void)
 
     char killCountText[32];
     sprintf(killCountText, "You killed %i zombies!", zombiesKilledCount);
-    DrawTextWithShadow(smallFont, killCountText, 16, virtualScreenHeight/2-40, 40, 2, WHITE);
+    DrawTextWithShadow(smallFont, killCountText, 16, virtualScreenHeight/2-80, 40, 2, WHITE);
 
-    DrawTextWithShadow(smallFont, "Press Enter to return to Start", 16, virtualScreenHeight/2, 40, 2, WHITE);
+    TextOptions options = {
+        smallFont,
+        30,
+        2,
+        BLACK
+    };
 
-    if (IsKeyPressed(KEY_ENTER)) {
+    const int btnShadow = 4;
+    if (TextButton(options, "Return to Start", 16, virtualScreenHeight/2-15, LIGHTGRAY, btnShadow)) {
         currentScreen = GAME_SCREEN_START;
     }
 }
 
 void UpdateDrawGame(void)
 {
+
+    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !draggingSeedPacket) {
+        CreateParticleConfetti(GetMousePosVirtual(), (Vector2){4, 4}, 4);
+    }
+
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        CreateParticleExplosion(GetMousePosVirtual(), (Vector2){4, 4}, 4, 10, 16, DARKBROWN);
+    }
+
     if (IsKeyPressed(KEY_ESCAPE)) {
         currentScreen = GAME_SCREEN_START;
     }
