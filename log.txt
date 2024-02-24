@@ -323,7 +323,7 @@ that engine. I should try to implmement things simply and just enjoy the process
 
 24/02/2024
 
-Today I spent 2 hours 40 minutes working on the game. A short amount of that time (around 10 minutes at most) was some work on a sprite. I got quite a lot done. Here's a list of the
+Today I spent 3 hours 53 minutes working on the game. A short amount of that time (around 10 minutes at most) was some work on a sprite. I got quite a lot done. Here's a list of the
 things I did:
 
 -Made it so the screen can be resized, by using a render texture.
@@ -342,3 +342,7 @@ The rest of time I spent on smaller stuff
 
 Overall a solid day. I decided to *start* my day with this project today, so I wouldn't have to stay up late at night working on it. Maybe this will be something I continue to do, especially
 for future projects. If I could have this level of enthusiam for workin on a game in godot, I'd be able to get a lot done! Hopefully I can!
+
+I ended up spending another hour and 13 minutes (which I *have* added to the above time, now), later on in the day, just because I felt like it. It's addictive! The extra stuff I did was fairly
+small, I did a silly experiment where I rendered some memory of the particles array to a texture, which I ended up removing. I also spent a lot of time refactoring some of the button/text drawing
+code, to make centering it easier. The code is starting to get a bit unweildy, though, so I may end up putting the UI and text rendering stuff in its own file.
