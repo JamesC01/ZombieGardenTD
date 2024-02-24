@@ -407,15 +407,29 @@ void UpdateDrawGame(void)
     UpdateDrawSuns();
 
     // Draw top bar
+    int tilesX = virtualScreenWidth/woodBackgroundSprite.width;
     Rectangle src = {0,0,woodBackgroundSprite.width,woodBackgroundSprite.height};
-    Rectangle dst = {0 , 0, virtualScreenWidth, SEEDPACKET_SIZE.y+20};
-    DrawTexturePro(woodBackgroundSprite, src, dst, Vector2Zero(), 0, WHITE);
+    for (int x = 0; x < tilesX; x++) {
+        Rectangle dst = {x*32, 0, 32, SEEDPACKET_SIZE.y+22};
+        DrawTexturePro(woodBackgroundSprite, src, dst, Vector2Zero(), 0, WHITE);
+    }
 
     // Draw seed tray
     int margin = 4;
     Vector2 trayStart = {seedPackets[0].origin.x-margin, seedPackets[0].origin.y-margin};
     Vector2 trayEnd = {trayStart.x+8*SEEDPACKET_SIZE.x+margin, seedPackets[0].origin.y+SEEDPACKET_SIZE.y};
-    DrawRectangleV(trayStart, trayEnd, (Color){46, 40, 34, 255});
+    Rectangle tray = {
+        trayStart.x, trayStart.y,
+        trayEnd.x, trayEnd.y
+    };
+    Rectangle border = tray;
+    border.x -= 1;
+    border.y -= 1;
+    border.width += 2;
+    border.height += 2;
+    DrawRectangleRec(border, (Color){255, 220, 200, 100});
+    DrawRectangleRec(tray, (Color){46, 40, 34, 255});
+
 
     UpdateDrawSeedPackets();
 
@@ -472,13 +486,6 @@ void GameOver(void)
 
 void DrawBackground(void)
 {
-    // TODO: Figure out how to wrap textures like this
-    /*
-    Rectangle src = {0, 0, lawnBackgroundSprite.width, lawnBackgroundSprite.height};
-    Rectangle dst = {0,0, virtualScreenWidth, virtualScreenHeight};
-    DrawTexturePro(lawnBackgroundSprite, src, dst, Vector2Zero(), 0, WHITE);
-    */
-
     int tilesX = virtualScreenWidth/32;
     int tilesY = virtualScreenHeight/32;
 
