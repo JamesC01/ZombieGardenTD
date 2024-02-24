@@ -39,10 +39,9 @@ void UpdateSeedPackets()
 {
     for (int i = 0; i < SEEDPACKET_COUNT; i++) {
         SeedPacket* packet = &seedPackets[i];
+        Vector2 mPos = GetMousePosVirtual();
         // Set packet dragging true if mouse clicked inside it.
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !packet->dragging) {
-            Vector2 mPos = GetMousePosition();
-
             if (CheckCollisionPointRec(mPos, (Rectangle){packet->origin.x, packet->origin.y, SEEDPACKET_SIZE.x, SEEDPACKET_SIZE.y})) {
                 packet->dragging = true;
                 draggingSeedPacket = true;
@@ -54,9 +53,8 @@ void UpdateSeedPackets()
         else if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && packet->dragging) {
             bool canBuySeedPacket = sunsCollectedCount >= packet->cost && packet->buyCooldown <= 0;
             if (canBuySeedPacket) {
-                Vector2 mpos = GetMousePosition();
-                float gridX = (mpos.x - gridDrawOffset.x) / gridCellSize.x;
-                float gridY = (mpos.y - gridDrawOffset.y) / gridCellSize.y;
+                float gridX = (mPos.x - gridDrawOffset.x) / gridCellSize.x;
+                float gridY = (mPos.y - gridDrawOffset.y) / gridCellSize.y;
 
                 bool insideGrid = gridX >= 0 && gridY >= 0 && gridX < GRID_WIDTH && gridY < GRID_HEIGHT;
                 if (insideGrid) {
@@ -106,7 +104,7 @@ void DrawSeedPackets()
         }
 
         if (seedPackets[i].dragging) {
-            seedPacketUIPos = Vector2Subtract(GetMousePosition(), (Vector2){SEEDPACKET_SIZE.x/2, SEEDPACKET_SIZE.y/2});
+            seedPacketUIPos = Vector2Subtract(GetMousePosVirtual(), (Vector2){SEEDPACKET_SIZE.x/2, SEEDPACKET_SIZE.y/2});
             // TODO: Drawing here and also below, is this a bug?
             DrawTextureV(shovelOrSeedPacket, Vector2Add(seedPacketUIPos, (Vector2){4, 4}), (Color){0, 0, 0, 50});
         } else {

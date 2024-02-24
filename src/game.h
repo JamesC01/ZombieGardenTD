@@ -5,8 +5,8 @@
 #include "plant.h"
 #include <stdbool.h>
 
-extern const int screenWidth;
-extern const int screenHeight;
+extern const int virtualScreenWidth;
+extern const int virtualScreenHeight;
 
 void GameOver(void);
 
@@ -41,7 +41,7 @@ bool TickCooldown(int *timer, int cooldownTime);
 int GetUniqueRandomValue(int exludedValue, int min, int max);
 float GetRandomFloatValue(float min, float max);
 void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint);
-
+Vector2 GetMousePosVirtual(void);
 
 void DrawTextWithShadow(Font font, const char *text, int x, int y, float fontSize, float shadowOffset, Color tint);
 

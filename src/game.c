@@ -26,8 +26,10 @@ GameScreen currentScreen = GAME_SCREEN_START;
 
 FixedObjectArray projectiles;
 
-const int screenWidth = 640;
-const int screenHeight = 480;
+const int virtualScreenWidth = 640;
+const int virtualScreenHeight = 480;
+
+Vector2 virtualMousePosition;
 
 const int defaultFps = 60;
 bool limitFrameRate = true;
@@ -38,19 +40,22 @@ Plant gardenGrid[GRID_WIDTH][GRID_HEIGHT] = {0};
 Vector2 gridDrawOffset = {40, 80};
 Vector2 gridCellSize = {65, 78};
 
+RenderTexture2D targetRT;
+
 void UpdateDrawStart(void);
 void UpdateDrawGame(void);
 void UpdateDrawGameOver(void);
 void UpdateDrawProjectiles(void);
 void InitializeGame(void);
 void DrawBackground(void);
-
+Rectangle GetRenderRect(void);
 
 FixedObjectArray CreateFixedObjectArray(int objMaxCount, int typeSizeBytes);
 
 int main(void)
 {
-    InitWindow(screenWidth, screenHeight, "Plants Vs Zombies Clone");
+    InitWindow(virtualScreenWidth, virtualScreenHeight, "Plants Vs Zombies Clone");
+    SetWindowState(FLAG_WINDOW_RESIZABLE);
 
     InitAudioDevice();
 
@@ -72,12 +77,23 @@ int main(void)
 
     InitializeGame();
 
+    targetRT = LoadRenderTexture(640, 480);
+    SetTextureFilter(targetRT.texture, TEXTURE_FILTER_BILINEAR);
+
     bool playingMusic = true; // TODO: should be true by default
     bool raining = false;
     
 
     bool shouldClose = false;
     while (!WindowShouldClose() && !shouldClose) {
+
+        Rectangle scaledScreen = GetRenderRect();
+
+        Vector2 mPos = GetMousePosition();
+        mPos.x -= scaledScreen.x;
+        mPos.y -= scaledScreen.y;
+        virtualMousePosition.x = mPos.x / (scaledScreen.width/virtualScreenWidth);
+        virtualMousePosition.y = mPos.y / (scaledScreen.height/virtualScreenHeight);
 
         // Toggle frame limiter
         if (IsKeyPressed(KEY_S)) {
@@ -103,11 +119,11 @@ int main(void)
         }
 
         if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !draggingSeedPacket) {
-            CreateParticleConfetti(GetMousePosition(), (Vector2){4, 4}, 4);
+            CreateParticleConfetti(GetMousePosVirtual(), (Vector2){4, 4}, 4);
         }
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            CreateParticleExplosion(GetMousePosition(), (Vector2){4, 4}, 4, 10, 16, DARKBROWN);
+            CreateParticleExplosion(GetMousePosVirtual(), (Vector2){4, 4}, 4, 10, 16, DARKBROWN);
         }
 
         if (raining) {
@@ -115,8 +131,8 @@ int main(void)
 
             // Spawn rain particles
             Vector2 randPos = {
-                GetRandomValue(0, screenWidth),
-                GetRandomValue(-screenHeight/2, 0)
+                GetRandomValue(0, virtualScreenWidth),
+                GetRandomValue(-virtualScreenHeight/2, 0)
             };
             Vector2 randSize = Vector2Scale((Vector2){3, 8}, GetRandomFloatValue(0.5f, 1));
             Particle* p = CreateParticle(P_RAIN, randPos, randSize, GetRandomValue(10, 60*5), (Color){50, 200, 220, 80});
@@ -126,7 +142,7 @@ int main(void)
             };
         }
 
-        BeginDrawing();
+        BeginTextureMode(targetRT);
 
         ClearBackground(WHITE);
         switch (currentScreen) {
@@ -145,13 +161,26 @@ int main(void)
         }
 
         if (raining) {
-            DrawRectangle(0, 0, screenWidth, screenHeight, (Color){0, 20, 50, 75});
+            DrawRectangle(0, 0, virtualScreenWidth, virtualScreenHeight, (Color){0, 20, 50, 75});
         }
 
         // Draw FPS
         char fpsText[32];
         sprintf(fpsText, "%ifps", GetFPS());
-        DrawTextWithShadow(smallFont, fpsText, 16, screenHeight-35, 35, 2, WHITE);
+        DrawTextWithShadow(smallFont, fpsText, 16, virtualScreenHeight-35, 35, 2, WHITE);
+
+        char mPosText[32];
+        sprintf(mPosText, "%.f, %.f", GetMousePosVirtual().x, GetMousePosVirtual().y);
+        DrawTextWithShadow(smallFont, mPosText, virtualScreenWidth-100, virtualScreenHeight-40, 40, 2, WHITE);
+
+        EndTextureMode();
+
+        BeginDrawing();
+
+        // Strange bug, can't clear the screen, it messes with transparent stuff.
+
+        Rectangle src = {0, 0, virtualScreenWidth, -virtualScreenHeight};
+        DrawTexturePro(targetRT.texture, src, GetRenderRect(), Vector2Zero(), 0, WHITE);
 
         EndDrawing();
 
@@ -177,7 +206,7 @@ void UpdateDrawStart(void)
     DrawTextWithShadow(bigFont, "Raylib\n\n\nPlants Vs Zombies\n\n\nClone", 16, 32, 50, 4, WHITE);
 
     int x = 16;
-    int y = screenHeight/2;
+    int y = virtualScreenHeight/2;
     int height = 35;
 
     DrawTextWithShadow(smallFont, "Press Enter to Start Game", x, y, 35, 2, GREEN);
@@ -207,9 +236,9 @@ void UpdateDrawGameOver(void)
 
     char killCountText[32];
     sprintf(killCountText, "You killed %i zombies!", zombiesKilledCount);
-    DrawTextWithShadow(smallFont, killCountText, 16, screenHeight/2-40, 40, 2, WHITE);
+    DrawTextWithShadow(smallFont, killCountText, 16, virtualScreenHeight/2-40, 40, 2, WHITE);
 
-    DrawTextWithShadow(smallFont, "Press Enter to return to Start", 16, screenHeight/2, 40, 2, WHITE);
+    DrawTextWithShadow(smallFont, "Press Enter to return to Start", 16, virtualScreenHeight/2, 40, 2, WHITE);
 
     if (IsKeyPressed(KEY_ENTER)) {
         currentScreen = GAME_SCREEN_START;
@@ -246,7 +275,7 @@ void UpdateDrawGame(void)
             Vector2 gridCellPos = Vector2Add(gridDrawOffset, (Vector2){x*gridCellSize.x, y*gridCellSize.y});
 
             if (draggingSeedPacket) {
-                if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){gridCellPos.x, gridCellPos.y, gridCellSize.x, gridCellSize.y})) {
+                if (CheckCollisionPointRec(GetMousePosVirtual(), (Rectangle){gridCellPos.x, gridCellPos.y, gridCellSize.x, gridCellSize.y})) {
                     c = (Color){255, 255, 255, 100};
                 }
             }
@@ -261,7 +290,7 @@ void UpdateDrawGame(void)
     UpdateDrawSuns();
 
     // Draw top bar
-    DrawRectangle(0, 0, screenWidth, SEEDPACKET_SIZE.y+20, DARKBROWN);
+    DrawRectangle(0, 0, virtualScreenWidth, SEEDPACKET_SIZE.y+20, DARKBROWN);
 
     // Draw seed tray
     int margin = 4;
@@ -284,7 +313,8 @@ void UpdateDrawGame(void)
     frameCount++;
     char timerText[32];
     sprintf(timerText, "%i", frameCount/60);
-    DrawTextWithShadow(smallFont, timerText, screenWidth-100, 10, 40, 1, WHITE);
+    DrawTextWithShadow(smallFont, timerText, virtualScreenWidth-100, 10, 40, 1, WHITE);
+
 }
 
 void InitializeGame(void)
@@ -313,8 +343,8 @@ void GameOver(void)
 
 void DrawBackground(void)
 {
-    int tilesX = screenWidth/32;
-    int tilesY = screenHeight/32;
+    int tilesX = virtualScreenWidth/32;
+    int tilesY = virtualScreenHeight/32;
 
     for (int x = 0; x < tilesX; x++) {
         for (int y = 0; y < tilesY; y++) {
@@ -408,4 +438,34 @@ FixedObjectArray CreateFixedObjectArray(int objMaxCount, int typeSizeBytes)
     objArray.next = 0;
 
     return objArray;
+}
+
+Vector2 GetMousePosVirtual(void)
+{
+    return virtualMousePosition;
+}
+
+Rectangle GetRenderRect(void)
+{
+    int windowWidth = GetScreenWidth();
+    int windowHeight = GetScreenHeight();
+    bool landscape = windowWidth > windowHeight;
+
+    int dstWidth = windowWidth;
+    int dstHeight = windowHeight;
+    int offsetX = 0;
+    int offsetY = 0;
+
+    float scale;
+    if (landscape) {
+        scale = (float)windowHeight/virtualScreenHeight;
+        dstWidth = virtualScreenWidth*scale;
+        offsetX = (windowWidth-dstWidth)/2;
+    } else {
+        scale = (float)windowWidth/virtualScreenWidth;
+        dstHeight = scale*virtualScreenHeight;
+        offsetY = (windowHeight-dstHeight)/2;
+    }
+
+    return (Rectangle){offsetX, offsetY, dstWidth, dstHeight};
 }

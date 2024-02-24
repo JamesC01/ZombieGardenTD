@@ -1,13 +1,11 @@
 11/02/2024
 
 Include easter eggs, or just fun stuff like you'd expect in demo-scene software, or just
-older software in-general.
+older software in-general. Partially done with right click confetti, but adding some more
+could be fun. Maybe some fun things in the menu once that is done.
 
 Make a B section to music, add more transitional elements, and make drums quieter, and make certain
 drum parts less busy.
-
-On new game, in a 1 in 5 chance the weather should be rainy. Figure out how to implement some simple rain
-particles and play some nice rain sounds (maybe do some sound design with white noise.)
 
 Improve max FPS. Right now it seems like rendering is limiting the frame rate quite a bit, see if you can
 figure out why (just for fun.)
@@ -22,3 +20,41 @@ Continue tweaking zombie waves/difficulty curve
 Consider highlighting certain sprites when they're being hovered (sun, seeds etc.)
 
 Consider making the plant icons on the seed packets positions automatically calculate.
+
+Fix the peas not colliding off screen again.
+
+Implement spawn rate limit
+
+Write some simple UI buttons instead of having to press keys, and make a simple pause menu with options like
+toggle music or rain.
+
+Add hit flash to zombies and maybe plants when they're being eaten.
+
+Record explosion sound for cherrybomb and improve particle explosion.
+
+Add juice/polish. Things like the zombies squashing/stretching a bit to make it look like they're walking.
+Same for the plants. Just some simple "animations" that just change the size or rotation in really subtly
+ways that brings a bit of life into the sprites.
+
+Add something that indicates a wave is happening.
+
+Consider trying to design more unique sprites. Maybe sketch on paper some ideas first. But try to deviate
+a bit from plants vs zombies.
+
+Allow particles to use textures, and make some simple textures like sparkles
+
+Make sound effects for:
+    Picking up a sun
+    planting/digging
+    the zombie eating plants
+    a gameover sound/fanfare
+    a wave start sound/fanfare
+
+Make UI use a texture, like a wood texture/sprite for the bar at the top.
+
+Improve look of title/gameover screen. Pretty bland right now.
+
+Consider allowing screen resize using RenderTextures.
+
+Consider setting a deltatime global to allow treating certain values as "per second", rather than per frame. But only consider this,
+since a lot of the code depends on the fps, so it might be a pain to do, and not really beneficial at this point.

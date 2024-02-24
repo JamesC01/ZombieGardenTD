@@ -37,7 +37,7 @@ void UpdateDrawSuns(void)
 {
     // Spawn suns
     if (TickCooldown(&sunCooldown, SUN_SPAWN_TIME)) {
-        Vector2 pos = {GetRandomValue(64, screenWidth-64), SEEDPACKET_SIZE.y+32};
+        Vector2 pos = {GetRandomValue(64, virtualScreenWidth-64), SEEDPACKET_SIZE.y+32};
         SpawnSun(pos);
     }
 
@@ -51,7 +51,7 @@ void UpdateDrawSuns(void)
             Vector2 sunHalfSize = {(float)sunSize/2, (float)sunSize/2};
 
             Rectangle sunBox = {EXPAND_V2(Vector2Subtract(sunArr[i].pos, sunHalfSize)), sunSize, sunSize};
-            if (CheckCollisionPointRec(GetMousePosition(), sunBox)) {
+            if (CheckCollisionPointRec(GetMousePosVirtual(), sunBox)) {
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !draggingSeedPacket) {
                     sunArr[i].active = false;
                     sunsCollectedCount += SUN_VALUE;
