@@ -200,18 +200,27 @@ int main(void)
 
 
 // TODO: Maybe make it so you can't click outside the button, then move into the button and let go to click
+// TODO: clean this up
 bool TextButton(ButtonOptions buttonOptions, TextOptions textOptions, char *text, int x, int y)
 {
+    Vector2 textSize = MeasureTextEx(textOptions.font, text, textOptions.size, 0);
+    int width = textSize.x + buttonOptions.paddingX*2;
+
+    if (width < buttonOptions.minWidth) {
+        int diff = buttonOptions.minWidth - width;
+        buttonOptions.paddingX = diff;
+    }
+
     if (buttonOptions.centered) {
         int textCenterX = GetCenteredTextX(textOptions.font, textOptions.size, text);
         x = textCenterX - buttonOptions.paddingX/2;
     }
 
-    Vector2 textSize = MeasureTextEx(textOptions.font, text, textOptions.size, 0);
     Rectangle button = {
         x, y,
         textSize.x+buttonOptions.paddingX, textSize.y+buttonOptions.paddingY
     };
+
 
 
     Rectangle shadow = button;
@@ -332,10 +341,10 @@ void UpdateDrawPauseMenu(void)
     bOpt.shadowOffset = 4;
     bOpt.centered = true;
     bOpt.colour = GREEN;
+    bOpt.minWidth = 200;
 
     const int btnShadow = 4;
-    char *returnText = "Return to Game";
-    if (TextButton(bOpt, options, "Return to Game", x, y)) {
+    if (TextButton(bOpt, options, "Resume", x, y)) {
         currentScreen = GAME_SCREEN_PLAYING;
     }
 
@@ -344,7 +353,7 @@ void UpdateDrawPauseMenu(void)
     bOpt.colour = (Color){0, 150, 200, 255};
 
     char rainText[32];
-    sprintf(rainText, "Toggle Rain (%s)", (raining) ? "On" : "Off");
+    sprintf(rainText, "Rain (%s)", (raining) ? "On" : "Off");
     x = GetCenteredTextX(options.font, options.size, rainText);
     if (TextButton(bOpt, options, rainText, x, y)) {
         raining = !raining;
@@ -355,7 +364,7 @@ void UpdateDrawPauseMenu(void)
     bOpt.colour = BROWN;
 
     char musicText[32];
-    sprintf(musicText, "Toggle Music (%s)", (playingMusic) ? "On" : "Off");
+    sprintf(musicText, "Music (%s)", (playingMusic) ? "On" : "Off");
     if (TextButton(bOpt, options, musicText, x, y)) {
         playingMusic = !playingMusic;
     }
@@ -374,7 +383,7 @@ void UpdateDrawPauseMenu(void)
 
     bOpt.colour = RED;
 
-    if (TextButton(bOpt, options, "Return to Start", x, y)) {
+    if (TextButton(bOpt, options, "Give Up", x, y)) {
         currentScreen = GAME_SCREEN_START;
     }
 }

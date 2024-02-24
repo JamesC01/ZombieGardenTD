@@ -52,6 +52,7 @@ typedef struct {
     int paddingY;
     int outlineThickness;
     bool centered;
+    int minWidth;
 } ButtonOptions;
 
 extern ButtonOptions defaultButtonOptions;
