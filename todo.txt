@@ -41,9 +41,6 @@ Make sound effects for:
 
 Improve look of title/gameover screen. Pretty bland right now.
 
-Consider setting a deltatime global to allow treating certain values as "per second", rather than per frame. But only consider this,
-since a lot of the code depends on the fps, so it might be a pain to do, and not really beneficial at this point.
-
 Consider adding different fade curves to particles
 
 Add random confetti explosion to zombies
