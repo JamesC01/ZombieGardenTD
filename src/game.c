@@ -573,12 +573,13 @@ Rectangle GetRenderRect(void)
     else
         scale = (float)windowWidth/virtualScreenWidth;
 
-    int dstWidth = virtualScreenWidth*scale;
-    int dstHeight = scale*virtualScreenHeight;
-    int offsetX = (windowWidth-dstWidth)/2;
-    int offsetY = (windowHeight-dstHeight)/2;
+    Rectangle renderRect;
+    renderRect.width = virtualScreenWidth*scale;
+    renderRect.height = virtualScreenHeight*scale;
+    renderRect.x = (windowWidth-renderRect.width)/2;
+    renderRect.y = (windowHeight-renderRect.height)/2;
 
-    return (Rectangle){offsetX, offsetY, dstWidth, dstHeight};
+    return renderRect;
 }
 
 // Read/Write config options (music on/off, rain on/off etc.)
