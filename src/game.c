@@ -24,7 +24,7 @@ typedef enum {
     GAME_SCREEN_EXIT
 } GameScreen;
 
-GameScreen currentScreen = GAME_SCREEN_START;
+GameScreen currentScreen = GAME_SCREEN_GAMEOVER;
 
 
 FixedObjectArray projectiles;
@@ -309,8 +309,8 @@ void UpdateDrawGameOver(void)
 {
     DrawBackground();
 
-    DrawTextWithShadow(bigFont, "YOU DIED!", GetCenteredTextX(bigFont, 50, "YOU DIED!"), 16, 50, 4, WHITE);
-    DrawTextWithShadow(bigFont, "GAME OVER", GetCenteredTextX(bigFont, 50, "GAME OVER"), 50, 50, 4, WHITE);
+    DrawTextWithShadow(bigFont, "YOU DIED!", GetCenteredTextX(bigFont, 50, "YOU DIED!"), 32, 50, 4, WHITE);
+    DrawTextWithShadow(bigFont, "GAME OVER", GetCenteredTextX(bigFont, 50, "GAME OVER"), 80, 50, 4, WHITE);
 
     char killCountText[32];
     sprintf(killCountText, "You killed %i zombies!", zombiesKilledCount);
@@ -320,14 +320,14 @@ void UpdateDrawGameOver(void)
         smallFont,
         30,
         2,
-        BLACK
+        WHITE
     };
 
     ButtonOptions bOpt = defaultButtonOptions;
     bOpt.colour = LIGHTGRAY;
     bOpt.centered = true;
 
-    if (TextButton(bOpt, options, "Return to Start", 16, 0)) {
+    if (TextButton(bOpt, options, "Return to Start", 16, virtualScreenHeight/2)) {
         currentScreen = GAME_SCREEN_START;
     }
 }
