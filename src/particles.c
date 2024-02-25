@@ -63,7 +63,10 @@ void UpdateDrawParticles(void)
             p->pos = Vector2Add(p->pos, p->velocity);
             p->lifetime--;
 
-            p->colour.a = 255 * (p->lifetime / (float)p->startLifetime);
+            float particleLifePercent = (p->lifetime / (float)p->startLifetime);
+            p->colour = Fade(p->colour, particleLifePercent);
+
+
 
             DrawRectangleV(p->pos, p->size, p->colour);
 

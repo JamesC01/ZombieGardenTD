@@ -24,7 +24,7 @@ typedef enum {
     GAME_SCREEN_EXIT
 } GameScreen;
 
-GameScreen currentScreen = GAME_SCREEN_GAMEOVER;
+GameScreen currentScreen = GAME_SCREEN_START;
 
 
 FixedObjectArray projectiles;
@@ -56,6 +56,8 @@ void InitializeGame(void);
 void DrawBackground(void);
 Rectangle GetRenderRect(void);
 
+void ReadWriteConfig(char *operation);
+
 FixedObjectArray CreateFixedObjectArray(int objMaxCount, int typeSizeBytes);
 
 int main(void)
@@ -84,6 +86,8 @@ int main(void)
     InitializeGame();
 
     targetRT = LoadRenderTexture(640, 480);
+
+    ReadWriteConfig("r");
 
 
     bool shouldClose = false;
@@ -176,6 +180,8 @@ int main(void)
 
 
     }
+
+    ReadWriteConfig("w");
 
     free(projectiles.array);
     free(particles.array);
@@ -596,4 +602,30 @@ Rectangle GetRenderRect(void)
     }
 
     return (Rectangle){offsetX, offsetY, dstWidth, dstHeight};
+}
+
+// Read/Write config options (music on/off, rain on/off etc.)
+// operation should be r for read, w for write
+void ReadWriteConfig(char *operation)
+{
+    FILE* configFile = fopen(".zombieconfig", operation);
+
+    if (strcmp(operation, "r") == 0) {
+        int fullscreen;
+        int _playingMusic;
+        int _raining;
+        fscanf(configFile, "%i %i %i", &_raining, &_playingMusic, &fullscreen);
+
+        if (fullscreen) {
+            ToggleFullscreen();
+        }
+
+        raining = (bool)_raining;
+        playingMusic = (bool)_playingMusic;
+    } else if (strcmp(operation, "w") == 0) {
+        bool fullscreen = IsWindowFullscreen();
+        fprintf(configFile, "%i %i %i", raining, playingMusic, fullscreen);
+    }
+
+    fclose(configFile);
 }
