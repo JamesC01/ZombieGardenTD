@@ -355,3 +355,11 @@ I suppose the question is, how do you know when to refactor something? I think i
 because while you may never use that code again, you may need to read it again, and making it easier for yourself to understand as much of the project as possible is a good idea. Refactoring
 will do this. But also, there's tradeoffs. Refactoring will take you time, and sometimes the amount of time it will take may not be worse the benefit, so you need to think about it a bit
 before you decide to refactor/semantically compress it.
+
+
+25/02/2024
+
+Today I spent 1 hour 22 minutes. I refactored some code and seperated the UI code into its own file. I fixed the gameover screen, because the button and text weren't drawing in good
+positions. I implemented a simple config file for saving the state of raining, playingMusic and fullscreen. I did plenty more refactoring, removing old code, shortening bits of code
+by simplifying them etc.. Finally I added some confetti explosions when zombies are hit, that happen 1/25 times. Mostly refactoring, which is not bad. It's not to make code easier to
+understand, and more concise.
