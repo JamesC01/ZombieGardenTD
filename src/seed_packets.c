@@ -93,32 +93,28 @@ void UpdateSeedPackets()
 void DrawSeedPackets()
 {
     for (int i = 0; i < SEEDPACKET_COUNT; i++) {
-        // Draw seedpacket
         Vector2 seedPacketUIPos;
-        Texture2D shovelOrSeedPacket;
+        Texture2D currentSprite;
 
-        if (seedPackets[i].type == PT_NONE) {
-            shovelOrSeedPacket = shovelSprite;
-        } else {
-            shovelOrSeedPacket = seedPacketSprite;
-        }
+        bool usingShovel = seedPackets[i].type == PT_NONE;
+
+        currentSprite = (usingShovel) ? shovelSprite : seedPacketSprite;
 
         if (seedPackets[i].dragging) {
             seedPacketUIPos = Vector2Subtract(GetMousePosVirtual(), (Vector2){SEEDPACKET_SIZE.x/2, SEEDPACKET_SIZE.y/2});
-            // TODO: Drawing here and also below, is this a bug?
-            DrawTextureV(shovelOrSeedPacket, Vector2Add(seedPacketUIPos, (Vector2){4, 4}), (Color){0, 0, 0, 50});
         } else {
             seedPacketUIPos = seedPackets[i].origin;
         }
 
-        // TODO: Clean up
-        DrawTextureV(shovelOrSeedPacket, seedPacketUIPos, WHITE);
+        DrawTextureV(currentSprite, seedPacketUIPos, WHITE);
 
-        Rectangle rect = {EXPAND_V2(seedPacketUIPos), EXPAND_V2(SEEDPACKET_SIZE)};
-        if (CheckCollisionPointRec(GetMousePosVirtual(), rect) && !draggingSeedPacket) {
+        // Highlighting seedpacket
+        Rectangle bounds = {EXPAND_V2(seedPacketUIPos), EXPAND_V2(SEEDPACKET_SIZE)};
+        if (CheckCollisionPointRec(GetMousePosVirtual(), bounds) && !draggingSeedPacket && seedPackets[i].type != PT_NONE) {
             DrawRectangleV(seedPacketUIPos, SEEDPACKET_SIZE, (Color){255, 255, 255, 50});
         }
 
+        // Draw plant icon
         switch (seedPackets[i].type) {
             case PT_PSHOOTER:
                 DrawTextureEx(pShooterSprite, Vector2Add(seedPacketUIPos, (Vector2){12, 16}), 0, 0.45f, WHITE);
@@ -136,10 +132,13 @@ void DrawSeedPackets()
                 break;
         }
 
-        // Handle dimming seed
-        if (sunsCollectedCount < seedPackets[i].cost) {
+        // Dim seed packet
+        bool canAffordPacket = sunsCollectedCount >= seedPackets[i].cost;
+        if (!canAffordPacket) {
             DrawRectangleV(seedPacketUIPos, (Vector2){seedPacketSprite.width, seedPacketSprite.height}, (Color){80, 80, 80, 150});
         }
+
+        // Draw cooldown overlay
         if (seedPackets[i].buyCooldown > 0 && seedPackets[i].type != PT_NONE) {
             seedPackets[i].buyCooldown--;
 

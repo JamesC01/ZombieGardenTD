@@ -29,7 +29,6 @@ void UpdateDrawPlants()
     for (int x = 0; x < GRID_WIDTH; x++) {
         for (int y = 0; y < GRID_HEIGHT; y++) {
             if (gardenGrid[x][y].type != PT_NONE) {
-                // TODO: get rid of gridCellGap, I'm not using it as far as I can tell.
                 Vector2 screenPos = Vector2Add(gridDrawOffset, (Vector2){x*gridCellSize.x+gridCellSize.x/2, y*gridCellSize.y+gridCellSize.y*0.75f});
                 Plant* p = &gardenGrid[x][y];
 

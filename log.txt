@@ -348,3 +348,10 @@ small, I did a silly experiment where I rendered some memory of the particles ar
 code, to make centering it easier. The code is starting to get a bit unweildy, though, so I may end up putting the UI and text rendering stuff in its own file.
 
 I also ended up spending another 23 minutes..... I added it to the above time. I made it so buttons can have a minWidth to line them up nicely.
+
+As the project starts growing, it is getting harder to work with, and this is a good thing, it means that I'm going to be challenging myself and probably actually improve. Pushing yourself
+beyond your comfort zone is how you make the most improvements, so trying to clean up the areas of code that I think code be useful to clean will challenge me, and will help me become better.
+I suppose the question is, how do you know when to refactor something? I think if the code is hard to work with, and semantically complex, then it is worth spending some time refactoring it,
+because while you may never use that code again, you may need to read it again, and making it easier for yourself to understand as much of the project as possible is a good idea. Refactoring
+will do this. But also, there's tradeoffs. Refactoring will take you time, and sometimes the amount of time it will take may not be worse the benefit, so you need to think about it a bit
+before you decide to refactor/semantically compress it.

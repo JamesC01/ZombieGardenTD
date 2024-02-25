@@ -104,8 +104,7 @@ void UpdateDrawZombies(void)
 #else
         float xSpawn = GetRandomValue(10, 11) + rand()/(float)RAND_MAX;
 #endif
-        // TODO: use constant for getrandom value max
-        float ySpawn = GetUniqueRandomValue(lastZombieSpawnYIndex, 0, 4);
+        float ySpawn = GetUniqueRandomValue(lastZombieSpawnYIndex, 0, GRID_HEIGHT-1);
         lastZombieSpawnYIndex = ySpawn;
         Vector2 gridPos = {xSpawn, ySpawn};
 
@@ -125,11 +124,13 @@ void UpdateDrawZombies(void)
         Zombie* zombie = &zArr[i];
 
         if (zombie->active) {
+
             // Growl
             if (zombieGrowlTimer < 0) {
                 int random = GetUniqueRandomValue(lastZombieGrowlIndex, 0, ZOMBIE_GROWL_SOUND_COUNT-1);
                 lastZombieGrowlIndex = random;
-                // TODO: Randomise pitch. Will need to make a good random float function
+
+                SetSoundPitch(zombieGrowlSounds[random], GetRandomFloatValue(0.9f, 1.1f));
                 PlaySound(zombieGrowlSounds[random]);
 
                 bool shortCooldown = GetRandomValue(0, 4) == 0;
@@ -165,13 +166,13 @@ void UpdateDrawZombies(void)
 
             int sX = gridDrawOffset.x + zombie->gridPos.x*gridCellSize.x;
             int sY = gridDrawOffset.y + zombie->gridPos.y*gridCellSize.y;
-            Rectangle box = {sX-16, sY-16, (float)zombieSprite.width/2, zombieSprite.height};
+            Rectangle bounds = {sX-16, sY-16, (float)zombieSprite.width/2, zombieSprite.height};
 
             // Handle collisions with projectiles
             Projectile* projArr = (Projectile*)projectiles.array;
             for (int j = 0; j < projectiles.fixedSize; j++) {
                 if (projArr[j].active) {
-                    if (CheckCollisionPointRec(projArr[j].pos, box)) {
+                    if (CheckCollisionPointRec(projArr[j].pos, bounds)) {
                         projArr[j].active = false;
                         zombie->health -= 0.1f;
                         PlaySound(popSound);
@@ -192,8 +193,10 @@ void UpdateDrawZombies(void)
             DrawTextureCentered(shadowSprite, drawPos, SHADOW_ORIGIN, WHITE);
             DrawTextureCentered(zombieSprite, drawPos, origin, WHITE);
 
+#if ZOMBIE_DEBUG
             // Zombie collider debug
-            //DrawRectangleRec(box, (Color){100, 100, 255, 100});
+            DrawRectangleRec(box, (Color){100, 100, 255, 100});
+#endif
         }
     }
 }
@@ -202,8 +205,6 @@ void ZombieKilled(void)
 {
     zombiesKilledCount++;
 
-    // TODO: Consider only ended wave once an certain number of zombies is killed. This number can increase as
-    // the waves go on. It would be a better wave of determining the end of a wave compared to a timer.
     if (!waveStarted) {
         currentKillsRequiredForNextWave--;
 

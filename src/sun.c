@@ -63,7 +63,7 @@ void UpdateDrawSuns(void)
             // Draw sun
             Rectangle src = {0,0,sunSize, sunSize};
             Rectangle dst = { EXPAND_V2(sunArr[i].pos), sunSize, sunSize};
-            DrawTexturePro(sunSprite, src, dst, sunHalfSize, GetTime()*10, WHITE);
+            DrawTexturePro(sunSprite, src, dst, sunHalfSize, GetTime()*20, WHITE);
         }
     }
 }

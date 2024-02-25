@@ -52,3 +52,18 @@ Consider setting a deltatime global to allow treating certain values as "per sec
 since a lot of the code depends on the fps, so it might be a pain to do, and not really beneficial at this point.
 
 Remove highlight when hovering shovel
+
+Remove old pause code if it's still there
+
+Consider adding different fade curves to particles
+
+Make sure current particles aren't fading too fast
+
+Add random confetti explosion to zombies
+
+Make zombies live for a certain amount of time after they die (their head should pop off). I suppose this could
+be handled with a negative health. Say, once their health reaches -0.2f, they actually die, but if their health
+is less than zero, they still keep taking hits, and blocking shots to the zombies behind them, but they won't
+be able to damage plants. This would add some challenge and urgency.
+
+Fix gameover screen
