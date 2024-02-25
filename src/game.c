@@ -111,12 +111,6 @@ int main(void)
             }
         }
 
-        if (IsKeyPressed(KEY_R)) {
-            raining = !raining;
-        }
-
-
-
         if (raining) {
             UpdateMusicStream(rainLoop);
 
@@ -236,7 +230,7 @@ void UpdateDrawStart(void)
     }
 
 
-    char *creditText = "Game by James Czekaj";
+    char *creditText = "(c) James Czekaj 2024";
     DrawTextWithShadow(smallFont, creditText, GetCenteredTextX(smallFont, 25, creditText), virtualScreenHeight-32, 25, 2, WHITE);
 }
 
@@ -339,11 +333,6 @@ void UpdateDrawGameOver(void)
 
 void UpdateDrawGame(void)
 {
-    if (IsKeyPressed(KEY_M)) {
-        playingMusic = !playingMusic;
-    }
-
-
     if (playingMusic) {
         UpdateMusicStream(themeSong);
     }
@@ -407,6 +396,7 @@ void UpdateDrawGame(void)
         trayStart.x, trayStart.y,
         trayEnd.x, trayEnd.y
     };
+    // TODO: Consider making a DrawRectangleWithBorder function that could be used here, and by TextButton
     Rectangle border = tray;
     border.x -= 1;
     border.y -= 1;
@@ -575,23 +565,18 @@ Rectangle GetRenderRect(void)
 {
     int windowWidth = GetScreenWidth();
     int windowHeight = GetScreenHeight();
-    bool landscape = windowWidth > windowHeight;
-
-    int dstWidth = windowWidth;
-    int dstHeight = windowHeight;
-    int offsetX = 0;
-    int offsetY = 0;
 
     float scale;
-    if (landscape) {
+    bool landscape = windowWidth > windowHeight;
+    if (landscape)
         scale = (float)windowHeight/virtualScreenHeight;
-        dstWidth = virtualScreenWidth*scale;
-        offsetX = (windowWidth-dstWidth)/2;
-    } else {
+    else
         scale = (float)windowWidth/virtualScreenWidth;
-        dstHeight = scale*virtualScreenHeight;
-        offsetY = (windowHeight-dstHeight)/2;
-    }
+
+    int dstWidth = virtualScreenWidth*scale;
+    int dstHeight = scale*virtualScreenHeight;
+    int offsetX = (windowWidth-dstWidth)/2;
+    int offsetY = (windowHeight-dstHeight)/2;
 
     return (Rectangle){offsetX, offsetY, dstWidth, dstHeight};
 }

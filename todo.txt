@@ -10,18 +10,11 @@ drum parts less busy.
 Improve max FPS. Right now it seems like rendering is limiting the frame rate quite a bit, see if you can
 figure out why (just for fun.)
 
-Make unique rand function only call during waves or when spawn speed is fast.
-
-Maybe Split up update and draw code to allow pausing while still drawing everything. Or maybe just cache the previous
-frame in a texture and render that.
-
 Continue tweaking zombie waves/difficulty curve
 
 Consider making the plant icons on the seed packets positions automatically calculate.
 
 Fix the peas not colliding off screen again.
-
-Implement spawn rate limit
 
 Add hit flash to zombies and maybe plants when they're being eaten.
 
@@ -51,13 +44,7 @@ Improve look of title/gameover screen. Pretty bland right now.
 Consider setting a deltatime global to allow treating certain values as "per second", rather than per frame. But only consider this,
 since a lot of the code depends on the fps, so it might be a pain to do, and not really beneficial at this point.
 
-Remove highlight when hovering shovel
-
-Remove old pause code if it's still there
-
 Consider adding different fade curves to particles
-
-Make sure current particles aren't fading too fast
 
 Add random confetti explosion to zombies
 
