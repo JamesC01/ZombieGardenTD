@@ -122,7 +122,7 @@ void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
             NextObject(&projectiles);
 
             PlaySound(peaShootSound);
-            CreateParticleExplosion(peaSpawnPos, (Vector2){2, 2}, 3, 15, 8, (Color){200, 255, 200, 255});
+            CreateParticleExplosion(peaSpawnPos, (Vector2){2, 2}, 3, 30, 8, (Color){200, 255, 200, 255});
         }
     }
 

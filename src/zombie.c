@@ -100,7 +100,7 @@ void UpdateDrawZombies(void)
     if (TickCooldown(&zombieSpawnTimer, currentZombieSpawnRate)) {
 
 #if ZOMBIE_DEBUG
-        float xSpawn = 2;
+        float xSpawn = 7;
 #else
         float xSpawn = GetRandomValue(10, 11) + rand()/(float)RAND_MAX;
 #endif
@@ -177,7 +177,7 @@ void UpdateDrawZombies(void)
                         zombie->health -= 0.1f;
                         PlaySound(popSound);
                         PlaySound(zombieHitSounds[GetRandomValue(0, ZOMBIE_HIT_SOUND_COUNT-1)]);
-                        CreateParticleExplosion(projArr[j].pos, (Vector2){3,3}, 3, 15, 16, (Color){100, 0, 0, 255});
+                        CreateParticleExplosion(projArr[j].pos, (Vector2){3,3}, 3, 30, 16, (Color){100, 0, 0, 255});
                     }
                 } 
             }
@@ -195,7 +195,7 @@ void UpdateDrawZombies(void)
 
 #if ZOMBIE_DEBUG
             // Zombie collider debug
-            DrawRectangleRec(box, (Color){100, 100, 255, 100});
+            DrawRectangleRec(bounds, (Color){100, 100, 255, 100});
 #endif
         }
     }
