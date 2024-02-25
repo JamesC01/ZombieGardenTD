@@ -36,7 +36,6 @@ Vector2 virtualMousePosition;
 
 const int defaultFps = 60;
 bool limitFrameRate = true;
-bool paused = false;
 bool playingMusic = true;
 bool raining = false;
 int frameCount = 0;
@@ -360,13 +359,6 @@ void UpdateDrawGame(void)
     if (IsKeyPressed(KEY_ESCAPE)) {
         currentScreen = GAME_SCREEN_PAUSE_MENU;
     }
-
-    if (IsKeyPressed(KEY_P)) {
-        paused = !paused;
-    }
-
-    if (paused)
-        return;
 
     DrawBackground();
 
