@@ -372,6 +372,7 @@ where the rain particles were fading, which wasn't what I wanted. I made a littl
 DrawTextureCentered take a scale, which I thought would be difficult, but I did it in like 30 seconds. Because I made that function, I realised I could refactor the plant icons on the seed
 packets, which were using hardcoded values to center them, since they were scaled down, now with this updated function I could do that automatically. I finally implemented a function for
 getting the center of a sprite, since I had to use that for centering the plants. Because of that, I removed SHADOW_ORIGIN, which represented the center of the shadow, since I now have a
-function that will calculate it for me.
+function that will calculate it for me. I spent spent like a single minute making the zombies scale different based on their x pos, so they don't all animate at the same time. I didn't count
+this time, though, since it was such a short amount.
 
-Overall, not a massive amount done, but I wanted to keep it a bit shorter today.
+Overall, not a massive amount done, but I wanted to keep it a bit shorter today. 
