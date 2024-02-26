@@ -6,6 +6,7 @@
 typedef struct {
     Vector2 gridPos;
     float health;
+    float scale;
     bool active;
 } Zombie;
 

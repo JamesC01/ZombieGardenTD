@@ -486,7 +486,7 @@ void UpdateDrawProjectiles(void)
 
         if (proj->active) {
             proj->pos.x += 5;
-            DrawTextureCentered(smallShadowSprite, Vector2Add(proj->pos, (Vector2){0, 42}), Vector2Zero(), WHITE);
+            DrawTextureCentered(smallShadowSprite, Vector2Add(proj->pos, (Vector2){0, 42}), Vector2Zero(), WHITE, 1);
             DrawTextureV(peaSprite, proj->pos, WHITE);
 
             if (proj->pos.x > 640) {
@@ -528,11 +528,11 @@ float GetRandomFloatValue(float min, float max)
 }
 
 // TODO: This doesn't seem to do any centering?
-void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint)
+void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint, float scale)
 {
     Rectangle src = {0, 0, sprite.width, sprite.height};
-    Rectangle dst = {EXPAND_V2(pos), sprite.width, sprite.height};
-    DrawTexturePro(sprite, src, dst, origin, 0, tint);
+    Rectangle dst = {EXPAND_V2(pos), sprite.width*scale, sprite.height*scale};
+    DrawTexturePro(sprite, src, dst, Vector2Scale(origin, scale), 0, tint);
 }
 
 bool TickCooldown(int *timer, int cooldownTime)

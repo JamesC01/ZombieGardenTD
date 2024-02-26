@@ -1,4 +1,5 @@
 #include "zombie.h"
+#include <math.h>
 #include <raylib.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,7 +10,7 @@
 #include "particles.h"
 #include "game.h"
 
-#define ZOMBIE_DEBUG false
+#define ZOMBIE_DEBUG true
 
 FixedObjectArray zombies;
 
@@ -125,6 +126,8 @@ void UpdateDrawZombies(void)
 
         if (zombie->active) {
 
+            zombie->scale = 1+((1+sinf(GetTime()*4))/2)*0.1f;
+
             // Growl
             if (zombieGrowlTimer < 0) {
                 int random = GetUniqueRandomValue(lastZombieGrowlIndex, 0, ZOMBIE_GROWL_SOUND_COUNT-1);
@@ -193,8 +196,8 @@ void UpdateDrawZombies(void)
             // Draw
             Vector2 drawPos = {sX, sY+gridCellSize.y*0.75f};
             Vector2 origin = {(float)zombieSprite.width*0.75f, zombieSprite.height-4};
-            DrawTextureCentered(shadowSprite, drawPos, SHADOW_ORIGIN, WHITE);
-            DrawTextureCentered(zombieSprite, drawPos, origin, WHITE);
+            DrawTextureCentered(shadowSprite, drawPos, SHADOW_ORIGIN, WHITE, 1);
+            DrawTextureCentered(zombieSprite, drawPos, origin, WHITE, zombie->scale);
 
 #if ZOMBIE_DEBUG
             // Zombie collider debug
