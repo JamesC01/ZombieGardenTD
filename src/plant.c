@@ -37,7 +37,7 @@ void UpdateDrawPlants()
                 }
 
 
-                DrawTextureCentered(shadowSprite, screenPos, SHADOW_ORIGIN, WHITE, 1);
+                DrawTextureCentered(shadowSprite, screenPos, GetTextureCenterPoint(shadowSprite), WHITE, 1);
 
                 switch (p->type) {
                     case PT_PSHOOTER:

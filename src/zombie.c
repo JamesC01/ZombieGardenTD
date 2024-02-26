@@ -196,7 +196,7 @@ void UpdateDrawZombies(void)
             // Draw
             Vector2 drawPos = {sX, sY+gridCellSize.y*0.75f};
             Vector2 origin = {(float)zombieSprite.width*0.75f, zombieSprite.height-4};
-            DrawTextureCentered(shadowSprite, drawPos, SHADOW_ORIGIN, WHITE, 1);
+            DrawTextureCentered(shadowSprite, drawPos, GetTextureCenterPoint(shadowSprite), WHITE, 1);
             DrawTextureCentered(zombieSprite, drawPos, origin, WHITE, zombie->scale);
 
 #if ZOMBIE_DEBUG
