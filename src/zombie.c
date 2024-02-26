@@ -126,7 +126,7 @@ void UpdateDrawZombies(void)
 
         if (zombie->active) {
 
-            zombie->scale = 1+((1+sinf(GetTime()*4))/2)*0.075f;
+            zombie->scale = 1+((1+sinf(GetTime()*4+zombie->gridPos.x*2))/2)*0.075f;
 
             // Growl
             if (zombieGrowlTimer < 0) {
