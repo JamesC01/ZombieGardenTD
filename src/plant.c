@@ -115,9 +115,9 @@ void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
         if (TickCooldown(&p->cooldown, plantCooldownLUT[p->type])) {
             Vector2 peaSpawnPos = Vector2Add(screenPos, (Vector2){18, -42});
 
-            Projectile* projArr = (Projectile*)projectiles.array;
-            projArr[projectiles.next].active = true;
-            projArr[projectiles.next].pos = peaSpawnPos;
+            Projectile* proj = GET_NEXT_OBJECT(projectiles, Projectile);
+            proj->active = true;
+            proj->pos = peaSpawnPos;
 
             NextObject(&projectiles);
 

@@ -82,12 +82,9 @@ int main(void)
     zombies = CreateFixedObjectArray(64, sizeof(Zombie));
     suns = CreateFixedObjectArray(8, sizeof(Sun));
 
-    InitializeGame();
-
     targetRT = LoadRenderTexture(640, 480);
 
     ReadWriteConfig("r");
-
 
     bool shouldClose = false;
     while (!WindowShouldClose() && !shouldClose) {
@@ -104,11 +101,8 @@ int main(void)
         // Toggle frame limiter
         if (IsKeyPressed(KEY_S)) {
             limitFrameRate = !limitFrameRate;
-            if (limitFrameRate) {
-                SetTargetFPS(defaultFps);
-            } else {
-                SetTargetFPS(0);
-            }
+            int fps = (limitFrameRate) ? defaultFps : 0;
+            SetTargetFPS(fps);
         }
 
         if (raining) {
@@ -122,10 +116,9 @@ int main(void)
                 };
                 Vector2 randSize = Vector2Scale((Vector2){2, 8}, GetRandomFloatValue(0.5f, 1));
                 Particle* p = CreateParticle(P_RAIN, randPos, randSize, GetRandomValue(30, 60*5), (Color){220, 220, 255, 150});
-                p->velocity = (Vector2){
-                    0,
-                        GetRandomFloatValue(5, 12)
-                };
+                // TODO: Consider making rain fall down at a slight angle
+                p->velocity.x = 0;
+                p->velocity.y = GetRandomFloatValue(5, 12);
             }
         }
 
@@ -162,6 +155,7 @@ int main(void)
 
         EndTextureMode();
 
+
         // Scale render texture to screen
         BeginDrawing();
 
@@ -172,8 +166,6 @@ int main(void)
 
 
         EndDrawing();
-
-
     }
 
     ReadWriteConfig("w");
@@ -198,42 +190,43 @@ void UpdateDrawStart(void)
 
     char *titleText1 = "PvZ";
     char *titleText2 = "Clone";
-    DrawTextWithShadow(bigFont, titleText1, GetCenteredTextX(bigFont, 75, titleText1), 32, 75, 4, WHITE);
-    DrawTextWithShadow(bigFont, titleText2, GetCenteredTextX(bigFont, 75, titleText2), 32+75, 75, 4, WHITE);
+    int tfSize = 75;
+    DrawTextWithShadow(bigFont, titleText1, GetCenteredTextX(bigFont, tfSize, titleText1), 32, tfSize, 4, WHITE);
+    DrawTextWithShadow(bigFont, titleText2, GetCenteredTextX(bigFont, tfSize, titleText2), 32+tfSize, tfSize, 4, WHITE);
 
-    int x = 16;
-    int y = virtualScreenHeight/2-30;
-    int height = 60;
 
-    TextOptions options = {
+    TextOptions tOpt = {
         smallFont,
         40,
         2,
         WHITE
     };
 
-    ButtonOptions bOptions = defaultButtonOptions;
-    bOptions.centered = true;
-    bOptions.colour = GREEN;
-    bOptions.shadowOffset = 4;
+    ButtonOptions bOpt = defaultButtonOptions;
+    bOpt.centered = true;
+    bOpt.shadowOffset = 4;
 
-    const int btnShadow = 4;
-    if (TextButton(bOptions, options, "Start Game!", x, y)) {
+    int y = virtualScreenHeight/2-30;
+    int gap = 6;
+    int height = GetButtonHeight(bOpt, tOpt) + gap;
+
+    bOpt.colour = GREEN;
+    if (TextButton(bOpt, tOpt, "Start Game!", 0, y)) {
         currentScreen = GAME_SCREEN_PLAYING;
         InitializeGame();
     }
 
     y += height;
 
-    bOptions.colour = RED;
-
-    if (TextButton(bOptions, options, "Quit Game", x, y)) {
+    bOpt.colour = RED;
+    if (TextButton(bOpt, tOpt, "Quit Game", 0, y)) {
         currentScreen = GAME_SCREEN_EXIT;
     }
 
 
     char *creditText = "(c) James Czekaj 2024";
-    DrawTextWithShadow(smallFont, creditText, GetCenteredTextX(smallFont, 25, creditText), virtualScreenHeight-32, 25, 2, WHITE);
+    int cfSize = 25;
+    DrawTextWithShadow(smallFont, creditText, GetCenteredTextX(smallFont, cfSize, creditText), virtualScreenHeight-32, cfSize, 2, WHITE);
 }
 
 
@@ -242,13 +235,11 @@ void UpdateDrawPauseMenu(void)
     DrawBackground();
 
     char *pausedText = "Paused";
-    DrawTextWithShadow(bigFont, pausedText, GetCenteredTextX(bigFont, 50, pausedText), 64, 50, 4, WHITE);
+    int tfSize = 50;
+    DrawTextWithShadow(bigFont, pausedText, GetCenteredTextX(bigFont, tfSize, pausedText), 64, tfSize, 4, WHITE);
 
-    int x;
-    int y = virtualScreenHeight/2-80;
-    int height = 50;
 
-    TextOptions options = {
+    TextOptions tOpt = {
         smallFont,
         30,
         2,
@@ -258,50 +249,49 @@ void UpdateDrawPauseMenu(void)
     ButtonOptions bOpt = defaultButtonOptions;
     bOpt.shadowOffset = 4;
     bOpt.centered = true;
-    bOpt.colour = GREEN;
     bOpt.minWidth = 200;
 
+    int y = virtualScreenHeight/2-80;
+    int gap = 6;
+    int height = GetButtonHeight(bOpt, tOpt) + gap;
+
+    bOpt.colour = GREEN;
     const int btnShadow = 4;
-    if (TextButton(bOpt, options, "Resume", x, y)) {
+    if (TextButton(bOpt, tOpt, "Resume", 0, y)) {
         currentScreen = GAME_SCREEN_PLAYING;
     }
 
     y += height;
 
     bOpt.colour = (Color){0, 150, 200, 255};
-
     char rainText[32];
     sprintf(rainText, "Rain (%s)", (raining) ? "On" : "Off");
-    x = GetCenteredTextX(options.font, options.size, rainText);
-    if (TextButton(bOpt, options, rainText, x, y)) {
+    if (TextButton(bOpt, tOpt, rainText, 0, y)) {
         raining = !raining;
     }
 
     y += height;
 
     bOpt.colour = BROWN;
-
     char musicText[32];
     sprintf(musicText, "Music (%s)", (playingMusic) ? "On" : "Off");
-    if (TextButton(bOpt, options, musicText, x, y)) {
+    if (TextButton(bOpt, tOpt, musicText, 0, y)) {
         playingMusic = !playingMusic;
     }
 
     y += height;
 
     bOpt.colour = LIGHTGRAY;
-
     char fullScreenText[32];
     sprintf(fullScreenText, "Fullscreen (%s)", (IsWindowFullscreen()) ? "Yes" : "No");
-    if (TextButton(bOpt, options, fullScreenText, x, y)) {
+    if (TextButton(bOpt, tOpt, fullScreenText, 0, y)) {
         ToggleFullscreen();
     }
 
     y += height;
 
     bOpt.colour = RED;
-
-    if (TextButton(bOpt, options, "Give Up", x, y)) {
+    if (TextButton(bOpt, tOpt, "Give Up", 0, y)) {
         currentScreen = GAME_SCREEN_START;
     }
 }
@@ -328,7 +318,7 @@ void UpdateDrawGameOver(void)
     bOpt.colour = LIGHTGRAY;
     bOpt.centered = true;
 
-    if (TextButton(bOpt, options, "Return to Start", 16, virtualScreenHeight/2)) {
+    if (TextButton(bOpt, options, "Return to Start", 0, virtualScreenHeight/2)) {
         currentScreen = GAME_SCREEN_START;
     }
 }
@@ -614,4 +604,9 @@ void ReadWriteConfig(char *operation)
 Vector2 GetTextureCenterPoint(Texture2D sprite)
 {
     return (Vector2){sprite.width/2.0f, sprite.height/2.0f};
+}
+
+int GetButtonHeight(ButtonOptions bOpt, TextOptions tOpt)
+{
+    return tOpt.size + bOpt.outlineThickness*2 + bOpt.paddingY;
 }

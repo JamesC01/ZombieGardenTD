@@ -3,6 +3,7 @@
 #include <raylib.h>
 #include <raymath.h>
 #include "plant.h"
+#include "ui.h"
 #include <stdbool.h>
 
 extern const int virtualScreenWidth;
@@ -27,7 +28,7 @@ typedef struct {
 } FixedObjectArray;
 
 // Get a pointer to the next free FixedObjectArray object
-#define GET_NEXT_OBJECT(fixedObjArray, type) &((type*)(fixedObjArray).array)[(fixedObjArray).next]
+#define GET_NEXT_OBJECT(fixedObjArray, type) &((type*)fixedObjArray.array)[fixedObjArray.next]
 
 typedef struct {
     Vector2 pos;
@@ -44,5 +45,6 @@ float GetRandomFloatValue(float min, float max);
 void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint, float scale);
 Vector2 GetTextureCenterPoint(Texture2D sprite);
 Vector2 GetMousePosVirtual(void);
+int GetButtonHeight(ButtonOptions bOpt, TextOptions tOpt);
 
 #endif

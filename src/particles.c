@@ -7,8 +7,6 @@
 
 FixedObjectArray particles;
 
-int rainParticleTimer = 0;
-
 // TODO: Consider adding minSpeed
 void CreateParticleExplosion(Vector2 pos, Vector2 size, int maxSpeed, int lifetime, int particleCount, Color colour)
 {
@@ -37,9 +35,7 @@ void CreateParticleConfetti(Vector2 pos, Vector2 size, int particleCount)
 
 Particle *CreateParticle(ParticleType type, Vector2 pos, Vector2 size, int lifetime, Color colour)
 {
-    Particle *partArr = (Particle*)particles.array;
-    Particle* p = &partArr[particles.next];
-
+    Particle* p = GET_NEXT_OBJECT(particles, Particle);
 
     p->type = type;
     p->pos = pos;

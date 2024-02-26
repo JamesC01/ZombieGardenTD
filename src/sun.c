@@ -25,12 +25,14 @@ void InitSuns(void)
 
 void SpawnSun(Vector2 pos)
 {
-    Sun* sunArr = (Sun*)suns.array;
-    sunArr[suns.next].active = true;
-    sunArr[suns.next].pos = pos;
-    PlaySound(sunAppearSound);
+    Sun* sun = GET_NEXT_OBJECT(suns, Sun);
+
+    sun->active = true;
+    sun->pos = pos;
 
     NextObject(&suns);
+
+    PlaySound(sunAppearSound);
 }
 
 void UpdateDrawSuns(void)

@@ -14,6 +14,7 @@
 
 FixedObjectArray zombies;
 
+// TODO: Figure out if there's a way to bundle up these globals
 int defaultZombieSpawnRate;
 int defaultWaveZombieSpawnRate;
 
