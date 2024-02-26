@@ -63,10 +63,10 @@ void UpdateDrawParticles(void)
             p->pos = Vector2Add(p->pos, p->velocity);
             p->lifetime--;
 
-            float particleLifePercent = (p->lifetime / (float)p->startLifetime);
-            p->colour = Fade(p->colour, particleLifePercent);
-
-
+            if (p->type != P_RAIN) {
+                float particleLifePercent = (p->lifetime / (float)p->startLifetime);
+                p->colour = Fade(p->colour, particleLifePercent);
+            }
 
             DrawRectangleV(p->pos, p->size, p->colour);
 
@@ -75,7 +75,7 @@ void UpdateDrawParticles(void)
 
                 switch (p->type) {
                     case P_RAIN:
-                        CreateParticleExplosion(p->pos, (Vector2){2, 2}, 2, 15, 8, (Color){255, 255, 255, 150});
+                        CreateParticleExplosion(p->pos, (Vector2){2, 2}, 2, 15, 8, (Color){255, 255, 255, 120});
                         break;
                     default:
                         break;

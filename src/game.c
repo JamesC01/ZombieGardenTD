@@ -115,16 +115,18 @@ int main(void)
             UpdateMusicStream(rainLoop);
 
             // Spawn rain particles
-            Vector2 randPos = {
-                GetRandomValue(0, virtualScreenWidth),
-                GetRandomValue(-virtualScreenHeight/2, 0)
-            };
-            Vector2 randSize = Vector2Scale((Vector2){3, 8}, GetRandomFloatValue(0.5f, 1));
-            Particle* p = CreateParticle(P_RAIN, randPos, randSize, GetRandomValue(10, 60*5), (Color){50, 200, 220, 80});
-            p->velocity = (Vector2){
-                0,
-                    GetRandomFloatValue(8, 16)
-            };
+            for (int i = 0; i < 10; i++) {
+                Vector2 randPos = {
+                    GetRandomValue(0, virtualScreenWidth),
+                    GetRandomValue(-virtualScreenHeight/2, 0)
+                };
+                Vector2 randSize = Vector2Scale((Vector2){2, 8}, GetRandomFloatValue(0.5f, 1));
+                Particle* p = CreateParticle(P_RAIN, randPos, randSize, GetRandomValue(30, 60*5), (Color){220, 220, 255, 150});
+                p->velocity = (Vector2){
+                    0,
+                        GetRandomFloatValue(5, 12)
+                };
+            }
         }
 
 
