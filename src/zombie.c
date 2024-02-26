@@ -10,7 +10,7 @@
 #include "particles.h"
 #include "game.h"
 
-#define ZOMBIE_DEBUG true
+#define ZOMBIE_DEBUG false
 
 FixedObjectArray zombies;
 
@@ -126,7 +126,7 @@ void UpdateDrawZombies(void)
 
         if (zombie->active) {
 
-            zombie->scale = 1+((1+sinf(GetTime()*4))/2)*0.1f;
+            zombie->scale = 1+((1+sinf(GetTime()*4))/2)*0.075f;
 
             // Growl
             if (zombieGrowlTimer < 0) {
@@ -181,7 +181,7 @@ void UpdateDrawZombies(void)
                         PlaySound(popSound);
                         PlaySound(zombieHitSounds[GetRandomValue(0, ZOMBIE_HIT_SOUND_COUNT-1)]);
                         CreateParticleExplosion(projArr[j].pos, (Vector2){3,3}, 3, 30, 16, (Color){100, 0, 0, 255});
-                        if (GetRandomValue(0, 24) == 0) {
+                        if (GetRandomValue(0, 49) == 0) {
                             CreateParticleConfetti(projArr[j].pos, (Vector2){3,3}, 64);
                         }
                     }

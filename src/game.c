@@ -438,6 +438,7 @@ void UpdateDrawGame(void)
     if (TextButton(bOpt, options, "||", virtualScreenWidth-32, virtualScreenHeight-32)) {
         currentScreen = GAME_SCREEN_PAUSE_MENU;
     }
+
 }
 
 void InitializeGame(void)
@@ -608,4 +609,9 @@ void ReadWriteConfig(char *operation)
     }
 
     fclose(configFile);
+} 
+
+Vector2 GetTextureCenterPoint(Texture2D sprite)
+{
+    return (Vector2){sprite.width/2.0f, sprite.height/2.0f};
 }

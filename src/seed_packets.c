@@ -114,19 +114,21 @@ void DrawSeedPackets()
             DrawRectangleV(seedPacketUIPos, SEEDPACKET_SIZE, (Color){255, 255, 255, 50});
         }
 
+        Vector2 seedPacketMiddle = {seedPacketUIPos.x+SEEDPACKET_SIZE.x/2, seedPacketUIPos.y+SEEDPACKET_SIZE.y*0.575f};
+
         // Draw plant icon
         switch (seedPackets[i].type) {
             case PT_PSHOOTER:
-                DrawTextureEx(pShooterSprite, Vector2Add(seedPacketUIPos, (Vector2){12, 16}), 0, 0.45f, WHITE);
+                DrawTextureCentered(pShooterSprite, seedPacketMiddle, GetTextureCenterPoint(pShooterSprite), WHITE, 0.45f);
                 break;
             case PT_SUNFLOWER:
-                DrawTextureEx(sunflowerSprite, Vector2Add(seedPacketUIPos, (Vector2){8, 16}), 0, 0.6f, WHITE);
+                DrawTextureCentered(sunflowerSprite, seedPacketMiddle, GetTextureCenterPoint(sunflowerSprite), WHITE, 0.6f);
                 break;
             case PT_WALLNUT:
-                DrawTextureEx(wallnutSprite, Vector2Add(seedPacketUIPos, (Vector2){8, 15}), 0, 0.6f, WHITE);
+                DrawTextureCentered(wallnutSprite, seedPacketMiddle, GetTextureCenterPoint(wallnutSprite), WHITE, 0.6f);
                 break;
             case PT_CHERRYBOMB:
-                DrawTextureEx(cherrySprite, Vector2Add(seedPacketUIPos, (Vector2){7, 18}), 0, 0.6f, RED);
+                DrawTextureCentered(cherrySprite, seedPacketMiddle, GetTextureCenterPoint(cherrySprite), WHITE, 0.6f);
                 break;
             default:
                 break;

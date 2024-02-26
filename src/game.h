@@ -42,6 +42,7 @@ bool TickCooldown(int *timer, int cooldownTime);
 int GetUniqueRandomValue(int exludedValue, int min, int max);
 float GetRandomFloatValue(float min, float max);
 void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint, float scale);
+Vector2 GetTextureCenterPoint(Texture2D sprite);
 Vector2 GetMousePosVirtual(void);
 
 #endif
