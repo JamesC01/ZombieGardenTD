@@ -363,3 +363,15 @@ Today I spent 1 hour 22 minutes. I refactored some code and seperated the UI cod
 positions. I implemented a simple config file for saving the state of raining, playingMusic and fullscreen. I did plenty more refactoring, removing old code, shortening bits of code
 by simplifying them etc.. Finally I added some confetti explosions when zombies are hit, that happen 1/25 times. Mostly refactoring, which is not bad. It's not to make code easier to
 understand, and more concise.
+
+
+26/02/2024
+
+Today I spent 55 minutes. I made multiple rain particles spawn per-frame because I noticed that the real pvz had so much more rain particles and I preferred the look. I also fixed a "bug"
+where the rain particles were fading, which wasn't what I wanted. I made a little zombie walk animation by using sin(time) and putting a scale field on the Zombie. For this, I had to make
+DrawTextureCentered take a scale, which I thought would be difficult, but I did it in like 30 seconds. Because I made that function, I realised I could refactor the plant icons on the seed
+packets, which were using hardcoded values to center them, since they were scaled down, now with this updated function I could do that automatically. I finally implemented a function for
+getting the center of a sprite, since I had to use that for centering the plants. Because of that, I removed SHADOW_ORIGIN, which represented the center of the shadow, since I now have a
+function that will calculate it for me.
+
+Overall, not a massive amount done, but I wanted to keep it a bit shorter today.
