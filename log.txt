@@ -377,3 +377,11 @@ this time, though, since it was such a short amount.
 
 Overall, not a massive amount done, but I wanted to keep it a bit shorter today. I also spent another 33 minutes just looking over the code and refactoring parts. I added the time to the above
 time.
+
+
+27/02/2024
+
+(NOTE: I spent around 13 minutes drawing the zombie sprite, but I didn't add that to the time below.)
+
+I spent 33 minutes today. I fixed zombies not spawning, I added some simple scale animations to the plants to make them seem more alive. I also tweaked the zombie scaling so even when they're
+close to eachother, their scaling is fairly different.

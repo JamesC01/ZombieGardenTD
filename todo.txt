@@ -12,17 +12,11 @@ figure out why (just for fun.)
 
 Continue tweaking zombie waves/difficulty curve
 
-Consider making the plant icons on the seed packets positions automatically calculate.
-
 Fix the peas not colliding off screen again.
 
 Add hit flash to zombies and maybe plants when they're being eaten.
 
 Record explosion sound for cherrybomb and improve particle explosion.
-
-Add juice/polish. Things like the zombies squashing/stretching a bit to make it look like they're walking.
-Same for the plants. Just some simple "animations" that just change the size or rotation in really subtly
-ways that brings a bit of life into the sprites.
 
 Add something that indicates a wave is happening.
 
