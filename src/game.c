@@ -71,6 +71,7 @@ int main(void)
 
     LoadAssets();
 
+
     SetMusicVolume(themeSong, 0.5f);
     PlayMusicStream(themeSong);
 

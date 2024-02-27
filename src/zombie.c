@@ -57,6 +57,8 @@ void InitZombies(void)
         zomArr[i].active = false;
     }
 
+    defaultZombieSpawnRate = 60 * 20;
+    defaultWaveZombieSpawnRate = 60 * 3;
     currentZombieSpawnRate = defaultZombieSpawnRate;
 
 #if ZOMBIE_DEBUG
@@ -66,9 +68,6 @@ void InitZombies(void)
 #endif
 
     zombieGrowlTimer = 60*2;
-
-    defaultZombieSpawnRate = 60 * 20;
-    defaultWaveZombieSpawnRate = 60 * 3;
 }
 
 void UpdateDrawZombies(void)

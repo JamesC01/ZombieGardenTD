@@ -49,3 +49,6 @@ is less than zero, they still keep taking hits, and blocking shots to the zombie
 be able to damage plants. This would add some challenge and urgency.
 
 Consider seperating Update/Draw to make benchmarking easier
+
+
+Fix zombies not showing up
