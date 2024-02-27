@@ -81,8 +81,11 @@ void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
         p->health = 0;
     }
 
+    float coolDownPercent = (p->cooldown / (float)plantCooldownLUT[p->type]);
+    float scale = 1+coolDownPercent*0.5f;
+
     Vector2 origin = {(float)cherrySprite.width/2, cherrySprite.height-2};
-    DrawTextureCentered(cherrySprite, screenPos, origin, WHITE, 1);
+    DrawTextureCentered(cherrySprite, screenPos, origin, WHITE, scale);
 }
 
 
@@ -94,7 +97,14 @@ void UpdateDrawSunflower(Plant* p, Vector2 screenPos)
         SpawnSun(sunSpawnPos);
 
     Vector2 origin = {(float)sunflowerSprite.width/2, sunflowerSprite.height-4};
-    DrawTextureCentered(sunflowerSprite, screenPos, origin, WHITE, 1);
+
+    float coolDownPercent = (p->cooldown / (float)plantCooldownLUT[p->type]);
+    float scale = 1;
+    if (coolDownPercent < 0.02f) {
+        scale = 1+(coolDownPercent*4);
+    }
+    
+    DrawTextureCentered(sunflowerSprite, screenPos, origin, WHITE, scale);
 }
 
 
@@ -126,6 +136,12 @@ void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
         }
     }
 
+    float coolDownPercent = (p->cooldown / (float)plantCooldownLUT[p->type]);
+    float scale = 1;
+    if (coolDownPercent < 0.05f) {
+        scale = 1+(coolDownPercent*3);
+    }
+
     Vector2 origin = {(float)pShooterSprite.width/2, pShooterSprite.height-4};
-    DrawTextureCentered(pShooterSprite, screenPos, origin, WHITE, 1);
+    DrawTextureCentered(pShooterSprite, screenPos, origin, WHITE, scale);
 }
