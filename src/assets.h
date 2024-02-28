@@ -16,6 +16,7 @@ extern Texture2D wallnutSprite;
 extern Texture2D cherrySprite;
 extern Texture2D zombieSprite;
 extern Texture2D zombieHeadSprite;
+extern Texture2D headlessZombieSprite;
 extern Texture2D shadowSprite;
 extern Texture2D smallShadowSprite;
 

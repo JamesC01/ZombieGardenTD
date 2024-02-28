@@ -15,6 +15,7 @@ Texture2D wallnutSprite;
 Texture2D cherrySprite;
 Texture2D zombieSprite;
 Texture2D zombieHeadSprite;
+Texture2D headlessZombieSprite;
 Texture2D shadowSprite;
 Texture2D smallShadowSprite;
 
@@ -47,6 +48,7 @@ void LoadAssets()
     cherrySprite = LoadTexture("sprites/cherrybomb.png");
     zombieSprite = LoadTexture("sprites/zombie.png");
     zombieHeadSprite = LoadTexture("sprites/zombiehead.png");
+    headlessZombieSprite = LoadTexture("sprites/headlesszombie.png");
     shadowSprite = LoadTexture("sprites/shadow.png");
     smallShadowSprite = LoadTexture("sprites/small_shadow.png");
 

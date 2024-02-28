@@ -148,6 +148,7 @@ void UpdateDrawZombies(void)
         zombie->active = true;
         zombie->health = 1.0f;
         zombie->gridPos = gridPos;
+        zombie->headless = false;
 
         NextObject(&zombies);
     }
@@ -187,7 +188,9 @@ void UpdateDrawZombies(void)
                     Plant* p = &gardenGrid[frontOfZombieRounded][(int)zombie->gridPos.y];
 
                     if (p->type != PT_NONE) {
-                        p->health -= 0.5f;
+                        if (!zombie->headless) {
+                            p->health -= 0.5f;
+                        }
                         moveAmount = 0;
                         // TODO: Play eating sounds
                     }
@@ -196,7 +199,7 @@ void UpdateDrawZombies(void)
 
             zombie->gridPos.x -= moveAmount;
 
-            if (zombie->gridPos.x <= -1) {
+            if (zombie->gridPos.x <= -1 && !zombie->headless) {
                 GameOver();
             }
 
@@ -225,8 +228,9 @@ void UpdateDrawZombies(void)
 
             Vector2 origin = {(float)zombieSprite.width*0.75f, zombieSprite.height-4};
 
-            if (zombie->health <= 0) {
-                zombie->active = false;
+            if (zombie->health <= 0 && !zombie->headless) {
+                zombie->headless = true;
+                zombie->headlessTimer = 60 * 3;
                 ZombieKilled();
                 ZombieHead* head = GET_NEXT_OBJECT(zombieHeads, ZombieHead);
                 head->floorY = sY + gridCellSize.y*0.5f;
@@ -238,10 +242,21 @@ void UpdateDrawZombies(void)
                 NextObject(&zombieHeads);
             }
 
+            
+            if (zombie->headless) {
+                zombie->headlessTimer--;
+                if (zombie->headlessTimer <= 0) {
+                    zombie->active = false;
+                    // TODO: Consider making some sort of death animation.
+                }
+            }
+
+            Texture sprite = (zombie->headless) ? headlessZombieSprite : zombieSprite;
+
             // Draw
             Vector2 drawPos = {sX, sY+gridCellSize.y*0.75f};
             DrawTextureCentered(shadowSprite, drawPos, GetTextureCenterPoint(shadowSprite), WHITE, 1);
-            DrawTextureCentered(zombieSprite, drawPos, origin, WHITE, zombie->scale);
+            DrawTextureCentered(sprite, drawPos, origin, WHITE, zombie->scale);
 
 #if ZOMBIE_DEBUG
             // Zombie collider debug
