@@ -385,3 +385,13 @@ time.
 
 I spent 33 minutes today. I fixed zombies not spawning, I added some simple scale animations to the plants to make them seem more alive. I also tweaked the zombie scaling so even when they're
 close to eachother, their scaling is fairly different.
+
+
+28/02/2024
+
+Today I spent 1 hour 57 minutes. I started using some designations on structs, where you specify the field you want to set, which I didn't realise was in C99. I also seperated out the options
+to a config menu, and added the peashoot sound when press a button for some more feedback. I added the pop sound to confetti to make it a bit more fun. The biggest thing I did was add rolling
+heads to zombies. It was great fun, and I didn't run into any trouble. I think it looks funny! Then I made the zombies to keep taking shots and walk for a bit once they're dead, to give the
+zombies behind them more of a chance. Finally I fixed some issues I accidentally introduced to reading/writing config when refactoring the config into a struct.
+
+Overall, pretty solid, I'm happy with what I got done today!
