@@ -36,3 +36,16 @@ Make sound effects for:
 Improve look of title/gameover screen. Pretty bland right now.
 
 Consider adding different fade curves to particles
+
+Consider adding squelch sound effect when zombie head hits the ground. + maybe some blood particles
+
+Consider making a cursor sprite maybe a gardening glove
+
+Fix zombies overlapping when multiple reach a plant
+
+Make it so zombie head has to go fully offscreen before becoming innactive
+
+Make zombie scale animation speed change based on zombie speed
+
+
+Figure out why there's sound latency after playing game for a while.
