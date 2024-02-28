@@ -650,14 +650,13 @@ Rectangle GetRenderRect(void)
 // operation should be r for read, w for write
 void ReadWriteConfig(GameConfig *config, char *operation)
 {
-    return;
     FILE* configFile = fopen(".zombieconfig", operation);
 
     if (strcmp(operation, "r") == 0 && configFile) {
         int opFullscreen;
         int opPlayingMusic;
         int opRaining;
-        fscanf(configFile, "%i %i %i", &opFullscreen, &opPlayingMusic, &opPlayingMusic);
+        fscanf(configFile, "%i %i %i", &opRaining, &opPlayingMusic, &opFullscreen);
 
         config->fullscreen = (bool)opFullscreen;
         config->raining = (bool)opRaining;
@@ -666,7 +665,9 @@ void ReadWriteConfig(GameConfig *config, char *operation)
         fprintf(configFile, "%i %i %i", (int)config->raining, (int)config->playingMusic, (int)config->fullscreen);
     }
 
-    fclose(configFile);
+    if (configFile) {
+        fclose(configFile);
+    }
 } 
 
 Vector2 GetTextureCenterPoint(Texture2D sprite)
