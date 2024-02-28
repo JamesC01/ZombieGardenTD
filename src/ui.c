@@ -1,4 +1,5 @@
 #include "ui.h"
+#include "assets.h"
 #include "game.h"
 #include "seed_packets.h"
 #include <raylib.h>
@@ -41,6 +42,9 @@ bool TextButton(ButtonOptions buttonOptions, TextOptions textOptions, char *text
     bool cursorInside = CheckCollisionPointRec(GetMousePosVirtual(), button);
     if (cursorInside) {
         btnClicked = IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && !draggingSeedPacket;
+        if (btnClicked) {
+            PlaySound(peaShootSound);
+        }
 
         bool btnHeldDown = IsMouseButtonDown(MOUSE_BUTTON_LEFT) && !draggingSeedPacket;
 

@@ -21,11 +21,18 @@ typedef enum {
     GAME_SCREEN_PLAYING,
     GAME_SCREEN_PAUSE_MENU,
     GAME_SCREEN_GAMEOVER,
+    GAME_SCREEN_CONFIG_MENU,
     GAME_SCREEN_EXIT
 } GameScreen;
 
+GameScreen previousScreen;
 GameScreen currentScreen = GAME_SCREEN_START;
 
+typedef struct {
+    bool playingMusic;
+    bool raining;
+    bool fullscreen;
+} GameConfig;
 
 FixedObjectArray projectiles;
 
@@ -36,8 +43,6 @@ Vector2 virtualMousePosition;
 
 const int defaultFps = 60;
 bool limitFrameRate = true;
-bool playingMusic = true;
-bool raining = false;
 int frameCount = 0;
 
 Plant gardenGrid[GRID_WIDTH][GRID_HEIGHT] = {0};
@@ -51,13 +56,22 @@ void UpdateDrawStart(void);
 void UpdateDrawGame(void);
 void UpdateDrawGameOver(void);
 void UpdateDrawProjectiles(void);
+void UpdateDrawConfigMenu(GameConfig *config, GameScreen previousScreen);
 void InitializeGame(void);
 void DrawBackground(void);
 Rectangle GetRenderRect(void);
+void ChangeGameScreen(GameScreen newScreen);
 
-void ReadWriteConfig(char *operation);
+void ReadWriteConfig(GameConfig *config, char *operation);
 
 FixedObjectArray CreateFixedObjectArray(int objMaxCount, int typeSizeBytes);
+
+
+GameConfig gameConfig = {
+    .playingMusic = true,
+    .raining = false,
+    .fullscreen = false
+};
 
 int main(void)
 {
@@ -85,7 +99,10 @@ int main(void)
 
     targetRT = LoadRenderTexture(640, 480);
 
-    ReadWriteConfig("r");
+    ReadWriteConfig(&gameConfig, "r");
+    if (gameConfig.fullscreen && !IsWindowFullscreen()) {
+        ToggleFullscreen();
+    }
 
     bool shouldClose = false;
     while (!WindowShouldClose() && !shouldClose) {
@@ -106,7 +123,7 @@ int main(void)
             SetTargetFPS(fps);
         }
 
-        if (raining) {
+        if (gameConfig.raining) {
             UpdateMusicStream(rainLoop);
 
             // Spawn rain particles
@@ -143,9 +160,12 @@ int main(void)
             case GAME_SCREEN_EXIT:
                 shouldClose = true;
                 break;
+            case GAME_SCREEN_CONFIG_MENU:
+                UpdateDrawConfigMenu(&gameConfig, previousScreen);
+                break;
         }
 
-        if (raining) {
+        if (gameConfig.raining) {
             DrawRectangle(0, 0, virtualScreenWidth, virtualScreenHeight, (Color){0, 20, 50, 75});
         }
 
@@ -169,7 +189,7 @@ int main(void)
         EndDrawing();
     }
 
-    ReadWriteConfig("w");
+    ReadWriteConfig(&gameConfig, "w");
 
     free(projectiles.array);
     free(particles.array);
@@ -197,10 +217,10 @@ void UpdateDrawStart(void)
 
 
     TextOptions tOpt = {
-        smallFont,
-        40,
-        2,
-        WHITE
+        .font = smallFont,
+        .size = 40,
+        .shadowOffset = 2,
+        .colour = WHITE
     };
 
     ButtonOptions bOpt = defaultButtonOptions;
@@ -213,21 +233,86 @@ void UpdateDrawStart(void)
 
     bOpt.colour = GREEN;
     if (TextButton(bOpt, tOpt, "Start Game!", 0, y)) {
-        currentScreen = GAME_SCREEN_PLAYING;
+        ChangeGameScreen(GAME_SCREEN_PLAYING);
         InitializeGame();
     }
 
     y += height;
+    bOpt.colour = LIGHTGRAY;
+    if (TextButton(bOpt, tOpt, "Game Config", 0, y)) {
+        ChangeGameScreen(GAME_SCREEN_CONFIG_MENU);
+    }
 
+    y += height;
     bOpt.colour = RED;
     if (TextButton(bOpt, tOpt, "Quit Game", 0, y)) {
-        currentScreen = GAME_SCREEN_EXIT;
+        ChangeGameScreen(GAME_SCREEN_EXIT);
     }
 
 
     char *creditText = "(c) James Czekaj 2024";
     int cfSize = 25;
     DrawTextWithShadow(smallFont, creditText, GetCenteredTextX(smallFont, cfSize, creditText), virtualScreenHeight-32, cfSize, 2, WHITE);
+}
+
+void UpdateDrawConfigMenu(GameConfig *config, GameScreen previousScreen)
+{
+    DrawBackground();
+
+    char *pausedText = "Game Config";
+    int tfSize = 50;
+    DrawTextWithShadow(bigFont, pausedText, GetCenteredTextX(bigFont, tfSize, pausedText), 64, tfSize, 4, WHITE);
+
+
+    TextOptions tOpt = {
+        .font = smallFont,
+        .size = 30,
+        .shadowOffset = 2,
+        .colour = WHITE
+    };
+
+    ButtonOptions bOpt = defaultButtonOptions;
+    bOpt.shadowOffset = 4;
+    bOpt.centered = true;
+    bOpt.minWidth = 200;
+
+    int y = virtualScreenHeight/2-80;
+    int gap = 6;
+    int height = GetButtonHeight(bOpt, tOpt) + gap;
+
+    bOpt.colour = LIGHTGRAY;
+    const int btnShadow = 4;
+    if (TextButton(bOpt, tOpt, "<-- Back", 0, y)) {
+        ChangeGameScreen(previousScreen);
+    }
+
+    y += height;
+
+    bOpt.colour = (Color){0, 150, 200, 255};
+    char rainText[32];
+    sprintf(rainText, "Rain (%s)", (gameConfig.raining) ? "On" : "Off");
+    if (TextButton(bOpt, tOpt, rainText, 0, y)) {
+        gameConfig.raining = !gameConfig.raining;
+    }
+
+    y += height;
+
+    bOpt.colour = BROWN;
+    char musicText[32];
+    sprintf(musicText, "Music (%s)", (gameConfig.playingMusic) ? "On" : "Off");
+    if (TextButton(bOpt, tOpt, musicText, 0, y)) {
+        gameConfig.playingMusic = !gameConfig.playingMusic;
+    }
+
+    y += height;
+
+    bOpt.colour = DARKPURPLE;
+    char fullScreenText[32];
+    sprintf(fullScreenText, "Fullscreen (%s)", (IsWindowFullscreen()) ? "Yes" : "No");
+    if (TextButton(bOpt, tOpt, fullScreenText, 0, y)) {
+        ToggleFullscreen();
+        gameConfig.fullscreen = IsWindowFullscreen();
+    }
 }
 
 
@@ -241,10 +326,10 @@ void UpdateDrawPauseMenu(void)
 
 
     TextOptions tOpt = {
-        smallFont,
-        30,
-        2,
-        WHITE
+        .font = smallFont,
+        .size = 30,
+        .shadowOffset = 2,
+        .colour = WHITE
     };
 
     ButtonOptions bOpt = defaultButtonOptions;
@@ -257,43 +342,20 @@ void UpdateDrawPauseMenu(void)
     int height = GetButtonHeight(bOpt, tOpt) + gap;
 
     bOpt.colour = GREEN;
-    const int btnShadow = 4;
     if (TextButton(bOpt, tOpt, "Resume", 0, y)) {
-        currentScreen = GAME_SCREEN_PLAYING;
+        ChangeGameScreen(GAME_SCREEN_PLAYING);
     }
 
     y += height;
-
-    bOpt.colour = (Color){0, 150, 200, 255};
-    char rainText[32];
-    sprintf(rainText, "Rain (%s)", (raining) ? "On" : "Off");
-    if (TextButton(bOpt, tOpt, rainText, 0, y)) {
-        raining = !raining;
-    }
-
-    y += height;
-
-    bOpt.colour = BROWN;
-    char musicText[32];
-    sprintf(musicText, "Music (%s)", (playingMusic) ? "On" : "Off");
-    if (TextButton(bOpt, tOpt, musicText, 0, y)) {
-        playingMusic = !playingMusic;
-    }
-
-    y += height;
-
     bOpt.colour = LIGHTGRAY;
-    char fullScreenText[32];
-    sprintf(fullScreenText, "Fullscreen (%s)", (IsWindowFullscreen()) ? "Yes" : "No");
-    if (TextButton(bOpt, tOpt, fullScreenText, 0, y)) {
-        ToggleFullscreen();
+    if (TextButton(bOpt, tOpt, "Game Config", 0, y)) {
+        ChangeGameScreen(GAME_SCREEN_CONFIG_MENU);
     }
 
     y += height;
-
     bOpt.colour = RED;
     if (TextButton(bOpt, tOpt, "Give Up", 0, y)) {
-        currentScreen = GAME_SCREEN_START;
+        ChangeGameScreen(GAME_SCREEN_START);
     }
 }
 
@@ -309,10 +371,10 @@ void UpdateDrawGameOver(void)
     DrawTextWithShadow(smallFont, killCountText, GetCenteredTextX(smallFont, 40, killCountText), virtualScreenHeight/2-80, 40, 2, WHITE);
 
     TextOptions options = {
-        smallFont,
-        30,
-        2,
-        WHITE
+        .font = smallFont,
+        .size = 30,
+        .shadowOffset = 2,
+        .colour = WHITE
     };
 
     ButtonOptions bOpt = defaultButtonOptions;
@@ -320,13 +382,13 @@ void UpdateDrawGameOver(void)
     bOpt.centered = true;
 
     if (TextButton(bOpt, options, "Return to Start", 0, virtualScreenHeight/2)) {
-        currentScreen = GAME_SCREEN_START;
+        ChangeGameScreen(GAME_SCREEN_START);
     }
 }
 
 void UpdateDrawGame(void)
 {
-    if (playingMusic) {
+    if (gameConfig.playingMusic) {
         UpdateMusicStream(themeSong);
     }
 
@@ -339,7 +401,7 @@ void UpdateDrawGame(void)
     }
 
     if (IsKeyPressed(KEY_ESCAPE)) {
-        currentScreen = GAME_SCREEN_PAUSE_MENU;
+        ChangeGameScreen(GAME_SCREEN_PAUSE_MENU);
     }
 
     DrawBackground();
@@ -417,17 +479,17 @@ void UpdateDrawGame(void)
     DrawTextWithShadow(smallFont, timerText, virtualScreenWidth-100, 10, 40, 1, WHITE);
 
     TextOptions options = {
-        smallFont,
-        20,
-        2,
-        WHITE
+        .font = smallFont,
+        .size = 20,
+        .shadowOffset = 2,
+        .colour = WHITE
     };
 
     ButtonOptions bOpt = defaultButtonOptions;
     bOpt.centered = false;
 
     if (TextButton(bOpt, options, "||", virtualScreenWidth-32, virtualScreenHeight-32)) {
-        currentScreen = GAME_SCREEN_PAUSE_MENU;
+        ChangeGameScreen(GAME_SCREEN_PAUSE_MENU);
     }
 
 }
@@ -453,7 +515,7 @@ void InitializeGame(void)
 
 void GameOver(void)
 {
-    currentScreen = GAME_SCREEN_GAMEOVER;
+    ChangeGameScreen(GAME_SCREEN_GAMEOVER);
 }
 
 void DrawBackground(void)
@@ -578,25 +640,21 @@ Rectangle GetRenderRect(void)
 
 // Read/Write config options (music on/off, rain on/off etc.)
 // operation should be r for read, w for write
-void ReadWriteConfig(char *operation)
+void ReadWriteConfig(GameConfig *config, char *operation)
 {
     FILE* configFile = fopen(".zombieconfig", operation);
 
     if (strcmp(operation, "r") == 0) {
-        int fullscreen;
-        int _playingMusic;
-        int _raining;
-        fscanf(configFile, "%i %i %i", &_raining, &_playingMusic, &fullscreen);
+        int opFullscreen;
+        int opPlayingMusic;
+        int opRaining;
+        fscanf(configFile, "%i %i %i", &opFullscreen, &opPlayingMusic, &opFullscreen);
 
-        if (fullscreen) {
-            ToggleFullscreen();
-        }
-
-        raining = (bool)_raining;
-        playingMusic = (bool)_playingMusic;
+        config->fullscreen = (bool)opFullscreen;
+        config->raining = (bool)opRaining;
+        config->playingMusic = (bool)opPlayingMusic;
     } else if (strcmp(operation, "w") == 0) {
-        bool fullscreen = IsWindowFullscreen();
-        fprintf(configFile, "%i %i %i", raining, playingMusic, fullscreen);
+        fprintf(configFile, "%i %i %i", config->raining, config->playingMusic, config->fullscreen);
     }
 
     fclose(configFile);
@@ -610,4 +668,10 @@ Vector2 GetTextureCenterPoint(Texture2D sprite)
 int GetButtonHeight(ButtonOptions bOpt, TextOptions tOpt)
 {
     return tOpt.size + bOpt.outlineThickness*2 + bOpt.paddingY;
+}
+
+void ChangeGameScreen(GameScreen newScreen)
+{
+    previousScreen = currentScreen;
+    currentScreen = newScreen;
 }
