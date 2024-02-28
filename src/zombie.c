@@ -178,6 +178,7 @@ void UpdateDrawZombies(void)
                     if (CheckCollisionPointRec(projArr[j].pos, bounds)) {
                         projArr[j].active = false;
                         zombie->health -= 0.1f;
+                        SetSoundPitch(popSound, GetRandomFloatValue(0.95f, 1.05f));
                         PlaySound(popSound);
                         PlaySound(zombieHitSounds[GetRandomValue(0, ZOMBIE_HIT_SOUND_COUNT-1)]);
                         CreateParticleExplosion(projArr[j].pos, (Vector2){3,3}, 3, 30, 16, (Color){100, 0, 0, 255});

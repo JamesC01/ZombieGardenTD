@@ -393,7 +393,11 @@ void UpdateDrawGame(void)
     }
 
     if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !draggingSeedPacket) {
-        CreateParticleConfetti(GetMousePosVirtual(), (Vector2){4, 4}, 4);
+        CreateParticleConfetti(GetMousePosVirtual(), (Vector2){6, 6}, 6);
+        if (!IsSoundPlaying(popSound)) {
+            SetSoundPitch(popSound, GetRandomFloatValue(1.8f, 2));
+            PlaySound(popSound);
+        }
     }
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
