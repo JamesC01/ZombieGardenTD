@@ -95,6 +95,7 @@ int main(void)
     projectiles = CreateFixedObjectArray(32, sizeof(Projectile));
     particles = CreateFixedObjectArray(2048, sizeof(Particle));
     zombies = CreateFixedObjectArray(64, sizeof(Zombie));
+    zombieHeads = CreateFixedObjectArray(64, sizeof(ZombieHead));
     suns = CreateFixedObjectArray(8, sizeof(Sun));
 
     targetRT = LoadRenderTexture(640, 480);
@@ -195,6 +196,7 @@ int main(void)
     free(particles.array);
     free(zombies.array);
     free(suns.array);
+    free(zombieHeads.array);
 
     UnloadRenderTexture(targetRT);
 
@@ -393,7 +395,7 @@ void UpdateDrawGame(void)
     }
 
     if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !draggingSeedPacket) {
-        CreateParticleConfetti(GetMousePosVirtual(), (Vector2){6, 6}, 6);
+        CreateParticleConfetti(GetMousePosVirtual(), (Vector2){4, 4}, 6);
         if (!IsSoundPlaying(popSound)) {
             SetSoundPitch(popSound, GetRandomFloatValue(1.8f, 2));
             PlaySound(popSound);
@@ -436,6 +438,7 @@ void UpdateDrawGame(void)
     UpdateDrawPlants();
     UpdateDrawProjectiles();
     UpdateDrawParticles();
+    UpdateDrawZombieHeads();
     UpdateDrawZombies();
     UpdateDrawSuns();
 
@@ -500,6 +503,7 @@ void UpdateDrawGame(void)
 
 void InitializeGame(void)
 {
+    frameCount = 0;
     CreateSeedPackets();
 
     InitSuns();
@@ -646,19 +650,20 @@ Rectangle GetRenderRect(void)
 // operation should be r for read, w for write
 void ReadWriteConfig(GameConfig *config, char *operation)
 {
+    return;
     FILE* configFile = fopen(".zombieconfig", operation);
 
-    if (strcmp(operation, "r") == 0) {
+    if (strcmp(operation, "r") == 0 && configFile) {
         int opFullscreen;
         int opPlayingMusic;
         int opRaining;
-        fscanf(configFile, "%i %i %i", &opFullscreen, &opPlayingMusic, &opFullscreen);
+        fscanf(configFile, "%i %i %i", &opFullscreen, &opPlayingMusic, &opPlayingMusic);
 
         config->fullscreen = (bool)opFullscreen;
         config->raining = (bool)opRaining;
         config->playingMusic = (bool)opPlayingMusic;
-    } else if (strcmp(operation, "w") == 0) {
-        fprintf(configFile, "%i %i %i", config->raining, config->playingMusic, config->fullscreen);
+    } else if (strcmp(operation, "w") == 0 && configFile) {
+        fprintf(configFile, "%i %i %i", (int)config->raining, (int)config->playingMusic, (int)config->fullscreen);
     }
 
     fclose(configFile);

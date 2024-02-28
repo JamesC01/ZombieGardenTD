@@ -13,6 +13,7 @@
 #define ZOMBIE_DEBUG false
 
 FixedObjectArray zombies;
+FixedObjectArray zombieHeads;
 
 // TODO: Figure out if there's a way to bundle up these globals
 int defaultZombieSpawnRate;
@@ -68,6 +69,39 @@ void InitZombies(void)
 #endif
 
     zombieGrowlTimer = 60*2;
+}
+
+void UpdateDrawZombieHeads(void)
+{
+    ZombieHead* heads = (ZombieHead*)zombieHeads.array;
+    for (int i = 0; i < zombieHeads.fixedSize; i++) {
+        ZombieHead* head = &heads[i];
+
+        if (head->active) {
+            float gravity = 6 * GetFrameTime();
+
+            if (head->pos.y >= head->floorY) {
+                head->pos.y = head->floorY;
+            } else {
+                head->velocity.y += gravity;
+            }
+
+            head->pos.x += head->velocity.x;
+            head->pos.y += head->velocity.y;
+            head->rotation += head->angularVel;
+
+
+            if (head->pos.x > virtualScreenWidth) {
+                head->active = false;
+            }
+
+            DrawTextureCentered(shadowSprite, (Vector2){head->pos.x, head->floorY+zombieHeadSprite.height/2.0f}, GetTextureCenterPoint(shadowSprite), WHITE, 1);
+
+            Rectangle src = {0,0, zombieHeadSprite.width, zombieHeadSprite.height};
+            Rectangle dst = {head->pos.x, head->pos.y, zombieHeadSprite.width, zombieHeadSprite.height};
+            DrawTexturePro(zombieHeadSprite, src, dst, GetTextureCenterPoint(zombieHeadSprite), head->rotation, WHITE);
+        }
+    }
 }
 
 void UpdateDrawZombies(void)
@@ -189,14 +223,23 @@ void UpdateDrawZombies(void)
                 } 
             }
 
+            Vector2 origin = {(float)zombieSprite.width*0.75f, zombieSprite.height-4};
+
             if (zombie->health <= 0) {
                 zombie->active = false;
                 ZombieKilled();
+                ZombieHead* head = GET_NEXT_OBJECT(zombieHeads, ZombieHead);
+                head->floorY = sY + gridCellSize.y*0.5f;
+                head->angularVel = GetRandomFloatValue(5, 10);
+                head->velocity = (Vector2){1, GetRandomFloatValue(-6, -1)};
+                head->pos = Vector2Add((Vector2){sX, sY}, (Vector2){10, 0});
+                head->active = true;
+
+                NextObject(&zombieHeads);
             }
 
             // Draw
             Vector2 drawPos = {sX, sY+gridCellSize.y*0.75f};
-            Vector2 origin = {(float)zombieSprite.width*0.75f, zombieSprite.height-4};
             DrawTextureCentered(shadowSprite, drawPos, GetTextureCenterPoint(shadowSprite), WHITE, 1);
             DrawTextureCentered(zombieSprite, drawPos, origin, WHITE, zombie->scale);
 

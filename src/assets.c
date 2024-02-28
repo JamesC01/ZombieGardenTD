@@ -1,4 +1,5 @@
 #include "assets.h"
+#include "zombie.h"
 #include <raylib.h>
 #include <stdio.h>
 
@@ -13,6 +14,7 @@ Texture2D sunflowerSprite;
 Texture2D wallnutSprite;
 Texture2D cherrySprite;
 Texture2D zombieSprite;
+Texture2D zombieHeadSprite;
 Texture2D shadowSprite;
 Texture2D smallShadowSprite;
 
@@ -44,6 +46,7 @@ void LoadAssets()
     wallnutSprite = LoadTexture("sprites/wallnut.png");
     cherrySprite = LoadTexture("sprites/cherrybomb.png");
     zombieSprite = LoadTexture("sprites/zombie.png");
+    zombieHeadSprite = LoadTexture("sprites/zombiehead.png");
     shadowSprite = LoadTexture("sprites/shadow.png");
     smallShadowSprite = LoadTexture("sprites/small_shadow.png");
 
