@@ -41,8 +41,9 @@ void UpdateSeedPackets()
         SeedPacket* packet = &seedPackets[i];
         Vector2 mPos = GetMousePosVirtual();
         // Set packet dragging true if mouse clicked inside it.
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !packet->dragging) {
-            if (CheckCollisionPointRec(mPos, (Rectangle){packet->origin.x, packet->origin.y, SEEDPACKET_SIZE.x, SEEDPACKET_SIZE.y})) {
+        if (CheckCollisionPointRec(mPos, (Rectangle){packet->origin.x, packet->origin.y, SEEDPACKET_SIZE.x, SEEDPACKET_SIZE.y})) {
+            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !packet->dragging) {
                 packet->dragging = true;
                 draggingSeedPacket = true;
                 HideCursor();

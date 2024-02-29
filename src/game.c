@@ -85,7 +85,6 @@ int main(void)
 
     LoadAssets();
 
-
     SetMusicVolume(themeSong, 0.5f);
     PlayMusicStream(themeSong);
 
@@ -107,6 +106,8 @@ int main(void)
 
     bool shouldClose = false;
     while (!WindowShouldClose() && !shouldClose) {
+
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 
         Rectangle scaledScreen = GetRenderRect();
 
