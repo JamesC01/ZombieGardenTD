@@ -10,7 +10,7 @@
 #include "particles.h"
 #include "game.h"
 
-#define ZOMBIE_DEBUG false
+#define ZOMBIE_DEBUG true
 
 FixedObjectArray zombies;
 FixedObjectArray zombieHeads;
@@ -91,7 +91,7 @@ void UpdateDrawZombieHeads(void)
             head->rotation += head->angularVel;
 
 
-            if (head->pos.x > virtualScreenWidth) {
+            if (head->pos.x > virtualScreenWidth+zombieHeadSprite.width) {
                 head->active = false;
             }
 
@@ -160,7 +160,7 @@ void UpdateDrawZombies(void)
 
         if (zombie->active) {
 
-            zombie->scale = 1+((1+sinf(GetTime()*4+zombie->gridPos.x*10))/2)*0.075f;
+            zombie->scale = 1+((1+sinf(zombieMoveSpeed*600*GetTime()*4+zombie->gridPos.x*10))/2)*0.075f;
 
             // Growl
             if (zombieGrowlTimer < 0) {
