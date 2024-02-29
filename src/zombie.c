@@ -10,7 +10,7 @@
 #include "particles.h"
 #include "game.h"
 
-#define ZOMBIE_DEBUG false
+#define ZOMBIE_DEBUG true
 
 FixedObjectArray zombies;
 FixedObjectArray zombieHeads;
@@ -89,6 +89,7 @@ void UpdateDrawZombieHeads(void)
                 if (!head->onGround) {
                     PlaySound(headSplatSound);
                     head->onGround = true;
+                        CreateParticleExplosion(head->pos, (Vector2){3,3}, 3, 30, 16, (Color){100, 0, 0, 255});
                 }
                 head->pos.y = head->floorY;
             } else {
