@@ -401,12 +401,16 @@ Overall, pretty solid, I'm happy with what I got done today!
 
 (Note: I spent around 22 minutes recording sounds. This isn't added to the below time, which focuses mainly on code)
 
-Today I spent 1 hour 18 minutes today. A tiny amount of that time (less than 5 minutes) was spent "drawing" a cursor which was scrapped when I realised I couldn't use a custom cursor nicely.
+Today I spent 1 hour 26 minutes today. A tiny amount of that time (less than 5 minutes) was spent "drawing" a cursor which was scrapped when I realised I couldn't use a custom cursor nicely.
 I renamed the macro and function associated with getting an object from an array, and incrementing the array index, I think it's more clear now. I made the zombie animation change based on their
 speed and their array index, which helps stop them overlapping when they're at the same position. I refactored the wave-related globals into a struct. I fade out zombies when they're headless, and
 I figured out a great way of fading them out only once they reach 50% time left. Basically, you get the percentage by doing Clamp(currentTime*x / maxTime, 0, 1). the variable x can scale the timer,
 so if x is 2, the timer will be doubled. What this effectively does it make it so that when currentTime is at 50%, it will be doubled to 100%, so at 50% is when the actual fading will start. This
-is a very helpful kind of formula that I could use for particles to, to control when they begin fading.
+is a very helpful kind of formula that I could use for particles to, to control when they begin fading. Finally I added a bunch of extra sound effects. The dig up sound was spontaneously made from
+a ready-to-eat wrap container, by rubbing and tapping it. It somehow actually sounded like digging something up. I also made the explode sound completely with my mouth, and I think it turned out
+really decently. I made a headsplat sound, which I think is pretty funny, too. 
+
+Overall, a solid day, I enjoyed it!
 
 
 
