@@ -41,7 +41,7 @@ Consider adding squelch sound effect when zombie head hits the ground. + maybe s
 
 Consider making a cursor sprite maybe a gardening glove
 
-Fix zombies overlapping when multiple reach a plant
-
-
 Figure out why there's sound latency after playing game for a while.
+
+Add a debug menus with things like giving yourself extra sun, or spawning zombies, just think of all
+of the things that are tedious for testing, and put them in a menu

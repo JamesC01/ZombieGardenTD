@@ -261,7 +261,12 @@ void UpdateDrawZombies(void)
             // Draw
             Vector2 drawPos = {sX, sY+gridCellSize.y*0.75f};
             DrawTextureCentered(shadowSprite, drawPos, GetTextureCenterPoint(shadowSprite), WHITE, 1);
-            DrawTextureCentered(sprite, drawPos, origin, WHITE, zombie->scale);
+            Color c = WHITE;
+            if (zombie->headless) {
+                float transparencyPercent = Clamp((float)zombie->headlessTimer*4 / (60 * 3), 0, 1);
+                c = Fade(c, transparencyPercent);
+            }
+            DrawTextureCentered(sprite, drawPos, origin, c, zombie->scale);
 
 #if ZOMBIE_DEBUG
             // Zombie collider debug
