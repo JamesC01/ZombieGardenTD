@@ -558,7 +558,7 @@ void UpdateDrawProjectiles(void)
     }
 }
 
-void NextObject(FixedObjectArray* array)
+void IncrementArrayIndex(FixedObjectArray *array)
 {
     array->next++;
     if (array->next == array->fixedSize)

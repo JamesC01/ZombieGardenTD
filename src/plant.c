@@ -125,11 +125,11 @@ void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
         if (TickCooldown(&p->cooldown, plantCooldownLUT[p->type])) {
             Vector2 peaSpawnPos = Vector2Add(screenPos, (Vector2){18, -42});
 
-            Projectile* proj = GET_NEXT_OBJECT(projectiles, Projectile);
+            Projectile* proj = GetNextObject(projectiles, Projectile);
+            IncrementArrayIndex(&projectiles);
+
             proj->active = true;
             proj->pos = peaSpawnPos;
-
-            NextObject(&projectiles);
 
             PlaySound(peaShootSound);
             CreateParticleExplosion(peaSpawnPos, (Vector2){2, 2}, 3, 30, 8, (Color){200, 255, 200, 255});

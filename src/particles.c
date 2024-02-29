@@ -35,7 +35,8 @@ void CreateParticleConfetti(Vector2 pos, Vector2 size, int particleCount)
 
 Particle *CreateParticle(ParticleType type, Vector2 pos, Vector2 size, int lifetime, Color colour)
 {
-    Particle* p = GET_NEXT_OBJECT(particles, Particle);
+    Particle* p = GetNextObject(particles, Particle);
+    IncrementArrayIndex(&particles);
 
     p->type = type;
     p->pos = pos;
@@ -44,9 +45,6 @@ Particle *CreateParticle(ParticleType type, Vector2 pos, Vector2 size, int lifet
     p->startLifetime = lifetime;
     p->lifetime = lifetime;
     p->active = true;
-
-
-    NextObject(&particles);
 
     return p;
 }

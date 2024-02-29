@@ -27,8 +27,6 @@ typedef struct {
     int next;
 } FixedObjectArray;
 
-// Get a pointer to the next free FixedObjectArray object
-#define GET_NEXT_OBJECT(fixedObjArray, type) &((type*)fixedObjArray.array)[fixedObjArray.next]
 
 typedef struct {
     Vector2 pos;
@@ -38,7 +36,9 @@ typedef struct {
 extern FixedObjectArray projectiles;
 
 
-void NextObject(FixedObjectArray *array);
+#define GetNextObject(fixedObjArray, type) &((type*)fixedObjArray.array)[fixedObjArray.next]
+void IncrementArrayIndex(FixedObjectArray *array);
+
 bool TickCooldown(int *timer, int cooldownTime);
 int GetUniqueRandomValue(int exludedValue, int min, int max);
 float GetRandomFloatValue(float min, float max);

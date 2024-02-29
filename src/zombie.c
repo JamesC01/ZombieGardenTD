@@ -143,14 +143,13 @@ void UpdateDrawZombies(void)
         lastZombieSpawnYIndex = ySpawn;
         Vector2 gridPos = {xSpawn, ySpawn};
 
-        Zombie* zombie = GET_NEXT_OBJECT(zombies, Zombie);
+        Zombie* zombie = GetNextObject(zombies, Zombie);
+        IncrementArrayIndex(&zombies);
 
         zombie->active = true;
         zombie->health = 1.0f;
         zombie->gridPos = gridPos;
         zombie->headless = false;
-
-        NextObject(&zombies);
     }
 
     // Update and draw zombies
@@ -232,14 +231,15 @@ void UpdateDrawZombies(void)
                 zombie->headless = true;
                 zombie->headlessTimer = 60 * 3;
                 ZombieKilled();
-                ZombieHead* head = GET_NEXT_OBJECT(zombieHeads, ZombieHead);
+
+                ZombieHead* head = GetNextObject(zombieHeads, ZombieHead);
+                IncrementArrayIndex(&zombieHeads);
+
                 head->floorY = sY + gridCellSize.y*0.5f;
                 head->angularVel = GetRandomFloatValue(5, 10);
                 head->velocity = (Vector2){1, GetRandomFloatValue(-6, -1)};
                 head->pos = Vector2Add((Vector2){sX, sY}, (Vector2){10, 0});
                 head->active = true;
-
-                NextObject(&zombieHeads);
             }
 
             
