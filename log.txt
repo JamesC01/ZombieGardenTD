@@ -400,6 +400,7 @@ Overall, pretty solid, I'm happy with what I got done today!
 29/02/2024
 
 (Note: I spent around 22 minutes recording sounds. This isn't added to the below time, which focuses mainly on code)
+(Note: I also spent another 25 minutes or so redoing some sprites, but I didn't add this time below)
 
 Today I spent 1 hour 26 minutes today. A tiny amount of that time (less than 5 minutes) was spent "drawing" a cursor which was scrapped when I realised I couldn't use a custom cursor nicely.
 I renamed the macro and function associated with getting an object from an array, and incrementing the array index, I think it's more clear now. I made the zombie animation change based on their
