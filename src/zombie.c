@@ -15,7 +15,6 @@
 FixedObjectArray zombies;
 FixedObjectArray zombieHeads;
 
-// TODO: Figure out if there's a way to bundle up these globals
 int defaultZombieSpawnRate;
 int defaultWaveZombieSpawnRate;
 
@@ -29,9 +28,7 @@ int lastZombieGrowlIndex = -1;
 
 int lastZombieSpawnYIndex = -1;
 
-// Wave variables
 typedef struct {
-
     bool started;
     int fastSpawningTimer;
 
@@ -168,7 +165,7 @@ void UpdateDrawZombies(void)
 
         if (zombie->active) {
 
-            zombie->scale = 1+((1+sinf(zombieMoveSpeed*600*GetTime()*4+zombie->gridPos.x*10))/2)*0.075f;
+            zombie->scale = 1+((1+sinf(zombieMoveSpeed*600*GetTime()*4+zombie->gridPos.x*10+i*15))/2)*0.075f;
 
             // Growl
             if (zombieGrowlTimer < 0) {
