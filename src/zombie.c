@@ -10,7 +10,7 @@
 #include "particles.h"
 #include "game.h"
 
-#define ZOMBIE_DEBUG true
+#define ZOMBIE_DEBUG false
 
 FixedObjectArray zombies;
 FixedObjectArray zombieHeads;
@@ -30,13 +30,19 @@ int lastZombieGrowlIndex = -1;
 int lastZombieSpawnYIndex = -1;
 
 // Wave variables
-bool waveStarted;
-int fastSpawningTimer; // How long should zombies spawn quickly during a wave
-const int killsRequiredForNextWave = 5;
-int currentKillsRequiredForNextWave;
+typedef struct {
 
-int killsRequiredToEndWave;
-int currentKillsRequiredToEndWave;
+    bool started;
+    int fastSpawningTimer;
+
+    int killsRequiredForNextWave;
+    int killsLeftForNextWave;
+
+    int killsRequiredToEndWave;
+    int killsLeftToEndWave;
+} WaveState;
+
+WaveState waveState;
 
 int zombiesKilledCount;
 
@@ -45,13 +51,15 @@ void ZombieKilled(void);
 
 void InitZombies(void)
 {
-    zombieMoveSpeed = 0.002f;
-    waveStarted = false;
-    currentKillsRequiredForNextWave = killsRequiredForNextWave;
-    zombiesKilledCount = 0;
+    waveState.started = false;
+    waveState.killsRequiredForNextWave = 5;
+    waveState.killsLeftForNextWave = waveState.killsRequiredForNextWave;
+    waveState.killsRequiredToEndWave = 10;
+    waveState.killsLeftToEndWave = 0;
 
-    killsRequiredToEndWave = 10;
-    currentKillsRequiredToEndWave = 0;
+    zombiesKilledCount = 0;
+    zombieMoveSpeed = 0.002f;
+
     // Init zombies array
     Zombie *zomArr = (Zombie*)zombies.array;
     for (int i = 0; i < zombies.fixedSize; i++) {
@@ -107,9 +115,9 @@ void UpdateDrawZombieHeads(void)
 void UpdateDrawZombies(void)
 {
     // Handle ending wave
-    if (waveStarted && currentKillsRequiredToEndWave <= 0) {
+    if (waveState.started && waveState.killsLeftToEndWave <= 0) {
         printf("Wave ended.\n");
-        waveStarted = false;
+        waveState.started = false;
 
         defaultZombieSpawnRate -= 60 * 3;
         if (defaultZombieSpawnRate < 60*2)
@@ -124,9 +132,9 @@ void UpdateDrawZombies(void)
         zombieMoveSpeed += 0.0005f;
     }
 
-    if (waveStarted) {
-        fastSpawningTimer--;
-        if (fastSpawningTimer <= 0) {
+    if (waveState.started) {
+        waveState.fastSpawningTimer--;
+        if (waveState.fastSpawningTimer <= 0) {
             currentZombieSpawnRate = INT_MAX; // Stop zombies spawning once all in the wave have spawned
         }
     }
@@ -270,26 +278,26 @@ void ZombieKilled(void)
 {
     zombiesKilledCount++;
 
-    if (!waveStarted) {
-        currentKillsRequiredForNextWave--;
+    if (!waveState.started) {
+        waveState.killsLeftForNextWave--;
 
         // Start wave
-        if (currentKillsRequiredForNextWave <= 0) {
+        if (waveState.killsLeftForNextWave <= 0) {
             printf("Wave started!\n");
-            waveStarted = true;
+            waveState.started = true;
 
             zombieSpawnTimer = 0;
             currentZombieSpawnRate = defaultWaveZombieSpawnRate;
 
-            fastSpawningTimer = currentZombieSpawnRate * killsRequiredToEndWave;
+            waveState.fastSpawningTimer = currentZombieSpawnRate * waveState.killsRequiredToEndWave;
 
-            currentKillsRequiredForNextWave = killsRequiredForNextWave;
+            waveState.killsLeftForNextWave = waveState.killsRequiredForNextWave;
 
-            currentKillsRequiredToEndWave = killsRequiredToEndWave;
-            killsRequiredToEndWave += 5;
+            waveState.killsLeftToEndWave = waveState.killsRequiredToEndWave;
+            waveState.killsRequiredToEndWave += 5;
         }
     } else {
-        currentKillsRequiredToEndWave--;
+        waveState.killsLeftToEndWave--;
     }
 
 }
