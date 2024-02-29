@@ -19,6 +19,7 @@ typedef struct {
     float rotation;
     float angularVel;
     bool active;
+    bool onGround;
 } ZombieHead;
 
 extern FixedObjectArray zombies;

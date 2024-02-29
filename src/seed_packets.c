@@ -72,11 +72,14 @@ void UpdateSeedPackets()
                         plant->health = plantHealthLUT[packet->type];
                         sunsCollectedCount -= packet->cost;
 
+                        PlaySound(placePlantSound);
+
                         if (!usingShovel) {
                             packet->buyCooldown = packet->buyCooldownMax;
                         }
                     } else if (usingShovel) {
                         plant->type = PT_NONE;
+                        PlaySound(digUpPlantSound);
                     }
                 }
             }

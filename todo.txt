@@ -16,8 +16,6 @@ Fix the peas not colliding off screen again.
 
 Add hit flash to zombies and maybe plants when they're being eaten.
 
-Record explosion sound for cherrybomb and improve particle explosion.
-
 Add something that indicates a wave is happening.
 
 Consider trying to design more unique sprites. Maybe sketch on paper some ideas first. But try to deviate
@@ -27,7 +25,6 @@ Allow particles to use textures, and make some simple textures like sparkles
 
 Make sound effects for:
     Picking up a sun
-    planting/digging
     the zombie eating plants
     a gameover sound/fanfare
     a wave start sound/fanfare
@@ -37,9 +34,6 @@ Improve look of title/gameover screen. Pretty bland right now.
 
 Consider adding different fade curves to particles
 
-Consider adding squelch sound effect when zombie head hits the ground. + maybe some blood particles
-
-Consider making a cursor sprite maybe a gardening glove
 
 Figure out why there's sound latency after playing game for a while.
 

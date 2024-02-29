@@ -1,4 +1,5 @@
 #include "plant.h"
+#include <raylib.h>
 #include <raymath.h>
 #include "game.h"
 #include "assets.h"
@@ -79,6 +80,8 @@ void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
         CreateParticleExplosion(screenPos, (Vector2){8, 8}, 7, 30, 48, DARKBROWN);
 
         p->health = 0;
+        SetSoundPitch(explodeSound, GetRandomFloatValue(0.8f, 1));
+        PlaySound(explodeSound);
     }
 
     float coolDownPercent = (p->cooldown / (float)plantCooldownLUT[p->type]);

@@ -32,6 +32,10 @@ extern Sound zombieHitSounds[ZOMBIE_HIT_SOUND_COUNT];
 extern Sound peaShootSound;
 extern Sound popSound;
 extern Sound sunAppearSound;
+extern Sound headSplatSound;
+extern Sound digUpPlantSound;
+extern Sound placePlantSound;
+extern Sound explodeSound;
 
 extern Music themeSong;
 extern Music rainLoop;

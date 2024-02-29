@@ -86,6 +86,10 @@ void UpdateDrawZombieHeads(void)
             float gravity = 6 * GetFrameTime();
 
             if (head->pos.y >= head->floorY) {
+                if (!head->onGround) {
+                    PlaySound(headSplatSound);
+                    head->onGround = true;
+                }
                 head->pos.y = head->floorY;
             } else {
                 head->velocity.y += gravity;
@@ -245,6 +249,7 @@ void UpdateDrawZombies(void)
                 head->velocity = (Vector2){1, GetRandomFloatValue(-6, -1)};
                 head->pos = Vector2Add((Vector2){sX, sY}, (Vector2){10, 0});
                 head->active = true;
+                head->onGround = false;
             }
 
             

@@ -25,6 +25,10 @@ Sound zombieHitSounds[ZOMBIE_HIT_SOUND_COUNT];
 Sound peaShootSound;
 Sound popSound;
 Sound sunAppearSound;
+Sound headSplatSound;
+Sound digUpPlantSound;
+Sound placePlantSound;
+Sound explodeSound;
 
 Font bigFont;
 Font smallFont;
@@ -58,6 +62,10 @@ void LoadAssets()
     peaShootSound = LoadSound("sounds/shoot_pea.wav");
     popSound = LoadSound("sounds/pop.wav");
     sunAppearSound = LoadSound("sounds/sun_appear.wav");
+    headSplatSound = LoadSound("sounds/headsplat.wav");
+    digUpPlantSound = LoadSound("sounds/digup.wav");
+    placePlantSound = LoadSound("sounds/plant.wav");
+    explodeSound = LoadSound("sounds/explode.wav");
 
     for (int i = 0; i < ZOMBIE_HIT_SOUND_COUNT; i++) {
         char path[64];
