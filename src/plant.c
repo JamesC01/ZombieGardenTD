@@ -38,7 +38,7 @@ void UpdateDrawPlants()
                 }
 
 
-                DrawTextureCentered(shadowSprite, screenPos, GetTextureCenterPoint(shadowSprite), WHITE, 1);
+                DrawTextureFull(shadowSprite, screenPos, GetTextureCenterPoint(shadowSprite), WHITE, 1, 0);
 
                 switch (p->type) {
                     case PT_PSHOOTER:
@@ -50,7 +50,7 @@ void UpdateDrawPlants()
                     case PT_WALLNUT:
                         {
                             Vector2 origin = {(float)wallnutSprite.width/2, wallnutSprite.height-4};
-                            DrawTextureCentered(wallnutSprite, screenPos, origin, WHITE, 1);
+                            DrawTextureFull(wallnutSprite, screenPos, origin, WHITE, 1, 0);
                         }
                         break;
                     case PT_CHERRYBOMB:
@@ -88,7 +88,7 @@ void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
     float scale = 1+coolDownPercent*0.5f;
 
     Vector2 origin = {(float)cherrySprite.width/2, cherrySprite.height-2};
-    DrawTextureCentered(cherrySprite, screenPos, origin, WHITE, scale);
+    DrawTextureFull(cherrySprite, screenPos, origin, WHITE, scale, 0);
 }
 
 
@@ -107,7 +107,7 @@ void UpdateDrawSunflower(Plant* p, Vector2 screenPos)
         scale = 1+(coolDownPercent*4);
     }
     
-    DrawTextureCentered(sunflowerSprite, screenPos, origin, WHITE, scale);
+    DrawTextureFull(sunflowerSprite, screenPos, origin, WHITE, scale, 0);
 }
 
 
@@ -146,5 +146,5 @@ void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
     }
 
     Vector2 origin = {(float)pShooterSprite.width/2, pShooterSprite.height-4};
-    DrawTextureCentered(pShooterSprite, screenPos, origin, WHITE, scale);
+    DrawTextureFull(pShooterSprite, screenPos, origin, WHITE, scale, 0);
 }

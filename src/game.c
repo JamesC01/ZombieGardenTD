@@ -35,6 +35,7 @@ typedef struct {
 } GameConfig;
 
 FixedObjectArray projectiles;
+FixedObjectArray drawDatas;
 
 const int virtualScreenWidth = 640;
 const int virtualScreenHeight = 480;
@@ -61,6 +62,7 @@ void InitializeGame(void);
 void DrawBackground(void);
 Rectangle GetRenderRect(void);
 void ChangeGameScreen(GameScreen newScreen);
+int CompareDrawDatas(const void *a, const void *b);
 
 void ReadWriteConfig(GameConfig *config, char *operation);
 
@@ -96,6 +98,7 @@ int main(void)
     zombies = CreateFixedObjectArray(64, sizeof(Zombie));
     zombieHeads = CreateFixedObjectArray(64, sizeof(ZombieHead));
     suns = CreateFixedObjectArray(8, sizeof(Sun));
+    drawDatas = CreateFixedObjectArray(128, sizeof(DrawData));
 
     targetRT = LoadRenderTexture(640, 480);
 
@@ -167,6 +170,16 @@ int main(void)
                 break;
         }
 
+        qsort(drawDatas.array, drawDatas.fixedSize, sizeof(DrawData), &CompareDrawDatas);
+
+        for (int i = 0; i < drawDatas.fixedSize; i++) {
+            DrawData *dd = &((DrawData*)drawDatas.array)[i];
+            if (dd->shouldDraw) {
+                DrawTextureFull(dd->sprite, dd->pos, dd->origin, dd->tint, dd->scale, dd->rotation);
+                dd->shouldDraw = false;
+            }
+        }
+
         if (gameConfig.raining) {
             DrawRectangle(0, 0, virtualScreenWidth, virtualScreenHeight, (Color){0, 20, 50, 75});
         }
@@ -198,6 +211,7 @@ int main(void)
     free(zombies.array);
     free(suns.array);
     free(zombieHeads.array);
+    free(drawDatas.array);
 
     UnloadRenderTexture(targetRT);
 
@@ -551,7 +565,7 @@ void UpdateDrawProjectiles(void)
 
         if (proj->active) {
             proj->pos.x += 5;
-            DrawTextureCentered(smallShadowSprite, Vector2Add(proj->pos, (Vector2){0, 42}), Vector2Zero(), WHITE, 1);
+            DrawTextureFull(smallShadowSprite, Vector2Add(proj->pos, (Vector2){0, 42}), Vector2Zero(), WHITE, 1, 0);
             DrawTextureV(peaSprite, proj->pos, WHITE);
 
             if (proj->pos.x > 640) {
@@ -593,11 +607,26 @@ float GetRandomFloatValue(float min, float max)
 }
 
 // TODO: This doesn't seem to do any centering?
-void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint, float scale)
+void DrawTextureFull(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint, float scale, float rotation)
 {
     Rectangle src = {0, 0, sprite.width, sprite.height};
     Rectangle dst = {EXPAND_V2(pos), sprite.width*scale, sprite.height*scale};
-    DrawTexturePro(sprite, src, dst, Vector2Scale(origin, scale), 0, tint);
+    DrawTexturePro(sprite, src, dst, Vector2Scale(origin, scale), rotation, tint);
+}
+
+void PushDrawData(Texture2D sprite, int depth, Vector2 pos, Vector2 origin, Color tint, float scale, float rotation)
+{
+    DrawData *dd = GetNextObject(drawDatas, DrawData);
+    IncrementArrayIndex(&drawDatas);
+    dd->sprite = sprite;
+    dd->pos = pos;
+    dd->origin = origin;
+    dd->tint = tint;
+    dd->scale = scale;
+    dd->rotation = rotation;
+    dd->depth = depth;
+
+    dd->shouldDraw = true;
 }
 
 bool TickCooldown(int *timer, int cooldownTime)
@@ -687,4 +716,17 @@ void ChangeGameScreen(GameScreen newScreen)
 {
     previousScreen = currentScreen;
     currentScreen = newScreen;
+}
+
+int CompareDrawDatas(const void *a, const void *b)
+{
+    DrawData *d1 = (DrawData*)a;
+    DrawData *d2 = (DrawData*)b;
+
+    if (d1->depth < d2->depth)
+        return -1;
+    if (d1->depth > d2->depth)
+        return 1;
+
+    return 0;
 }

@@ -10,8 +10,6 @@ drum parts less busy.
 Improve max FPS. Right now it seems like rendering is limiting the frame rate quite a bit, see if you can
 figure out why (just for fun.)
 
-Continue tweaking zombie waves/difficulty curve
-
 Fix the peas not colliding off screen again.
 
 Add hit flash to zombies and maybe plants when they're being eaten.
@@ -29,8 +27,6 @@ Make sound effects for:
     a gameover sound/fanfare
     a wave start sound/fanfare
 
-
-Improve look of title/gameover screen. Pretty bland right now.
 
 Consider adding different fade curves to particles
 

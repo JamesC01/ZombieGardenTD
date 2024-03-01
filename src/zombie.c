@@ -105,11 +105,9 @@ void UpdateDrawZombieHeads(void)
                 head->active = false;
             }
 
-            DrawTextureCentered(shadowSprite, (Vector2){head->pos.x, head->floorY+zombieHeadSprite.height/2.0f}, GetTextureCenterPoint(shadowSprite), WHITE, 1);
-
-            Rectangle src = {0,0, zombieHeadSprite.width, zombieHeadSprite.height};
-            Rectangle dst = {head->pos.x, head->pos.y, zombieHeadSprite.width, zombieHeadSprite.height};
-            DrawTexturePro(zombieHeadSprite, src, dst, GetTextureCenterPoint(zombieHeadSprite), head->rotation, WHITE);
+            Vector2 shadowPos = {head->pos.x, head->floorY+zombieHeadSprite.height/2.0f};
+            PushDrawData(shadowSprite, head->rowIndex, shadowPos, GetTextureCenterPoint(shadowSprite), WHITE, 1, 0);
+            PushDrawData(zombieHeadSprite, head->rowIndex, head->pos, GetTextureCenterPoint(zombieHeadSprite), WHITE, 1, head->rotation);
         }
     }
 }
@@ -246,6 +244,7 @@ void UpdateDrawZombies(void)
                 IncrementArrayIndex(&zombieHeads);
 
                 head->floorY = sY + gridCellSize.y*0.5f;
+                head->rowIndex = zombie->gridPos.y;
                 head->angularVel = GetRandomFloatValue(5, 10);
                 head->velocity = (Vector2){1, GetRandomFloatValue(-6, -1)};
                 head->pos = Vector2Add((Vector2){sX, sY}, (Vector2){10, 0});
@@ -273,8 +272,9 @@ void UpdateDrawZombies(void)
                 float transparencyPercent = Clamp((float)zombie->headlessTimer*16 / (60 * 3), 0, 1);
                 c = Fade(c, transparencyPercent);
             }
-            DrawTextureCentered(shadowSprite, drawPos, GetTextureCenterPoint(shadowSprite), c, 1);
-            DrawTextureCentered(sprite, drawPos, origin, c, zombie->scale);
+
+            PushDrawData(shadowSprite, zombie->gridPos.y, drawPos, GetTextureCenterPoint(shadowSprite), WHITE, 1, 0);
+            PushDrawData(sprite, zombie->gridPos.y, drawPos, origin, c, zombie->scale, 0);
 
 #if ZOMBIE_DEBUG
             // Zombie collider debug

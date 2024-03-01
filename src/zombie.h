@@ -16,6 +16,7 @@ typedef struct {
     Vector2 pos;
     Vector2 velocity;
     int floorY;
+    int rowIndex;
     float rotation;
     float angularVel;
     bool active;

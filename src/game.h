@@ -35,6 +35,19 @@ typedef struct {
 
 extern FixedObjectArray projectiles;
 
+typedef struct {
+    Texture sprite;
+    Vector2 pos;
+    Vector2 origin;
+    Color tint;
+    float scale;
+    float rotation;
+    bool shouldDraw;
+    int depth;
+} DrawData;
+
+extern FixedObjectArray drawDatas;
+
 
 #define GetNextObject(fixedObjArray, type) &((type*)fixedObjArray.array)[fixedObjArray.next]
 void IncrementArrayIndex(FixedObjectArray *array);
@@ -42,7 +55,8 @@ void IncrementArrayIndex(FixedObjectArray *array);
 bool TickCooldown(int *timer, int cooldownTime);
 int GetUniqueRandomValue(int exludedValue, int min, int max);
 float GetRandomFloatValue(float min, float max);
-void DrawTextureCentered(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint, float scale);
+void DrawTextureFull(Texture2D sprite, Vector2 pos, Vector2 origin, Color tint, float scale, float rotation);
+void PushDrawData(Texture2D sprite, int depth, Vector2 pos, Vector2 origin, Color tint, float scale, float rotation);
 Vector2 GetTextureCenterPoint(Texture2D sprite);
 Vector2 GetMousePosVirtual(void);
 int GetButtonHeight(ButtonOptions bOpt, TextOptions tOpt);

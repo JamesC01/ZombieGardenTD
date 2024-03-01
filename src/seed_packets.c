@@ -124,16 +124,16 @@ void DrawSeedPackets()
         // Draw plant icon
         switch (seedPackets[i].type) {
             case PT_PSHOOTER:
-                DrawTextureCentered(pShooterSprite, seedPacketMiddle, GetTextureCenterPoint(pShooterSprite), WHITE, 0.45f);
+                DrawTextureFull(pShooterSprite, seedPacketMiddle, GetTextureCenterPoint(pShooterSprite), WHITE, 0.45f, 0);
                 break;
             case PT_SUNFLOWER:
-                DrawTextureCentered(sunflowerSprite, seedPacketMiddle, GetTextureCenterPoint(sunflowerSprite), WHITE, 0.6f);
+                DrawTextureFull(sunflowerSprite, seedPacketMiddle, GetTextureCenterPoint(sunflowerSprite), WHITE, 0.6f, 0);
                 break;
             case PT_WALLNUT:
-                DrawTextureCentered(wallnutSprite, seedPacketMiddle, GetTextureCenterPoint(wallnutSprite), WHITE, 0.6f);
+                DrawTextureFull(wallnutSprite, seedPacketMiddle, GetTextureCenterPoint(wallnutSprite), WHITE, 0.6f, 0);
                 break;
             case PT_CHERRYBOMB:
-                DrawTextureCentered(cherrySprite, seedPacketMiddle, GetTextureCenterPoint(cherrySprite), WHITE, 0.6f);
+                DrawTextureFull(cherrySprite, seedPacketMiddle, GetTextureCenterPoint(cherrySprite), WHITE, 0.6f, 0);
                 break;
             default:
                 break;
