@@ -40,7 +40,4 @@ Do sun sprite properly.
 
 Consider rotating zombies to make it look like they're walking a bit more
 
-Consider trying to fix the zombie heads from going behind zombies on the row above it. Would need like a Y-sort
-type of thing, but I'm not sure how I'd handle that.
-
 Made the pea hitting the zombies sound more like the real pvz
