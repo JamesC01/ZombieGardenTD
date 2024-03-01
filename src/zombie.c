@@ -270,7 +270,7 @@ void UpdateDrawZombies(void)
             // Fade the zombie once it's headless
             Color c = WHITE;
             if (zombie->headless) {
-                float transparencyPercent = Clamp((float)zombie->headlessTimer*4 / (60 * 3), 0, 1);
+                float transparencyPercent = Clamp((float)zombie->headlessTimer*16 / (60 * 3), 0, 1);
                 c = Fade(c, transparencyPercent);
             }
             DrawTextureCentered(shadowSprite, drawPos, GetTextureCenterPoint(shadowSprite), c, 1);

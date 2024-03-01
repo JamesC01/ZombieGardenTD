@@ -44,14 +44,10 @@ Make headless zombies fadeout much quicker (they should stay on screen a bit lon
 
 Do sun sprite properly.
 
-Fix bug when right-clicking and holding seedpacket where it hides the cursor
-
 Consider rotating zombies to make it look like they're walking a bit more
 
 Consider trying to fix the zombie heads from going behind zombies on the row above it. Would need like a Y-sort
 type of thing, but I'm not sure how I'd handle that.
-
-Figure out why zombies on lower rows are sometimes rendering behind zombies above them
 
 Made the pea hitting the zombies sound more like the real pvz
 
@@ -60,6 +56,5 @@ Draw function. Instead, we can pass it to the struct that is in an array of spri
 a priority or layer, and a bool to say if it has been draw or not (this bool would make it so the array doesn't have
 to be zeroed to reset everything). Then at the end of everything, the sprite array could be sorted by the priority
 of each sprite, and then drawn in order.
-
 I got this idea by skimming the keen dreams source code. I'm not sure that they're doing this exactly, but I at least
 got this idea.
