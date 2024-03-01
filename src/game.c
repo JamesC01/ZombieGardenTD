@@ -170,8 +170,8 @@ int main(void)
                 break;
         }
 
+        // Depth sorted drawing
         qsort(drawDatas.array, drawDatas.fixedSize, sizeof(DrawData), &CompareDrawDatas);
-
         for (int i = 0; i < drawDatas.fixedSize; i++) {
             DrawData *dd = &((DrawData*)drawDatas.array)[i];
             if (dd->shouldDraw) {
@@ -363,6 +363,12 @@ void UpdateDrawPauseMenu(void)
     bOpt.colour = GREEN;
     if (TextButton(bOpt, tOpt, "Resume", 0, y)) {
         ChangeGameScreen(GAME_SCREEN_PLAYING);
+    }
+
+    y += height;
+    bOpt.colour = YELLOW;
+    if (TextButton(bOpt, tOpt, "Give Sun", 0, y)) {
+        sunsCollectedCount += 100*SUN_VALUE;
     }
 
     y += height;
