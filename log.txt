@@ -415,6 +415,25 @@ Overall, a solid day, I enjoyed it!
 
 
 
+01/03/2024
+
+(NOTE: I spent about 4 minutes recolouring a sprite, but this wasn't added to the time below)
+
+Today I spent 1 hour 22 minutes today. I got a decent bit done. I fixed (I think) the cursor disappearing when letting go of a seedpacket. I made the zombies fade closer to the end, so they stay
+on screen a bit longer. I renamed the title. I implementing a simple depth sorting, which I really thought would be a huge undertaking, and was even thinking that I might've had to just scrap
+that idea because my project wasn't thinking about it from the start, but I was so wrong. Really, there's only about 1300 significant lines of code in this project, so making large changes isn't
+a problem at all. The change didn't even end up very large anyway. I took a look at the Keen Dreams source code to try to see how they might've handled it, and I didn't fully understand their
+solution, but it gave me an idea of how to do it on my game. I made a DrawData struct, which essentially holds the parameters that you pass to DrawTexture, and it holds a depth number. The array
+of there DrawData structs is then sorted in order by depth, and then they're drawn. Right now it's only implemented for zombies, zombie heads, and plants, and to be honest, it doesn't really need
+much more than that. Those were the major things where depth problems were occuring. I think it's a really good technique to introduce a feature like this in one place to test it first. I didn't
+come up with the idea, then try to redo the whole code, I started with the zombies, and only the zombies. Once that was working, I moved onto the heads, and so on. It's a very nice approach. It
+does technically follow that idea of just writing simple code that works first, before commiting to a bigger solution/abstracting things. Finally I changed the dumb way I was saving the GameConfig.
+I was using fprintf and fscanf to write some ints to a file, and since it wasn't human readable anyway, I decided to just use fread/fwrite to write the struct directly to a file. This makes it
+not multiplatform, but who cares, it stores a few tiny configs. I also added some window state to the config, so it remembers the width/height and whether the screen is maximized or not.
+
+Overall, a solid productive day. I woke up at 7:30am, and got started on this at around 8:05am, and I'm writing this now at quarter to ten. I think getting up early really is the solution to getting
+more stuff done, and my day feeling a bit longer. I had a great time today, but I want to start wrapping this project up soon. Really the last things I would like is to redesign all of the sprites.
+The don't necessarily have to look better, but I'd like them to be at least somewhat original.
 
 
 
