@@ -10,7 +10,7 @@
 #include "particles.h"
 #include "game.h"
 
-#define ZOMBIE_DEBUG true
+#define ZOMBIE_DEBUG false
 
 FixedObjectArray zombies;
 FixedObjectArray zombieHeads;

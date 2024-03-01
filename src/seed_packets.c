@@ -90,6 +90,7 @@ void UpdateSeedPackets()
         } else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && packet->dragging) {
             packet->dragging = false;
             draggingSeedPacket = false;
+            ShowCursor();
         }
     }
 }
