@@ -212,11 +212,13 @@ void UpdateDrawStart(void)
 {
     DrawBackground();
 
-    char *titleText1 = "PvZ";
-    char *titleText2 = "Clone";
+    char *titleText1 = "Zombies";
+    char *titleText2 = "On Your";
+    char *titleText3 = "Lawn";
     int tfSize = 75;
     DrawTextWithShadow(bigFont, titleText1, GetCenteredTextX(bigFont, tfSize, titleText1), 32, tfSize, 4, WHITE);
-    DrawTextWithShadow(bigFont, titleText2, GetCenteredTextX(bigFont, tfSize, titleText2), 32+tfSize, tfSize, 4, WHITE);
+    DrawTextWithShadow(bigFont, titleText2, GetCenteredTextX(bigFont, tfSize/2, titleText1), 32+tfSize, (float)tfSize/2, 4, WHITE);
+    DrawTextWithShadow(bigFont, titleText3, GetCenteredTextX(bigFont, tfSize, titleText3), 32+tfSize*1.5f, tfSize, 4, WHITE);
 
 
     TextOptions tOpt = {
@@ -230,7 +232,7 @@ void UpdateDrawStart(void)
     bOpt.centered = true;
     bOpt.shadowOffset = 4;
 
-    int y = virtualScreenHeight/2-30;
+    int y = virtualScreenHeight/2;
     int gap = 6;
     int height = GetButtonHeight(bOpt, tOpt) + gap;
 
