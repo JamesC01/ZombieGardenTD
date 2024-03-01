@@ -44,11 +44,3 @@ Consider trying to fix the zombie heads from going behind zombies on the row abo
 type of thing, but I'm not sure how I'd handle that.
 
 Made the pea hitting the zombies sound more like the real pvz
-
-y sorting could work by having an array of sprite structs, that contain the information we would usually pass to a
-Draw function. Instead, we can pass it to the struct that is in an array of sprites. Each sprite struct would have
-a priority or layer, and a bool to say if it has been draw or not (this bool would make it so the array doesn't have
-to be zeroed to reset everything). Then at the end of everything, the sprite array could be sorted by the priority
-of each sprite, and then drawn in order.
-I got this idea by skimming the keen dreams source code. I'm not sure that they're doing this exactly, but I at least
-got this idea.

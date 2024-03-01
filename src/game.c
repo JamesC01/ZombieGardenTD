@@ -32,6 +32,8 @@ typedef struct {
     bool playingMusic;
     bool raining;
     bool fullscreen;
+    int width, height;
+    bool maximized;
 } GameConfig;
 
 FixedObjectArray projectiles;
@@ -72,7 +74,9 @@ FixedObjectArray CreateFixedObjectArray(int objMaxCount, int typeSizeBytes);
 GameConfig gameConfig = {
     .playingMusic = true,
     .raining = false,
-    .fullscreen = false
+    .fullscreen = false,
+    .width = 640,
+    .height = 480
 };
 
 int main(void)
@@ -102,7 +106,14 @@ int main(void)
 
     targetRT = LoadRenderTexture(640, 480);
 
-    ReadWriteConfig(&gameConfig, "r");
+    ReadWriteConfig(&gameConfig, "rb");
+
+    if (gameConfig.maximized) {
+        SetWindowState(FLAG_WINDOW_MAXIMIZED);
+    } else {
+        SetWindowSize(gameConfig.width, gameConfig.height);
+    }
+
     if (gameConfig.fullscreen && !IsWindowFullscreen()) {
         ToggleFullscreen();
     }
@@ -195,7 +206,10 @@ int main(void)
         EndDrawing();
     }
 
-    ReadWriteConfig(&gameConfig, "w");
+    gameConfig.width = GetScreenWidth();
+    gameConfig.height = GetScreenHeight();
+    gameConfig.maximized = IsWindowState(FLAG_WINDOW_MAXIMIZED);
+    ReadWriteConfig(&gameConfig, "wb");
 
     free(projectiles.array);
     free(particles.array);
@@ -693,17 +707,10 @@ void ReadWriteConfig(GameConfig *config, char *operation)
 {
     FILE* configFile = fopen(".zombieconfig", operation);
 
-    if (strcmp(operation, "r") == 0 && configFile) {
-        int opFullscreen;
-        int opPlayingMusic;
-        int opRaining;
-        fscanf(configFile, "%i %i %i", &opRaining, &opPlayingMusic, &opFullscreen);
-
-        config->fullscreen = (bool)opFullscreen;
-        config->raining = (bool)opRaining;
-        config->playingMusic = (bool)opPlayingMusic;
-    } else if (strcmp(operation, "w") == 0 && configFile) {
-        fprintf(configFile, "%i %i %i", (int)config->raining, (int)config->playingMusic, (int)config->fullscreen);
+    if (strcmp(operation, "rb") == 0 && configFile) {
+        fread(config, sizeof(GameConfig), 1, configFile);
+    } else if (strcmp(operation, "wb") == 0 && configFile) {
+        fwrite(config, sizeof(GameConfig), 1, configFile);
     }
 
     if (configFile) {
