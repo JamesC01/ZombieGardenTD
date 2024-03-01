@@ -170,15 +170,6 @@ int main(void)
                 break;
         }
 
-        // Depth sorted drawing
-        qsort(drawDatas.array, drawDatas.fixedSize, sizeof(DrawData), &CompareDrawDatas);
-        for (int i = 0; i < drawDatas.fixedSize; i++) {
-            DrawData *dd = &((DrawData*)drawDatas.array)[i];
-            if (dd->shouldDraw) {
-                DrawTextureFull(dd->sprite, dd->pos, dd->origin, dd->tint, dd->scale, dd->rotation);
-                dd->shouldDraw = false;
-            }
-        }
 
         if (gameConfig.raining) {
             DrawRectangle(0, 0, virtualScreenWidth, virtualScreenHeight, (Color){0, 20, 50, 75});
@@ -458,11 +449,23 @@ void UpdateDrawGame(void)
         }
     }
 
-    UpdateDrawPlants();
     UpdateDrawProjectiles();
-    UpdateDrawParticles();
+
     UpdateDrawZombieHeads();
     UpdateDrawZombies();
+    UpdateDrawPlants();
+
+    // Depth sorted drawing 
+    qsort(drawDatas.array, drawDatas.fixedSize, sizeof(DrawData), &CompareDrawDatas);
+    for (int i = 0; i < drawDatas.fixedSize; i++) {
+        DrawData *dd = &((DrawData*)drawDatas.array)[i];
+        if (dd->shouldDraw) {
+            DrawTextureFull(dd->sprite, dd->pos, dd->origin, dd->tint, dd->scale, dd->rotation);
+            dd->shouldDraw = false;
+        }
+    }
+
+    UpdateDrawParticles();
     UpdateDrawSuns();
 
     // Draw top bar
