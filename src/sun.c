@@ -2,6 +2,7 @@
 #include "particles.h"
 #include "seed_packets.h"
 #include "assets.h"
+#include <raylib.h>
 #include <string.h>
 #include "game.h"
 #include <raymath.h>
@@ -61,10 +62,8 @@ void UpdateDrawSuns(void)
                 }
             }
 
-            // Draw sun
-            Rectangle src = {0,0,sunSize, sunSize};
-            Rectangle dst = { EXPAND_V2(sunArr[i].pos), sunSize, sunSize};
-            DrawTexturePro(sunSprite, src, dst, sunHalfSize, GetTime()*20, WHITE);
+            //DrawTextureFull(sunSprite, sunArr[i].pos, GetTextureCenterPoint(sunSprite), (Color){0, 0, 0, 75}, 1.2f, GetTime()*20);
+            DrawTextureFull(sunSprite, sunArr[i].pos, GetTextureCenterPoint(sunSprite), WHITE, 1, GetTime()*20);
         }
     }
 }

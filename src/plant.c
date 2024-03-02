@@ -25,6 +25,10 @@ int plantHealthLUT[PT_COUNT] = {
     //PT_COUNT
 };
 
+void UpdateDrawSeedShooter(Plant* p, Vector2 gridPos, Vector2 screenPos);
+void UpdateDrawSunflower(Plant* p, Vector2 screenPos);
+void UpdateDrawPotatoBomb(Plant* p, Vector2 gridPos, Vector2 screenPos);
+
 void UpdateDrawPlants()
 {
     for (int x = 0; x < GRID_WIDTH; x++) {
@@ -42,7 +46,7 @@ void UpdateDrawPlants()
 
                 switch (p->type) {
                     case PT_SEEDSHOOTER:
-                        UpdateDrawPShooter(p, (Vector2){x, y}, screenPos);
+                        UpdateDrawSeedShooter(p, (Vector2){x, y}, screenPos);
                         break;
                     case PT_SUNFLOWER:
                         UpdateDrawSunflower(p, screenPos);
@@ -54,7 +58,7 @@ void UpdateDrawPlants()
                         }
                         break;
                     case PT_POTATOBOMB:
-                        UpdateDrawCherryBomb(p, (Vector2){x, y,}, screenPos);
+                        UpdateDrawPotatoBomb(p, (Vector2){x, y,}, screenPos);
                         break;
                     default:
                         continue;
@@ -64,7 +68,7 @@ void UpdateDrawPlants()
     }
 }
 
-void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
+void UpdateDrawPotatoBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
 {
     if (TickCooldown(&p->cooldown, plantCooldownLUT[p->type])) {
         Zombie* zArr = (Zombie*)zombies.array;
@@ -99,7 +103,7 @@ void UpdateDrawSunflower(Plant* p, Vector2 screenPos)
     if (TickCooldown(&p->cooldown, plantCooldownLUT[p->type]))
         SpawnSun(sunSpawnPos);
 
-    Vector2 origin = {(float)sunflowerSprite.width/2, sunflowerSprite.height-4};
+    Vector2 origin = {sunflowerSprite.width/2, sunflowerSprite.height-4};
 
     float coolDownPercent = (p->cooldown / (float)plantCooldownLUT[p->type]);
     float scale = 1;
@@ -111,7 +115,7 @@ void UpdateDrawSunflower(Plant* p, Vector2 screenPos)
 }
 
 
-void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
+void UpdateDrawSeedShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
 {
     // Look for a zombie in our row
     Zombie* zArr = (Zombie*)zombies.array;
@@ -145,6 +149,6 @@ void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
         scale = 1+(coolDownPercent*3);
     }
 
-    Vector2 origin = {(float)seedShooterSprite.width/2, seedShooterSprite.height-4};
+    Vector2 origin = {seedShooterSprite.width/2, seedShooterSprite.height-4};
     PushDrawData(seedShooterSprite, 0, screenPos, origin, WHITE, scale, 0);
 }

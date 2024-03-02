@@ -130,13 +130,13 @@ void DrawSeedPackets()
                 DrawTextureFull(seedShooterSprite, seedPacketMiddle, GetTextureCenterPoint(seedShooterSprite), WHITE, 0.45f, 0);
                 break;
             case PT_SUNFLOWER:
-                DrawTextureFull(sunflowerSprite, seedPacketMiddle, GetTextureCenterPoint(sunflowerSprite), WHITE, 0.6f, 0);
+                DrawTextureFull(sunflowerSprite, seedPacketMiddle, GetTextureCenterPoint(sunflowerSprite), WHITE, 0.45f, 0);
                 break;
             case PT_COCONUT:
                 DrawTextureFull(coconutSprite, seedPacketMiddle, GetTextureCenterPoint(coconutSprite), WHITE, 0.6f, 0);
                 break;
             case PT_POTATOBOMB:
-                DrawTextureFull(potatoSprite, seedPacketMiddle, GetTextureCenterPoint(potatoSprite), WHITE, 0.6f, 0);
+                DrawTextureFull(potatoSprite, seedPacketMiddle, GetTextureCenterPoint(potatoSprite), WHITE, 0.55f, 0);
                 break;
             default:
                 break;
