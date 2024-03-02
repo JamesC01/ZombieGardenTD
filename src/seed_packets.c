@@ -107,6 +107,9 @@ void DrawSeedPackets()
 
         if (seedPackets[i].dragging) {
             seedPacketUIPos = Vector2Subtract(GetMousePosVirtual(), (Vector2){SEEDPACKET_SIZE.x/2, SEEDPACKET_SIZE.y/2});
+            // Draw shadow when dragging
+            Vector2 shadowPos = Vector2Add(seedPacketUIPos, (Vector2){3, 3});
+            DrawTextureV(currentSprite, shadowPos, (Color){0, 0, 0, 75});
         } else {
             seedPacketUIPos = seedPackets[i].origin;
         }

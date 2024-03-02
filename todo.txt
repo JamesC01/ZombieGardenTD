@@ -41,3 +41,7 @@ Do sun sprite properly.
 Consider rotating zombies to make it look like they're walking a bit more
 
 Made the pea hitting the zombies sound more like the real pvz
+
+Fix flickering sprites (caused by sorting at the end of the draw data array).
+
+Add tooltips (main priority is for seedpackets.)
