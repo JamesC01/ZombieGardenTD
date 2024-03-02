@@ -7,7 +7,7 @@ A clone of the popular tower defense game 'Plants vs Zombies' written in C using
 
 Raylib's Github page has information on building and running programs for most platforms. If you're using linux, just build and install it from source (or however you want,) and run:
 
-`make`
+```make```
 
 
 ## Credits
