@@ -46,6 +46,7 @@ void UpdateSeedPackets()
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !packet->dragging) {
                 packet->dragging = true;
                 draggingSeedPacket = true;
+                PlaySound(digUpPlantSound);
                 HideCursor();
             }
         }

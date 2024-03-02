@@ -49,10 +49,11 @@ void UpdateDrawSuns(void)
         if (sunArr[i].active) {
             sunArr[i].pos.y += 0.25f;
 
-            const int sunSize = sunSprite.width;
-            Vector2 sunHalfSize = {(float)sunSize/2, (float)sunSize/2};
+            Vector2 sunOrigin = GetTextureCenterPoint(sunSprite);
+            Vector2 sunTopLeftPos = Vector2Subtract(sunArr[i].pos, sunOrigin);
 
-            Rectangle sunBox = {EXPAND_V2(Vector2Subtract(sunArr[i].pos, sunHalfSize)), sunSize, sunSize};
+            Rectangle sunBox = {sunTopLeftPos.x, sunTopLeftPos.y, sunSprite.width, sunSprite.height};
+
             if (CheckCollisionPointRec(GetMousePosVirtual(), sunBox)) {
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !draggingSeedPacket) {
                     sunArr[i].active = false;
@@ -62,8 +63,7 @@ void UpdateDrawSuns(void)
                 }
             }
 
-            //DrawTextureFull(sunSprite, sunArr[i].pos, GetTextureCenterPoint(sunSprite), (Color){0, 0, 0, 75}, 1.2f, GetTime()*20);
-            DrawTextureFull(sunSprite, sunArr[i].pos, GetTextureCenterPoint(sunSprite), WHITE, 1, GetTime()*20);
+            DrawTextureFull(sunSprite, sunArr[i].pos, sunOrigin, WHITE, 1, GetTime()*20);
         }
     }
 }
