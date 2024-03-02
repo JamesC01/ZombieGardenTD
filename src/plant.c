@@ -41,19 +41,19 @@ void UpdateDrawPlants()
                 PushDrawData(shadowSprite, 0, screenPos, GetTextureCenterPoint(shadowSprite), WHITE, 1, 0);
 
                 switch (p->type) {
-                    case PT_PSHOOTER:
+                    case PT_SEEDSHOOTER:
                         UpdateDrawPShooter(p, (Vector2){x, y}, screenPos);
                         break;
                     case PT_SUNFLOWER:
                         UpdateDrawSunflower(p, screenPos);
                         break;
-                    case PT_WALLNUT:
+                    case PT_COCONUT:
                         {
-                            Vector2 origin = {(float)wallnutSprite.width/2, wallnutSprite.height-4};
-                            DrawTextureFull(wallnutSprite, screenPos, origin, WHITE, 1, 0);
+                            Vector2 origin = {(float)coconutSprite.width/2, coconutSprite.height-4};
+                            DrawTextureFull(coconutSprite, screenPos, origin, WHITE, 1, 0);
                         }
                         break;
-                    case PT_CHERRYBOMB:
+                    case PT_POTATOBOMB:
                         UpdateDrawCherryBomb(p, (Vector2){x, y,}, screenPos);
                         break;
                     default:
@@ -87,8 +87,8 @@ void UpdateDrawCherryBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
     float coolDownPercent = (p->cooldown / (float)plantCooldownLUT[p->type]);
     float scale = 1+coolDownPercent*0.5f;
 
-    Vector2 origin = {(float)cherrySprite.width/2, cherrySprite.height-2};
-    PushDrawData(cherrySprite, 0, screenPos, origin, WHITE, scale, 0);
+    Vector2 origin = {(float)potatoSprite.width/2, potatoSprite.height-2};
+    PushDrawData(potatoSprite, 0, screenPos, origin, WHITE, scale, 0);
 }
 
 
@@ -145,6 +145,6 @@ void UpdateDrawPShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
         scale = 1+(coolDownPercent*3);
     }
 
-    Vector2 origin = {(float)pShooterSprite.width/2, pShooterSprite.height-4};
-    PushDrawData(pShooterSprite, 0, screenPos, origin, WHITE, scale, 0);
+    Vector2 origin = {(float)seedShooterSprite.width/2, seedShooterSprite.height-4};
+    PushDrawData(seedShooterSprite, 0, screenPos, origin, WHITE, scale, 0);
 }

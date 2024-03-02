@@ -7,13 +7,13 @@
 extern Texture2D seedPacketSprite;
 extern Texture2D lawnBackgroundSprite;
 extern Texture2D woodBackgroundSprite;
-extern Texture2D pShooterSprite;
-extern Texture2D peaSprite;
+extern Texture2D seedShooterSprite;
+extern Texture2D seedSprite;
 extern Texture2D sunSprite;
 extern Texture2D shovelSprite;
 extern Texture2D sunflowerSprite;
-extern Texture2D wallnutSprite;
-extern Texture2D cherrySprite;
+extern Texture2D coconutSprite;
+extern Texture2D potatoSprite;
 extern Texture2D zombieSprite;
 extern Texture2D zombieHeadSprite;
 extern Texture2D headlessZombieSprite;

@@ -4,10 +4,10 @@
 
 typedef enum {
     PT_NONE,
-    PT_PSHOOTER,
+    PT_SEEDSHOOTER,
     PT_SUNFLOWER,
-    PT_WALLNUT,
-    PT_CHERRYBOMB,
+    PT_COCONUT,
+    PT_POTATOBOMB,
     PT_COUNT
 } PlantType;
 

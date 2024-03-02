@@ -18,9 +18,9 @@ void CreateSeedPackets()
     // Implementation detail, the shovel is also a seedpacket. It just works.
     seedPackets[0] = (SeedPacket){ PT_NONE, Vector2Zero()};
     seedPackets[1] = (SeedPacket){ PT_SUNFLOWER, Vector2Zero(), SUN_VALUE*2, 0, SEEDPACKET_COOLDOWN_FAST};
-    seedPackets[2] = (SeedPacket){ PT_PSHOOTER, Vector2Zero(), SUN_VALUE*4, 0, SEEDPACKET_COOLDOWN_FAST};
-    seedPackets[3] = (SeedPacket){ PT_WALLNUT, Vector2Zero(), SUN_VALUE*2, 0, SEEDPACKET_COOLDOWN_SLOW};
-    seedPackets[4] = (SeedPacket){ PT_CHERRYBOMB, Vector2Zero(), SUN_VALUE*6, 0, SEEDPACKET_COOLDOWN_SLOW};
+    seedPackets[2] = (SeedPacket){ PT_SEEDSHOOTER, Vector2Zero(), SUN_VALUE*4, 0, SEEDPACKET_COOLDOWN_FAST};
+    seedPackets[3] = (SeedPacket){ PT_COCONUT, Vector2Zero(), SUN_VALUE*2, 0, SEEDPACKET_COOLDOWN_SLOW};
+    seedPackets[4] = (SeedPacket){ PT_POTATOBOMB, Vector2Zero(), SUN_VALUE*6, 0, SEEDPACKET_COOLDOWN_SLOW};
 
     const int spacing = 8;
     const int leftEdge = 100;
@@ -123,17 +123,17 @@ void DrawSeedPackets()
 
         // Draw plant icon
         switch (seedPackets[i].type) {
-            case PT_PSHOOTER:
-                DrawTextureFull(pShooterSprite, seedPacketMiddle, GetTextureCenterPoint(pShooterSprite), WHITE, 0.45f, 0);
+            case PT_SEEDSHOOTER:
+                DrawTextureFull(seedShooterSprite, seedPacketMiddle, GetTextureCenterPoint(seedShooterSprite), WHITE, 0.45f, 0);
                 break;
             case PT_SUNFLOWER:
                 DrawTextureFull(sunflowerSprite, seedPacketMiddle, GetTextureCenterPoint(sunflowerSprite), WHITE, 0.6f, 0);
                 break;
-            case PT_WALLNUT:
-                DrawTextureFull(wallnutSprite, seedPacketMiddle, GetTextureCenterPoint(wallnutSprite), WHITE, 0.6f, 0);
+            case PT_COCONUT:
+                DrawTextureFull(coconutSprite, seedPacketMiddle, GetTextureCenterPoint(coconutSprite), WHITE, 0.6f, 0);
                 break;
-            case PT_CHERRYBOMB:
-                DrawTextureFull(cherrySprite, seedPacketMiddle, GetTextureCenterPoint(cherrySprite), WHITE, 0.6f, 0);
+            case PT_POTATOBOMB:
+                DrawTextureFull(potatoSprite, seedPacketMiddle, GetTextureCenterPoint(potatoSprite), WHITE, 0.6f, 0);
                 break;
             default:
                 break;

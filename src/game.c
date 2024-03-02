@@ -589,7 +589,7 @@ void UpdateDrawProjectiles(void)
         if (proj->active) {
             proj->pos.x += 5;
             DrawTextureFull(smallShadowSprite, Vector2Add(proj->pos, (Vector2){0, 42}), Vector2Zero(), WHITE, 1, 0);
-            DrawTextureV(peaSprite, proj->pos, WHITE);
+            DrawTextureV(seedSprite, proj->pos, WHITE);
 
             if (proj->pos.x > 640) {
                 proj->active = false;
