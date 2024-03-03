@@ -110,8 +110,8 @@ void UpdateDrawZombieHeads(void)
             }
 
             Vector2 shadowPos = {head->pos.x, head->floorY+zombieHeadSprite.height/2.0f};
-            PushDrawData(shadowSprite, LAYER_ZOMBIES+head->rowIndex-1, shadowPos, GetTextureCenterPoint(shadowSprite), WHITE, 1, 0);
-            PushDrawData(zombieHeadSprite, LAYER_ZOMBIES+head->rowIndex, head->pos, GetTextureCenterPoint(zombieHeadSprite), WHITE, 1, head->rotation);
+            PushDrawData(shadowSprite, LAYER_ZOMBIES+head->rowIndex*10-1, shadowPos, GetTextureCenterPoint(shadowSprite), WHITE, 1, 0);
+            PushDrawData(zombieHeadSprite, LAYER_ZOMBIES+head->rowIndex*10, head->pos, GetTextureCenterPoint(zombieHeadSprite), WHITE, 1, head->rotation);
         }
     }
 }
@@ -243,6 +243,7 @@ void UpdateDrawZombies(void)
                     if (CheckCollisionPointRec(projArr[j].pos, bounds)) {
                         projArr[j].active = false;
                         zombie->health -= 0.1f;
+                        zombie->flashTimer = 4;
                         SetSoundPitch(popSound, GetRandomFloatValue(0.95f, 1.05f));
                         PlaySound(popSound);
                         PlaySound(zombieHitSounds[GetRandomValue(0, ZOMBIE_HIT_SOUND_COUNT-1)]);
@@ -283,6 +284,7 @@ void UpdateDrawZombies(void)
             }
 
             Texture sprite = (zombie->headless) ? headlessZombieSprite : zombieSprite;
+            Texture flashSprite = (zombie->headless) ? headlessZombieFlashSprite : zombieFlashSprite;
 
             // Draw
             Vector2 drawPos = {sX, sY+gridCellSize.y*0.75f};
@@ -294,8 +296,14 @@ void UpdateDrawZombies(void)
                 c = Fade(c, transparencyPercent);
             }
 
-            PushDrawData(shadowSprite, LAYER_ZOMBIES+zombie->gridPos.y-1, drawPos, GetTextureCenterPoint(shadowSprite), WHITE, 1, 0);
-            PushDrawData(sprite, LAYER_ZOMBIES+zombie->gridPos.y, drawPos, origin, c, zombie->scale, zombie->rotation);
+
+            PushDrawData(shadowSprite, LAYER_ZOMBIES+zombie->gridPos.y*10-1, drawPos, GetTextureCenterPoint(shadowSprite), WHITE, 1, 0);
+            PushDrawData(sprite, LAYER_ZOMBIES+zombie->gridPos.y*10, drawPos, origin, c, zombie->scale, zombie->rotation);
+
+            if (zombie->flashTimer > 0) {
+                zombie->flashTimer--;
+                PushDrawData(flashSprite, LAYER_ZOMBIES+zombie->gridPos.y*10+1, drawPos, origin, c, zombie->scale, zombie->rotation);
+            }
 
 #if ZOMBIE_DEBUG
             // Zombie collider debug

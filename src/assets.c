@@ -14,8 +14,10 @@ Texture2D sunflowerSprite;
 Texture2D coconutSprite;
 Texture2D potatoSprite;
 Texture2D zombieSprite;
+Texture2D zombieFlashSprite;
 Texture2D zombieHeadSprite;
 Texture2D headlessZombieSprite;
+Texture2D headlessZombieFlashSprite;
 Texture2D shadowSprite;
 Texture2D smallShadowSprite;
 
@@ -36,6 +38,28 @@ Font smallFont;
 Music themeSong;
 Music rainLoop;
 
+Texture2D CreateFlashSprite(Texture2D sprite);
+
+Texture2D CreateFlashSprite(Texture2D sprite)
+{
+    Image flashImg = LoadImageFromTexture(sprite);
+
+    for (int x = 0; x < flashImg.width; x++) {
+        for (int y = 0; y < flashImg.height; y++) {
+            Color pixel = GetImageColor(flashImg, x, y);
+
+            if (pixel.a != 0) {
+                ImageDrawPixel(&flashImg, x, y, (Color){255, 255, 255, 80});
+            }
+        }
+    }
+
+    Texture2D flashSprite = LoadTextureFromImage(flashImg);
+    UnloadImage(flashImg);
+
+    return flashSprite;
+}
+
 void LoadAssets()
 {
     seedPacketSprite = LoadTexture("sprites/seedpacket.png");
@@ -55,6 +79,10 @@ void LoadAssets()
     headlessZombieSprite = LoadTexture("sprites/headlesszombie.png");
     shadowSprite = LoadTexture("sprites/shadow.png");
     smallShadowSprite = LoadTexture("sprites/small_shadow.png");
+
+    zombieFlashSprite = CreateFlashSprite(zombieSprite);
+    headlessZombieFlashSprite = CreateFlashSprite(headlessZombieSprite);
+
 
     themeSong = LoadMusicStream("sounds/theme.mp3");
     rainLoop = LoadMusicStream("sounds/rain.mp3");
@@ -98,6 +126,8 @@ void UnloadAssets()
     UnloadTexture(zombieSprite);
     UnloadTexture(shadowSprite);
     UnloadTexture(smallShadowSprite);
+
+    UnloadTexture(zombieFlashSprite);
 
     UnloadMusicStream(themeSong);
 

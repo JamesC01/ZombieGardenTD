@@ -10,6 +10,7 @@ typedef struct {
     float rotation;
     bool headless;
     int headlessTimer;
+    int flashTimer;
     bool active;
 } Zombie;
 

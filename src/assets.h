@@ -15,8 +15,10 @@ extern Texture2D sunflowerSprite;
 extern Texture2D coconutSprite;
 extern Texture2D potatoSprite;
 extern Texture2D zombieSprite;
+extern Texture2D zombieFlashSprite;
 extern Texture2D zombieHeadSprite;
 extern Texture2D headlessZombieSprite;
+extern Texture2D headlessZombieFlashSprite;
 extern Texture2D shadowSprite;
 extern Texture2D smallShadowSprite;
 
