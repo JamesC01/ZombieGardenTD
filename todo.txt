@@ -42,35 +42,25 @@ Consider rotating zombies to make it look like they're walking a bit more
 
 Made the seed hitting the zombies sound more like the real pvz
 
-Fix flickering sprites (caused by sorting at the end of the draw data array).
-
 Add tooltips (main priority is for seedpackets.)
 
 Make specialized pickup sound for shovel
 
 Add a slider UI control for music and SFX volume.
 
-Make zombie heads last a bit further off screen so you can still hear the splat if they land off screen.
-
-Make sunflower spawn sun a bit higher over the flower part of the sprite
-
-Make confetti secret middle click instead of left.
-
 Remove silent starts for sound effects (if there is any.)
 
 Add more credits and an info/about button to main menu
 
-Gives buttons a slimmer look (make the y padding less)
-
-Add version info
-
 Add some interactable stuff in the title screen, maybe some particles.
 
-Rename game "Zombies on your lawn" is actually the name of the plants vs zombies ending theme :( Make sure to search it up first to make
+Rename game. "Zombies on your lawn" is actually the name of the plants vs zombies ending theme :( Make sure to search it up first to make
 sure the name isn't taken.
 
-VERY IMPORTANT: rename repo to exlude pvz. While the project is inspired by it, I'd rather not include it in the name of the repo.
+VERY IMPORTANT: rename repo to exclude pvz. While the project is inspired by it, I'd rather not include it in the name of the repo.
 
 Add cover images for the readme
 
 IMPORTANT: Find an appropriate license before making the repo public.
+
+IMPORTANT: credit fonts

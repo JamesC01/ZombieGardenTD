@@ -13,6 +13,8 @@ void GameOver(void);
 
 #define EXPAND_V2(v2) v2.x, v2.y
 
+#define VERSION_STRING "v1.0"
+
 // Plant Grid globals
 #define GRID_WIDTH 9
 #define GRID_HEIGHT 5
@@ -47,6 +49,11 @@ typedef struct {
 } DrawData;
 
 extern FixedObjectArray drawDatas;
+
+typedef enum {
+    LAYER_PLANTS = 10,
+    LAYER_ZOMBIES = 20,
+} DrawLayer;
 
 
 #define GetNextObject(fixedObjArray, type) &((type*)fixedObjArray.array)[fixedObjArray.next]

@@ -9,8 +9,8 @@ ButtonOptions defaultButtonOptions = {
     LIGHTGRAY,
     BLACK,
     4,
-    16,
-    8,
+    32,
+    2,
     2,
     true
 };

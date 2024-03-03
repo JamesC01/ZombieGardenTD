@@ -42,7 +42,7 @@ void UpdateDrawPlants()
                 }
 
 
-                PushDrawData(shadowSprite, 0, screenPos, GetTextureCenterPoint(shadowSprite), WHITE, 1, 0);
+                PushDrawData(shadowSprite, LAYER_PLANTS-1, screenPos, GetTextureCenterPoint(shadowSprite), WHITE, 1, 0);
 
                 switch (p->type) {
                     case PT_SEEDSHOOTER:
@@ -54,7 +54,7 @@ void UpdateDrawPlants()
                     case PT_COCONUT:
                         {
                             Vector2 origin = {(float)coconutSprite.width/2, coconutSprite.height-4};
-                            DrawTextureFull(coconutSprite, screenPos, origin, WHITE, 1, 0);
+                            PushDrawData(coconutSprite, LAYER_PLANTS, screenPos, origin, WHITE, 1, 0);
                         }
                         break;
                     case PT_POTATOBOMB:
@@ -92,13 +92,13 @@ void UpdateDrawPotatoBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
     float scale = 1+coolDownPercent*0.5f;
 
     Vector2 origin = {(float)potatoSprite.width/2, potatoSprite.height-2};
-    PushDrawData(potatoSprite, 0, screenPos, origin, WHITE, scale, 0);
+    PushDrawData(potatoSprite, LAYER_PLANTS, screenPos, origin, WHITE, scale, 0);
 }
 
 
 void UpdateDrawSunflower(Plant* p, Vector2 screenPos)
 {
-    Vector2 sunSpawnPos = Vector2Subtract(screenPos, (Vector2){0, 18});
+    Vector2 sunSpawnPos = Vector2Subtract(screenPos, (Vector2){0, 40});
 
     if (TickCooldown(&p->cooldown, plantCooldownLUT[p->type]))
         SpawnSun(sunSpawnPos);
@@ -111,7 +111,7 @@ void UpdateDrawSunflower(Plant* p, Vector2 screenPos)
         scale = 1+(coolDownPercent*4);
     }
     
-    PushDrawData(sunflowerSprite, 0, screenPos, origin, WHITE, scale, 0);
+    PushDrawData(sunflowerSprite, LAYER_PLANTS, screenPos, origin, WHITE, scale, 0);
 }
 
 
@@ -150,5 +150,5 @@ void UpdateDrawSeedShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
     }
 
     Vector2 origin = {seedShooterSprite.width/2, seedShooterSprite.height-4};
-    PushDrawData(seedShooterSprite, 0, screenPos, origin, WHITE, scale, 0);
+    PushDrawData(seedShooterSprite, LAYER_PLANTS, screenPos, origin, WHITE, scale, 0);
 }

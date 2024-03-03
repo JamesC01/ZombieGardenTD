@@ -232,8 +232,8 @@ void UpdateDrawStart(void)
     DrawBackground();
 
     char *titleText1 = "Zombies";
-    char *titleText2 = "On Your";
-    char *titleText3 = "Lawn";
+    char *titleText2 = "In Your";
+    char *titleText3 = "Garden";
     int tfSize = 75;
     DrawTextWithShadow(bigFont, titleText1, GetCenteredTextX(bigFont, tfSize, titleText1), 32, tfSize, 4, WHITE);
     DrawTextWithShadow(bigFont, titleText2, GetCenteredTextX(bigFont, tfSize/2, titleText1), 32+tfSize, (float)tfSize/2, 4, WHITE);
@@ -277,6 +277,10 @@ void UpdateDrawStart(void)
     char *creditText = "(c) James Czekaj 2024";
     int cfSize = 25;
     DrawTextWithShadow(smallFont, creditText, GetCenteredTextX(smallFont, cfSize, creditText), virtualScreenHeight-32, cfSize, 2, WHITE);
+
+    char *versionText = VERSION_STRING;
+    int vfSize = 25;
+    DrawTextWithShadow(smallFont, versionText, 8, 5, cfSize, 2, WHITE);
 }
 
 void UpdateDrawConfigMenu(GameConfig *config, GameScreen previousScreen)
@@ -290,7 +294,7 @@ void UpdateDrawConfigMenu(GameConfig *config, GameScreen previousScreen)
 
     TextOptions tOpt = {
         .font = smallFont,
-        .size = 30,
+        .size = 40,
         .shadowOffset = 2,
         .colour = WHITE
     };
@@ -298,7 +302,7 @@ void UpdateDrawConfigMenu(GameConfig *config, GameScreen previousScreen)
     ButtonOptions bOpt = defaultButtonOptions;
     bOpt.shadowOffset = 4;
     bOpt.centered = true;
-    bOpt.minWidth = 200;
+    bOpt.minWidth = 250;
 
     int y = virtualScreenHeight/2-80;
     int gap = 6;
@@ -351,7 +355,7 @@ void UpdateDrawPauseMenu(void)
 
     TextOptions tOpt = {
         .font = smallFont,
-        .size = 30,
+        .size = 40,
         .shadowOffset = 2,
         .colour = WHITE
     };
@@ -359,7 +363,7 @@ void UpdateDrawPauseMenu(void)
     ButtonOptions bOpt = defaultButtonOptions;
     bOpt.shadowOffset = 4;
     bOpt.centered = true;
-    bOpt.minWidth = 200;
+    bOpt.minWidth = 250;
 
     int y = virtualScreenHeight/2-80;
     int gap = 6;
@@ -402,7 +406,7 @@ void UpdateDrawGameOver(void)
 
     TextOptions options = {
         .font = smallFont,
-        .size = 30,
+        .size = 40,
         .shadowOffset = 2,
         .colour = WHITE
     };
@@ -422,7 +426,7 @@ void UpdateDrawGame(void)
         UpdateMusicStream(themeSong);
     }
 
-    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && !draggingSeedPacket) {
+    if (IsMouseButtonDown(MOUSE_BUTTON_MIDDLE) && !draggingSeedPacket) {
         CreateParticleConfetti(GetMousePosVirtual(), (Vector2){4, 4}, 6);
         if (!IsSoundPlaying(popSound)) {
             SetSoundPitch(popSound, GetRandomFloatValue(1.8f, 2));
@@ -533,6 +537,8 @@ void UpdateDrawGame(void)
     };
 
     ButtonOptions bOpt = defaultButtonOptions;
+    bOpt.paddingX = 16;
+    bOpt.paddingY = 8;
     bOpt.centered = false;
 
     if (TextButton(bOpt, options, "||", virtualScreenWidth-32, virtualScreenHeight-32)) {

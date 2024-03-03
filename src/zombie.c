@@ -101,13 +101,13 @@ void UpdateDrawZombieHeads(void)
             head->rotation += head->angularVel;
 
 
-            if (head->pos.x > virtualScreenWidth+zombieHeadSprite.width) {
+            if (head->pos.x > virtualScreenWidth+virtualScreenWidth*0.5f) {
                 head->active = false;
             }
 
             Vector2 shadowPos = {head->pos.x, head->floorY+zombieHeadSprite.height/2.0f};
-            PushDrawData(shadowSprite, head->rowIndex, shadowPos, GetTextureCenterPoint(shadowSprite), WHITE, 1, 0);
-            PushDrawData(zombieHeadSprite, head->rowIndex, head->pos, GetTextureCenterPoint(zombieHeadSprite), WHITE, 1, head->rotation);
+            PushDrawData(shadowSprite, LAYER_ZOMBIES+head->rowIndex-1, shadowPos, GetTextureCenterPoint(shadowSprite), WHITE, 1, 0);
+            PushDrawData(zombieHeadSprite, LAYER_ZOMBIES+head->rowIndex, head->pos, GetTextureCenterPoint(zombieHeadSprite), WHITE, 1, head->rotation);
         }
     }
 }
@@ -233,7 +233,7 @@ void UpdateDrawZombies(void)
                 } 
             }
 
-            Vector2 origin = {(float)zombieSprite.width*0.75f, zombieSprite.height-4};
+            Vector2 origin = {(float)zombieSprite.width*0.7f, zombieSprite.height-4};
 
             if (zombie->health <= 0 && !zombie->headless) {
                 zombie->headless = true;
@@ -273,8 +273,8 @@ void UpdateDrawZombies(void)
                 c = Fade(c, transparencyPercent);
             }
 
-            PushDrawData(shadowSprite, zombie->gridPos.y, drawPos, GetTextureCenterPoint(shadowSprite), WHITE, 1, 0);
-            PushDrawData(sprite, zombie->gridPos.y, drawPos, origin, c, zombie->scale, 0);
+            PushDrawData(shadowSprite, LAYER_ZOMBIES+zombie->gridPos.y-1, drawPos, GetTextureCenterPoint(shadowSprite), WHITE, 1, 0);
+            PushDrawData(sprite, LAYER_ZOMBIES+zombie->gridPos.y, drawPos, origin, c, zombie->scale, 0);
 
 #if ZOMBIE_DEBUG
             // Zombie collider debug
