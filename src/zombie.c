@@ -11,8 +11,6 @@
 #include "game.h"
 #include "seed_packets.h"
 
-#define ZOMBIE_DEBUG false
-
 FixedObjectArray zombies;
 FixedObjectArray zombieHeads;
 
@@ -71,11 +69,7 @@ void InitZombies(void)
     defaultWaveZombieSpawnRate = 60 * 3;
     currentZombieSpawnRate = defaultZombieSpawnRate;
 
-#if ZOMBIE_DEBUG
-    zombieSpawnTimer = 0;
-#else
     zombieSpawnTimer = 60*30;
-#endif
 
     zombieGrowlTimer = 60*2;
 }
@@ -166,12 +160,7 @@ void UpdateDrawZombies(void)
 
     // Spawn zombies
     if (TickCooldown(&zombieSpawnTimer, currentZombieSpawnRate)) {
-
-#if ZOMBIE_DEBUG
-        float xSpawn = 7;
-#else
         float xSpawn = GetRandomValue(10, 11) + rand()/(float)RAND_MAX;
-#endif
         float ySpawn = GetUniqueRandomValue(lastZombieSpawnYIndex, 0, GRID_HEIGHT-1);
         lastZombieSpawnYIndex = ySpawn;
         Vector2 gridPos = {xSpawn, ySpawn};
@@ -305,10 +294,7 @@ void UpdateDrawZombies(void)
                 PushDrawData(flashSprite, LAYER_ZOMBIES+zombie->gridPos.y*10+1, drawPos, origin, c, zombie->scale, zombie->rotation);
             }
 
-#if ZOMBIE_DEBUG
-            // Zombie collider debug
-            DrawRectangleRec(bounds, (Color){100, 100, 255, 100});
-#endif
+            // TODO: Add debug colliders
         }
     }
 }
