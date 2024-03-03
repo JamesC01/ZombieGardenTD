@@ -453,5 +453,8 @@ plus a comment indicating it.)
 
 03/03/2024
 
-Today I spent 1 hour 30 minutes. I made many small fixes and changes. I added a slight rotation to zombies to make them look like they're walking a bit more. I added a simple debug option to allow
+Today I spent 2 hours 26 minutes. I made many small fixes and changes. I added a slight rotation to zombies to make them look like they're walking a bit more. I added a simple debug option to allow
 spawning zombies with right click. I added hit flash to zombies and plants. That was mostly it. A solid 30 minutes was making small changes, knocking items off of the todo list.
+
+I ended up spending another 56 minutes later in the day (I added this to the time above. I made more small tweaks, and changed some draw orders, and added a seperate debug menu. I also tweaked
+the zombie sprite
