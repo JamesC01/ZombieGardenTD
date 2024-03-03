@@ -57,7 +57,7 @@ Texture2D CreateFlashSprite(Texture2D sprite)
             Color pixel = GetImageColor(flashImg, x, y);
 
             if (pixel.a != 0) {
-                ImageDrawPixel(&flashImg, x, y, (Color){255, 255, 255, 80});
+                ImageDrawPixel(&flashImg, x, y, (Color){255, 220, 30, 80});
             }
         }
     }

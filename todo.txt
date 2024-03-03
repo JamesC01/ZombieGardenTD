@@ -56,3 +56,5 @@ IMPORTANT: credit fonts
 Consider adding debug feature: right click to spawn zombie
 
 Make debug options a fully seperate menu
+
+Make zombies appear above top bar

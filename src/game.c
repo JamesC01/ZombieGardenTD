@@ -480,19 +480,6 @@ void UpdateDrawGame(void)
     UpdateDrawZombies();
     UpdateDrawPlants();
 
-    // Depth sorted drawing 
-    qsort(drawDatas.array, drawDatas.fixedSize, sizeof(DrawData), &CompareDrawDatas);
-    for (int i = 0; i < drawDatas.fixedSize; i++) {
-        DrawData *dd = &((DrawData*)drawDatas.array)[i];
-        if (dd->shouldDraw) {
-            DrawTextureFull(dd->sprite, dd->pos, dd->origin, dd->tint, dd->scale, dd->rotation);
-            dd->shouldDraw = false;
-        }
-    }
-
-    UpdateDrawParticles();
-    UpdateDrawSuns();
-
     // Draw top bar
     int tilesX = virtualScreenWidth/woodBackgroundSprite.width;
     Rectangle src = {0,0,woodBackgroundSprite.width,woodBackgroundSprite.height};
@@ -517,6 +504,20 @@ void UpdateDrawGame(void)
     border.height += 2;
     DrawRectangleRec(border, (Color){255, 220, 200, 100});
     DrawRectangleRec(tray, (Color){46, 40, 34, 255});
+
+    // Depth sorted drawing 
+    qsort(drawDatas.array, drawDatas.fixedSize, sizeof(DrawData), &CompareDrawDatas);
+    for (int i = 0; i < drawDatas.fixedSize; i++) {
+        DrawData *dd = &((DrawData*)drawDatas.array)[i];
+        if (dd->shouldDraw) {
+            DrawTextureFull(dd->sprite, dd->pos, dd->origin, dd->tint, dd->scale, dd->rotation);
+            dd->shouldDraw = false;
+        }
+    }
+
+    UpdateDrawParticles();
+    UpdateDrawSuns();
+
 
 
     UpdateDrawSeedPackets();

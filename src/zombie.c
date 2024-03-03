@@ -104,8 +104,8 @@ void UpdateDrawZombieHeads(void)
             }
 
             Vector2 shadowPos = {head->pos.x, head->floorY+zombieHeadSprite.height/2.0f};
-            PushDrawData(shadowSprite, LAYER_ZOMBIES+head->rowIndex*10-1, shadowPos, GetTextureCenterPoint(shadowSprite), WHITE, 1, 0);
-            PushDrawData(zombieHeadSprite, LAYER_ZOMBIES+head->rowIndex*10, head->pos, GetTextureCenterPoint(zombieHeadSprite), WHITE, 1, head->rotation);
+            PushDrawData(shadowSprite, LAYER_ZOMBIES+head->rowIndex*10-2, shadowPos, GetTextureCenterPoint(shadowSprite), WHITE, 1, 0);
+            PushDrawData(zombieHeadSprite, LAYER_ZOMBIES+head->rowIndex*10-1, head->pos, GetTextureCenterPoint(zombieHeadSprite), WHITE, 1, head->rotation);
         }
     }
 }
@@ -170,11 +170,11 @@ void UpdateDrawZombies(void)
 
     // Update and draw zombies
     Zombie* zArr = (Zombie*)zombies.array;
-    zombieGrowlTimer--;
     for (int i = 0; i < zombies.fixedSize; i++) {
         Zombie* zombie = &zArr[i];
 
         if (zombie->active) {
+            zombieGrowlTimer--;
 
             // Complicated timings to make the zombie animations time decently
             zombie->scale = 1+((1+sinf(zombieMoveSpeed*600*GetTime()*4+zombie->gridPos.x*10+i*15))/2)*0.075f;
@@ -189,11 +189,7 @@ void UpdateDrawZombies(void)
                 PlaySound(zombieGrowlSounds[random]);
 
                 bool shortCooldown = GetRandomValue(0, 4) == 0;
-                if (shortCooldown) {
-                    zombieGrowlTimer = GetRandomValue(30, 60*5);
-                } else {
-                    zombieGrowlTimer = GetRandomValue(60*5, 60*15);
-                }
+                zombieGrowlTimer = GetRandomValue(60*10, 60*20);
             }
 
             // Move and eat plants
