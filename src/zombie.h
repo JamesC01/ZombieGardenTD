@@ -28,6 +28,7 @@ extern FixedObjectArray zombies;
 extern FixedObjectArray zombieHeads;
 
 extern int zombiesKilledCount;
+extern bool debugZombieSpawning;
 
 void InitZombies(void);
 void UpdateDrawZombies(void);

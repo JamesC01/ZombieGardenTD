@@ -381,6 +381,13 @@ void UpdateDrawPauseMenu(void)
     }
 
     y += height;
+    bOpt.colour = GREEN;
+    // Temporarily here
+    if (TextButton(bOpt, tOpt, "Toggle Right-click Zombie spawning", 0, y)) {
+        debugZombieSpawning = !debugZombieSpawning;
+    }
+
+    y += height;
     bOpt.colour = LIGHTGRAY;
     if (TextButton(bOpt, tOpt, "Game Config", 0, y)) {
         ChangeGameScreen(GAME_SCREEN_CONFIG_MENU);

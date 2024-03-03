@@ -9,11 +9,14 @@
 #include <raymath.h>
 #include "particles.h"
 #include "game.h"
+#include "seed_packets.h"
 
 #define ZOMBIE_DEBUG false
 
 FixedObjectArray zombies;
 FixedObjectArray zombieHeads;
+
+bool debugZombieSpawning = false;
 
 int defaultZombieSpawnRate;
 int defaultWaveZombieSpawnRate;
@@ -45,6 +48,7 @@ int zombiesKilledCount;
 
 
 void ZombieKilled(void);
+void SpawnZombie(Vector2 gridPos);
 
 void InitZombies(void)
 {
@@ -112,8 +116,29 @@ void UpdateDrawZombieHeads(void)
     }
 }
 
+void SpawnZombie(Vector2 gridPos)
+{
+    Zombie* zombie = GetNextObject(zombies, Zombie);
+    IncrementArrayIndex(&zombies);
+
+    zombie->active = true;
+    zombie->health = 1.0f;
+    zombie->gridPos = gridPos;
+    zombie->headless = false;
+}
+
 void UpdateDrawZombies(void)
 {
+
+    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && debugZombieSpawning && !draggingSeedPacket) {
+        Vector2 mPos = GetMousePosVirtual();
+        Vector2 gridPos = {(mPos.x-gridDrawOffset.x)/gridCellSize.x, (mPos.y-gridDrawOffset.y)/gridCellSize.y};
+        gridPos.x = roundf(gridPos.x);
+        gridPos.y = roundf(gridPos.y);
+
+        SpawnZombie(gridPos);
+    }
+
     // Handle ending wave
     if (waveState.started && waveState.killsLeftToEndWave <= 0) {
         printf("Wave ended.\n");
@@ -151,13 +176,7 @@ void UpdateDrawZombies(void)
         lastZombieSpawnYIndex = ySpawn;
         Vector2 gridPos = {xSpawn, ySpawn};
 
-        Zombie* zombie = GetNextObject(zombies, Zombie);
-        IncrementArrayIndex(&zombies);
-
-        zombie->active = true;
-        zombie->health = 1.0f;
-        zombie->gridPos = gridPos;
-        zombie->headless = false;
+        SpawnZombie(gridPos);
     }
 
     // Update and draw zombies
@@ -168,6 +187,7 @@ void UpdateDrawZombies(void)
 
         if (zombie->active) {
 
+            // Complicated timings to make the zombie animations time decently
             zombie->scale = 1+((1+sinf(zombieMoveSpeed*600*GetTime()*4+zombie->gridPos.x*10+i*15))/2)*0.075f;
             zombie->rotation = sinf((zombieMoveSpeed*600*GetTime()*4+zombie->gridPos.x*10+i*15)/2)*3;
 
