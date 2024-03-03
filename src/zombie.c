@@ -207,6 +207,10 @@ void UpdateDrawZombies(void)
                     if (p->type != PT_NONE) {
                         if (!zombie->headless) {
                             p->health -= 0.5f;
+                            // Bit of a hack, but makes sure flash only happens once a second
+                            if (p->flashTimer <= -60) {
+                                p->flashTimer = 4;
+                            }
                         }
                         moveAmount = 0;
                         // TODO: Play eating sounds
@@ -289,8 +293,8 @@ void UpdateDrawZombies(void)
             PushDrawData(shadowSprite, LAYER_ZOMBIES+zombie->gridPos.y*10-1, drawPos, GetTextureCenterPoint(shadowSprite), WHITE, 1, 0);
             PushDrawData(sprite, LAYER_ZOMBIES+zombie->gridPos.y*10, drawPos, origin, c, zombie->scale, zombie->rotation);
 
+            zombie->flashTimer--;
             if (zombie->flashTimer > 0) {
-                zombie->flashTimer--;
                 PushDrawData(flashSprite, LAYER_ZOMBIES+zombie->gridPos.y*10+1, drawPos, origin, c, zombie->scale, zombie->rotation);
             }
 

@@ -22,6 +22,11 @@ extern Texture2D headlessZombieFlashSprite;
 extern Texture2D shadowSprite;
 extern Texture2D smallShadowSprite;
 
+extern Texture2D seedShooterFlashSprite;
+extern Texture2D sunflowerFlashSprite;
+extern Texture2D coconutFlashSprite;
+extern Texture2D potatoFlashSprite;
+
 extern Font bigFont;
 extern Font smallFont;
 

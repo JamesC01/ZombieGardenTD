@@ -14,6 +14,7 @@ typedef enum {
 typedef struct {
     PlantType type;
     int cooldown;
+    int flashTimer;
     float health;
 } Plant;
 

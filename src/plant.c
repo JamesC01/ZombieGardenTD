@@ -55,6 +55,10 @@ void UpdateDrawPlants()
                         {
                             Vector2 origin = {(float)coconutSprite.width/2, coconutSprite.height-4};
                             PushDrawData(coconutSprite, LAYER_PLANTS, screenPos, origin, WHITE, 1, 0);
+                            p->flashTimer--;
+                            if (p->flashTimer > 0) {
+                                PushDrawData(coconutFlashSprite, LAYER_PLANTS+1, screenPos, origin, WHITE, 1, 0);
+                            }
                         }
                         break;
                     case PT_POTATOBOMB:
@@ -63,6 +67,8 @@ void UpdateDrawPlants()
                     default:
                         continue;
                 }
+
+
             }
         }
     }
@@ -93,6 +99,11 @@ void UpdateDrawPotatoBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
 
     Vector2 origin = {(float)potatoSprite.width/2, potatoSprite.height-2};
     PushDrawData(potatoSprite, LAYER_PLANTS, screenPos, origin, WHITE, scale, 0);
+
+    p->flashTimer--;
+    if (p->flashTimer > 0) {
+        PushDrawData(potatoFlashSprite, LAYER_PLANTS+1, screenPos, origin, WHITE, scale, 0);
+    }
 }
 
 
@@ -112,6 +123,11 @@ void UpdateDrawSunflower(Plant* p, Vector2 screenPos)
     }
     
     PushDrawData(sunflowerSprite, LAYER_PLANTS, screenPos, origin, WHITE, scale, 0);
+
+    p->flashTimer--;
+    if (p->flashTimer > 0) {
+        PushDrawData(sunflowerFlashSprite, LAYER_PLANTS+1, screenPos, origin, WHITE, scale, 0);
+    }
 }
 
 
@@ -151,4 +167,9 @@ void UpdateDrawSeedShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
 
     Vector2 origin = {seedShooterSprite.width/2, seedShooterSprite.height-4};
     PushDrawData(seedShooterSprite, LAYER_PLANTS, screenPos, origin, WHITE, scale, 0);
+
+    p->flashTimer--;
+    if (p->flashTimer > 0) {
+        PushDrawData(seedShooterFlashSprite, LAYER_PLANTS+1, screenPos, origin, WHITE, scale, 0);
+    }
 }

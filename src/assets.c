@@ -6,20 +6,28 @@
 Texture2D seedPacketSprite;
 Texture2D lawnBackgroundSprite;
 Texture2D woodBackgroundSprite;
-Texture2D seedShooterSprite;
 Texture2D seedSprite;
 Texture2D sunSprite;
 Texture2D shovelSprite;
+
+Texture2D seedShooterSprite;
 Texture2D sunflowerSprite;
 Texture2D coconutSprite;
 Texture2D potatoSprite;
+
 Texture2D zombieSprite;
-Texture2D zombieFlashSprite;
 Texture2D zombieHeadSprite;
 Texture2D headlessZombieSprite;
-Texture2D headlessZombieFlashSprite;
+
 Texture2D shadowSprite;
 Texture2D smallShadowSprite;
+
+Texture2D seedShooterFlashSprite;
+Texture2D sunflowerFlashSprite;
+Texture2D coconutFlashSprite;
+Texture2D potatoFlashSprite;
+Texture2D zombieFlashSprite;
+Texture2D headlessZombieFlashSprite;
 
 Sound zombieGrowlSounds[ZOMBIE_GROWL_SOUND_COUNT];
 Sound zombieHitSounds[ZOMBIE_HIT_SOUND_COUNT];
@@ -79,6 +87,11 @@ void LoadAssets()
     headlessZombieSprite = LoadTexture("sprites/headlesszombie.png");
     shadowSprite = LoadTexture("sprites/shadow.png");
     smallShadowSprite = LoadTexture("sprites/small_shadow.png");
+
+    seedShooterFlashSprite = CreateFlashSprite(seedShooterSprite);
+    sunflowerFlashSprite = CreateFlashSprite(sunflowerSprite);
+    coconutFlashSprite = CreateFlashSprite(coconutSprite);
+    potatoFlashSprite = CreateFlashSprite(potatoSprite);
 
     zombieFlashSprite = CreateFlashSprite(zombieSprite);
     headlessZombieFlashSprite = CreateFlashSprite(headlessZombieSprite);
