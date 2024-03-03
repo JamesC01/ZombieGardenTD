@@ -448,3 +448,10 @@ I also spent some extra time on the zombie, which I'm quite happy with (I added 
 I spent *37 minutes* drawing the sun sprite and implementing it into the game, and also some refactoring of the code and a small bug fix (I realised that I accidentally removed a "pointless" draw
 function that was actually drawing a shadow when the seedpacket was picked up, so I added it back in and seperated the position into a variable with an appropriate name to signal what it was,
 plus a comment indicating it.)
+
+
+
+03/03/2024
+
+Today I spent 1 hour 30 minutes. I made many small fixes and changes. I added a slight rotation to zombies to make them look like they're walking a bit more. I added a simple debug option to allow
+spawning zombies with right click. I added hit flash to zombies and plants. That was mostly it. A solid 30 minutes was making small changes, knocking items off of the todo list.

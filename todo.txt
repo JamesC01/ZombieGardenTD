@@ -12,8 +12,6 @@ figure out why (just for fun.)
 
 Fix the peas not colliding off screen again.
 
-Add hit flash to zombies and maybe plants when they're being eaten.
-
 Add something that indicates a wave is happening.
 
 Allow particles to use textures, and make some simple textures like sparkles
