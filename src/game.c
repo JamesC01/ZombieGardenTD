@@ -22,6 +22,7 @@ typedef enum {
     GAME_SCREEN_PAUSE_MENU,
     GAME_SCREEN_GAMEOVER,
     GAME_SCREEN_CONFIG_MENU,
+    GAME_SCREEN_DEBUG_MENU,
     GAME_SCREEN_EXIT
 } GameScreen;
 
@@ -60,6 +61,7 @@ void UpdateDrawGame(void);
 void UpdateDrawGameOver(void);
 void UpdateDrawProjectiles(void);
 void UpdateDrawConfigMenu(GameConfig *config, GameScreen previousScreen);
+void UpdateDrawDebugMenu(GameScreen previousScreen);
 void InitializeGame(void);
 void DrawBackground(void);
 Rectangle GetRenderRect(void);
@@ -178,6 +180,9 @@ int main(void)
                 break;
             case GAME_SCREEN_CONFIG_MENU:
                 UpdateDrawConfigMenu(&gameConfig, previousScreen);
+                break;
+            case GAME_SCREEN_DEBUG_MENU:
+                UpdateDrawDebugMenu(previousScreen);
                 break;
         }
 
@@ -343,6 +348,55 @@ void UpdateDrawConfigMenu(GameConfig *config, GameScreen previousScreen)
     }
 }
 
+void UpdateDrawDebugMenu(GameScreen previousScreen)
+{
+    DrawBackground();
+
+    char *debugText = "Debug Options";
+    int tfSize = 50;
+    DrawTextWithShadow(bigFont, debugText, GetCenteredTextX(bigFont, tfSize, debugText), 64, tfSize, 4, WHITE);
+
+
+    TextOptions tOpt = {
+        .font = smallFont,
+        .size = 40,
+        .shadowOffset = 2,
+        .colour = WHITE
+    };
+
+    ButtonOptions bOpt = defaultButtonOptions;
+    bOpt.shadowOffset = 4;
+    bOpt.centered = true;
+    bOpt.minWidth = 250;
+
+    int y = virtualScreenHeight/2-80;
+    int gap = 6;
+    int height = GetButtonHeight(bOpt, tOpt) + gap;
+
+    bOpt.colour = LIGHTGRAY;
+    const int btnShadow = 4;
+    if (TextButton(bOpt, tOpt, "<-- Back", 0, y)) {
+        ChangeGameScreen(previousScreen);
+    }
+
+    y += height;
+
+    bOpt.colour = (Color){0, 150, 200, 255};
+    char zombieDebugText[64];
+    sprintf(zombieDebugText, "Right-click zombie spawning (%s)", (debugZombieSpawning) ? "On" : "Off");
+    if (TextButton(bOpt, tOpt, zombieDebugText, 0, y)) {
+        debugZombieSpawning = !debugZombieSpawning;
+    }
+
+    y += height;
+
+    bOpt.colour = YELLOW;
+    if (TextButton(bOpt, tOpt, "Give suns", 0, y)) {
+        sunsCollectedCount += 1000*SUN_VALUE;
+    }
+
+    y += height;
+}
 
 void UpdateDrawPauseMenu(void)
 {
@@ -375,22 +429,15 @@ void UpdateDrawPauseMenu(void)
     }
 
     y += height;
-    bOpt.colour = YELLOW;
-    if (TextButton(bOpt, tOpt, "Give Sun", 0, y)) {
-        sunsCollectedCount += 100*SUN_VALUE;
-    }
-
-    y += height;
-    bOpt.colour = GREEN;
-    // Temporarily here
-    if (TextButton(bOpt, tOpt, "Toggle Right-click Zombie spawning", 0, y)) {
-        debugZombieSpawning = !debugZombieSpawning;
+    bOpt.colour = LIGHTGRAY;
+    if (TextButton(bOpt, tOpt, "Game Config", 0, y)) {
+        ChangeGameScreen(GAME_SCREEN_CONFIG_MENU);
     }
 
     y += height;
     bOpt.colour = LIGHTGRAY;
-    if (TextButton(bOpt, tOpt, "Game Config", 0, y)) {
-        ChangeGameScreen(GAME_SCREEN_CONFIG_MENU);
+    if (TextButton(bOpt, tOpt, "Debug Options", 0, y)) {
+        ChangeGameScreen(GAME_SCREEN_DEBUG_MENU);
     }
 
     y += height;
