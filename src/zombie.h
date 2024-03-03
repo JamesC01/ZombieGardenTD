@@ -7,6 +7,7 @@ typedef struct {
     Vector2 gridPos;
     float health;
     float scale;
+    float rotation;
     bool headless;
     int headlessTimer;
     bool active;

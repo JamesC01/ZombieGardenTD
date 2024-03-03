@@ -169,6 +169,7 @@ void UpdateDrawZombies(void)
         if (zombie->active) {
 
             zombie->scale = 1+((1+sinf(zombieMoveSpeed*600*GetTime()*4+zombie->gridPos.x*10+i*15))/2)*0.075f;
+            zombie->rotation = sinf((zombieMoveSpeed*600*GetTime()*4+zombie->gridPos.x*10+i*15)/2)*3;
 
             // Growl
             if (zombieGrowlTimer < 0) {
@@ -274,7 +275,7 @@ void UpdateDrawZombies(void)
             }
 
             PushDrawData(shadowSprite, LAYER_ZOMBIES+zombie->gridPos.y-1, drawPos, GetTextureCenterPoint(shadowSprite), WHITE, 1, 0);
-            PushDrawData(sprite, LAYER_ZOMBIES+zombie->gridPos.y, drawPos, origin, c, zombie->scale, 0);
+            PushDrawData(sprite, LAYER_ZOMBIES+zombie->gridPos.y, drawPos, origin, c, zombie->scale, zombie->rotation);
 
 #if ZOMBIE_DEBUG
             // Zombie collider debug

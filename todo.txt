@@ -40,7 +40,7 @@ Do sun sprite properly.
 
 Consider rotating zombies to make it look like they're walking a bit more
 
-Made the seed hitting the zombies sound more like the real pvz
+Make the seed hitting the zombies sound more like the real pvz
 
 Add tooltips (main priority is for seedpackets.)
 
@@ -54,9 +54,6 @@ Add more credits and an info/about button to main menu
 
 Add some interactable stuff in the title screen, maybe some particles.
 
-Rename game. "Zombies on your lawn" is actually the name of the plants vs zombies ending theme :( Make sure to search it up first to make
-sure the name isn't taken.
-
 VERY IMPORTANT: rename repo to exclude pvz. While the project is inspired by it, I'd rather not include it in the name of the repo.
 
 Add cover images for the readme
@@ -64,3 +61,5 @@ Add cover images for the readme
 IMPORTANT: Find an appropriate license before making the repo public.
 
 IMPORTANT: credit fonts
+
+Consider adding debug feature: right click to spawn zombie
