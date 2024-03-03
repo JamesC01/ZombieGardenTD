@@ -51,8 +51,10 @@ typedef struct {
 extern FixedObjectArray drawDatas;
 
 typedef enum {
+    LAYER_UI = 0,
     LAYER_PLANTS = 10,
-    LAYER_ZOMBIES = 20,
+    LAYER_ZOMBIES = 20, // zombie render layer is calculated as LAYER_ZOMBIES + row * 10
+    LAYER_UNUSED = 80
 } DrawLayer;
 
 

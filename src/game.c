@@ -158,6 +158,14 @@ int main(void)
             }
         }
 
+        if (IsMouseButtonDown(MOUSE_BUTTON_MIDDLE) && !draggingSeedPacket) {
+            CreateParticleConfetti(GetMousePosVirtual(), (Vector2){4, 4}, 6);
+            if (!IsSoundPlaying(popSound)) {
+                SetSoundPitch(popSound, GetRandomFloatValue(1.8f, 2));
+                PlaySound(popSound);
+            }
+        }
+
 
         BeginTextureMode(targetRT);
 
@@ -236,6 +244,8 @@ void UpdateDrawStart(void)
 {
     DrawBackground();
 
+    UpdateDrawParticles();
+
     char *titleText1 = "Zombies";
     char *titleText2 = "In Your";
     char *titleText3 = "Garden";
@@ -291,6 +301,7 @@ void UpdateDrawStart(void)
 void UpdateDrawConfigMenu(GameConfig *config, GameScreen previousScreen)
 {
     DrawBackground();
+    UpdateDrawParticles();
 
     char *pausedText = "Game Config";
     int tfSize = 50;
@@ -351,6 +362,8 @@ void UpdateDrawConfigMenu(GameConfig *config, GameScreen previousScreen)
 void UpdateDrawDebugMenu(GameScreen previousScreen)
 {
     DrawBackground();
+    UpdateDrawParticles();
+
 
     char *debugText = "Debug Options";
     int tfSize = 50;
@@ -401,6 +414,7 @@ void UpdateDrawDebugMenu(GameScreen previousScreen)
 void UpdateDrawPauseMenu(void)
 {
     DrawBackground();
+    UpdateDrawParticles();
 
     char *pausedText = "Paused";
     int tfSize = 50;
@@ -450,6 +464,7 @@ void UpdateDrawPauseMenu(void)
 void UpdateDrawGameOver(void)
 {
     DrawBackground();
+    UpdateDrawParticles();
 
     DrawTextWithShadow(bigFont, "YOU DIED!", GetCenteredTextX(bigFont, 50, "YOU DIED!"), 32, 50, 4, WHITE);
     DrawTextWithShadow(bigFont, "GAME OVER", GetCenteredTextX(bigFont, 50, "GAME OVER"), 80, 50, 4, WHITE);
@@ -480,13 +495,6 @@ void UpdateDrawGame(void)
         UpdateMusicStream(themeSong);
     }
 
-    if (IsMouseButtonDown(MOUSE_BUTTON_MIDDLE) && !draggingSeedPacket) {
-        CreateParticleConfetti(GetMousePosVirtual(), (Vector2){4, 4}, 6);
-        if (!IsSoundPlaying(popSound)) {
-            SetSoundPitch(popSound, GetRandomFloatValue(1.8f, 2));
-            PlaySound(popSound);
-        }
-    }
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         CreateParticleExplosion(GetMousePosVirtual(), (Vector2){4, 4}, 4, 10, 16, DARKBROWN);
