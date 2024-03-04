@@ -2,6 +2,7 @@
 #include "game.h"
 #include "assets.h"
 #include "sun.h"
+#include "ui.h"
 #include <raylib.h>
 #include <raymath.h>
 
@@ -102,9 +103,9 @@ void DrawSeedPackets()
         Vector2 seedPacketUIPos;
         Texture2D currentSprite;
 
-        bool usingShovel = seedPackets[i].type == PT_NONE;
+        bool isShovel = seedPackets[i].type == PT_NONE;
 
-        currentSprite = (usingShovel) ? shovelSprite : seedPacketSprite;
+        currentSprite = (isShovel) ? shovelSprite : seedPacketSprite;
 
         if (seedPackets[i].dragging) {
             seedPacketUIPos = Vector2Subtract(GetMousePosVirtual(), (Vector2){SEEDPACKET_SIZE.x/2, SEEDPACKET_SIZE.y/2});
@@ -119,28 +120,43 @@ void DrawSeedPackets()
 
         // Highlighting seedpacket
         Rectangle bounds = {EXPAND_V2(seedPacketUIPos), EXPAND_V2(SEEDPACKET_SIZE)};
-        if (CheckCollisionPointRec(GetMousePosVirtual(), bounds) && !draggingSeedPacket && seedPackets[i].type != PT_NONE) {
+        bool mouseHovering = CheckCollisionPointRec(GetMousePosVirtual(), bounds);
+        if (mouseHovering && !draggingSeedPacket && !isShovel) {
             DrawRectangleV(seedPacketUIPos, SEEDPACKET_SIZE, (Color){255, 255, 255, 50});
         }
 
         Vector2 seedPacketMiddle = {seedPacketUIPos.x+SEEDPACKET_SIZE.x/2, seedPacketUIPos.y+SEEDPACKET_SIZE.y*0.575f};
 
+        char *plantName;
         // Draw plant icon
         switch (seedPackets[i].type) {
             case PT_SEEDSHOOTER:
+                plantName = "Seedshooter";
                 DrawTextureFull(seedShooterSprite, seedPacketMiddle, GetTextureCenterPoint(seedShooterSprite), WHITE, 0.45f, 0);
                 break;
             case PT_SUNFLOWER:
+                plantName = "Sunflower";
                 DrawTextureFull(sunflowerSprite, seedPacketMiddle, GetTextureCenterPoint(sunflowerSprite), WHITE, 0.45f, 0);
                 break;
             case PT_COCONUT:
+                plantName = "Coconut";
                 DrawTextureFull(coconutSprite, seedPacketMiddle, GetTextureCenterPoint(coconutSprite), WHITE, 0.6f, 0);
                 break;
             case PT_POTATOBOMB:
+                plantName = "Potatobomb";
                 DrawTextureFull(potatoSprite, seedPacketMiddle, GetTextureCenterPoint(potatoSprite), WHITE, 0.55f, 0);
                 break;
             default:
                 break;
+        }
+
+        if (mouseHovering && !draggingSeedPacket && !isShovel) {
+            Vector2 tooltipPos = {
+                seedPackets[i].origin.x,
+                seedPackets[i].origin.y + SEEDPACKET_SIZE.y
+            };
+            DrawTextWithShadow(smallFont, plantName, GetCenteredTextX(smallFont, 20, plantName, tooltipPos.x, tooltipPos.x+SEEDPACKET_SIZE.x), tooltipPos.y, 20, 1, WHITE);
+            
         }
 
         // Dim seed packet

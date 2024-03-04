@@ -250,9 +250,9 @@ void UpdateDrawStart(void)
     char *titleText2 = "In Your";
     char *titleText3 = "Garden";
     int tfSize = 75;
-    DrawTextWithShadow(bigFont, titleText1, GetCenteredTextX(bigFont, tfSize, titleText1), 32, tfSize, 4, WHITE);
-    DrawTextWithShadow(bigFont, titleText2, GetCenteredTextX(bigFont, tfSize/2, titleText1), 32+tfSize, (float)tfSize/2, 4, WHITE);
-    DrawTextWithShadow(bigFont, titleText3, GetCenteredTextX(bigFont, tfSize, titleText3), 32+tfSize*1.5f, tfSize, 4, WHITE);
+    DrawTextWithShadow(bigFont, titleText1, GetCenteredTextX(bigFont, tfSize, titleText1, 0, virtualScreenWidth), 32, tfSize, 4, WHITE);
+    DrawTextWithShadow(bigFont, titleText2, GetCenteredTextX(bigFont, tfSize/2, titleText2, 0, virtualScreenWidth), 32+tfSize, (float)tfSize/2, 4, WHITE);
+    DrawTextWithShadow(bigFont, titleText3, GetCenteredTextX(bigFont, tfSize, titleText3, 0, virtualScreenWidth), 32+tfSize*1.5f, tfSize, 4, WHITE);
 
 
     TextOptions tOpt = {
@@ -291,7 +291,7 @@ void UpdateDrawStart(void)
 
     char *creditText = "(c) James Czekaj 2024";
     int cfSize = 25;
-    DrawTextWithShadow(smallFont, creditText, GetCenteredTextX(smallFont, cfSize, creditText), virtualScreenHeight-32, cfSize, 2, WHITE);
+    DrawTextWithShadow(smallFont, creditText, GetCenteredTextX(smallFont, cfSize, creditText, 0, virtualScreenWidth), virtualScreenHeight-32, cfSize, 2, WHITE);
 
     char *versionText = VERSION_STRING;
     int vfSize = 25;
@@ -305,7 +305,7 @@ void UpdateDrawConfigMenu(GameConfig *config, GameScreen previousScreen)
 
     char *pausedText = "Game Config";
     int tfSize = 50;
-    DrawTextWithShadow(bigFont, pausedText, GetCenteredTextX(bigFont, tfSize, pausedText), 64, tfSize, 4, WHITE);
+    DrawTextWithShadow(bigFont, pausedText, GetCenteredTextX(bigFont, tfSize, pausedText, 0, virtualScreenWidth), 64, tfSize, 4, WHITE);
 
 
     TextOptions tOpt = {
@@ -367,7 +367,7 @@ void UpdateDrawDebugMenu(GameScreen previousScreen)
 
     char *debugText = "Debug Options";
     int tfSize = 50;
-    DrawTextWithShadow(bigFont, debugText, GetCenteredTextX(bigFont, tfSize, debugText), 64, tfSize, 4, WHITE);
+    DrawTextWithShadow(bigFont, debugText, GetCenteredTextX(bigFont, tfSize, debugText, 0, virtualScreenWidth), 64, tfSize, 4, WHITE);
 
 
     TextOptions tOpt = {
@@ -418,7 +418,7 @@ void UpdateDrawPauseMenu(void)
 
     char *pausedText = "Paused";
     int tfSize = 50;
-    DrawTextWithShadow(bigFont, pausedText, GetCenteredTextX(bigFont, tfSize, pausedText), 64, tfSize, 4, WHITE);
+    DrawTextWithShadow(bigFont, pausedText, GetCenteredTextX(bigFont, tfSize, pausedText, 0, virtualScreenWidth), 64, tfSize, 4, WHITE);
 
 
     TextOptions tOpt = {
@@ -466,12 +466,12 @@ void UpdateDrawGameOver(void)
     DrawBackground();
     UpdateDrawParticles();
 
-    DrawTextWithShadow(bigFont, "YOU DIED!", GetCenteredTextX(bigFont, 50, "YOU DIED!"), 32, 50, 4, WHITE);
-    DrawTextWithShadow(bigFont, "GAME OVER", GetCenteredTextX(bigFont, 50, "GAME OVER"), 80, 50, 4, WHITE);
+    DrawTextWithShadow(bigFont, "YOU DIED!", GetCenteredTextX(bigFont, 50, "YOU DIED!", 0, virtualScreenWidth), 32, 50, 4, WHITE);
+    DrawTextWithShadow(bigFont, "GAME OVER", GetCenteredTextX(bigFont, 50, "GAME OVER", 0, virtualScreenWidth), 80, 50, 4, WHITE);
 
     char killCountText[32];
     sprintf(killCountText, "You killed %i zombies!", zombiesKilledCount);
-    DrawTextWithShadow(smallFont, killCountText, GetCenteredTextX(smallFont, 40, killCountText), virtualScreenHeight/2-80, 40, 2, WHITE);
+    DrawTextWithShadow(smallFont, killCountText, GetCenteredTextX(smallFont, 40, killCountText, 0, virtualScreenWidth), virtualScreenHeight/2-80, 40, 2, WHITE);
 
     TextOptions options = {
         .font = smallFont,

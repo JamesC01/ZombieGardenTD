@@ -41,12 +41,4 @@ Add more credits and an info/about button to main menu
 
 Add some interactable stuff in the title screen, maybe some particles.
 
-VERY IMPORTANT: rename repo to exclude pvz. While the project is inspired by it, I'd rather not include it in the name of the repo.
-
-Add cover images for the readme
-
-IMPORTANT: Find an appropriate license before making the repo public.
-
-IMPORTANT: credit fonts
-
 Consider refactoring menus. There's a lot of similar code in them

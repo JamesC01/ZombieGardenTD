@@ -28,7 +28,7 @@ bool TextButton(ButtonOptions buttonOptions, TextOptions textOptions, char *text
     }
 
     if (buttonOptions.centered) {
-        int centeredTextX = GetCenteredTextX(textOptions.font, textOptions.size, text);
+        int centeredTextX = GetCenteredTextX(textOptions.font, textOptions.size, text, 0, virtualScreenWidth);
         x = centeredTextX - buttonOptions.paddingX/2;
     }
 
@@ -78,11 +78,11 @@ bool TextButton(ButtonOptions buttonOptions, TextOptions textOptions, char *text
     return btnClicked;
 }
 
-int GetCenteredTextX(Font font, int size, char *text)
+int GetCenteredTextX(Font font, int size, char *text, int startX, int endX)
 {
     int textHalfWidth = MeasureTextEx(font, text, size, 0).x/2;
 
-    return virtualScreenWidth/2-textHalfWidth;
+    return startX+(endX-startX)/2-textHalfWidth;
 }
 
 void DrawTextWithShadow(Font font, const char *text, int x, int y, float fontSize, float shadowOffset, Color tint)

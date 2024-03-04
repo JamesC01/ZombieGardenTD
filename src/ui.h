@@ -25,6 +25,6 @@ extern ButtonOptions defaultButtonOptions;
 bool TextButton(ButtonOptions buttonOptions, TextOptions textOptions, char *text, int x, int y);
 
 void DrawTextWithShadow(Font font, const char *text, int x, int y, float fontSize, float shadowOffset, Color tint);
-int GetCenteredTextX(Font font, int size, char *text);
+int GetCenteredTextX(Font font, int size, char *text, int startX, int endX);
 
 #endif
