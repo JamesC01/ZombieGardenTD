@@ -458,3 +458,9 @@ spawning zombies with right click. I added hit flash to zombies and plants. That
 
 I ended up spending another 56 minutes later in the day (I added this to the time above. I made more small tweaks, and changed some draw orders, and added a seperate debug menu. I also tweaked
 the zombie sprite
+
+
+04/03/2024
+
+Today I spent 45 minutes. I found an open source license to use, I changed a font, I credited the fonts, I added a cover image to the github readme, I renamed the repo to something more generic. I
+also added some simple tooltips to the seedpackets to see their name. I'm finally ready to call this version 1.0 and make the repo public!
