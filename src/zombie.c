@@ -101,7 +101,7 @@ void UpdateDrawZombieHeads(void)
             head->rotation += head->angularVel;
 
 
-            if (head->pos.x > virtualScreenWidth+virtualScreenWidth*0.5f) {
+            if (head->pos.x > virtualScreenWidth+virtualScreenWidth/2.0f) {
                 head->active = false;
             }
 
@@ -257,8 +257,8 @@ void UpdateDrawZombies(void)
 
                 head->floorY = sY + gridCellSize.y*0.5f;
                 head->rowIndex = zombie->gridPos.y;
-                head->angularVel = GetRandomFloatValue(5, 10);
-                head->velocity = (Vector2){1, GetRandomFloatValue(-6, -1)};
+                head->angularVel = GetRandomFloatValue(2, 30);
+                head->velocity = (Vector2){GetRandomFloatValue(0.5f, 2), GetRandomFloatValue(-6, -1)};
                 head->pos = Vector2Add((Vector2){sX, sY}, (Vector2){10, 0});
                 head->active = true;
                 head->onGround = false;
