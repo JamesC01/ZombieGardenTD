@@ -14,6 +14,8 @@
 FixedObjectArray zombies;
 FixedObjectArray zombieHeads;
 
+const int HEADLESS_TIME = 60 * 3;
+
 bool debugZombieSpawning = false;
 
 int defaultZombieSpawnRate;
@@ -174,13 +176,12 @@ void UpdateDrawZombies(void)
         Zombie* zombie = &zArr[i];
 
         if (zombie->active) {
-            zombieGrowlTimer--;
-
             // Complicated timings to make the zombie animations time decently
             zombie->scale = 1+((1+sinf(zombieMoveSpeed*600*GetTime()*4+zombie->gridPos.x*10+i*15))/2)*0.075f;
             zombie->rotation = sinf((zombieMoveSpeed*600*GetTime()*4+zombie->gridPos.x*10+i*15)/2)*3;
 
             // Growl
+            zombieGrowlTimer--;
             if (zombieGrowlTimer < 0) {
                 int random = GetUniqueRandomValue(lastZombieGrowlIndex, 0, ZOMBIE_GROWL_SOUND_COUNT-1);
                 lastZombieGrowlIndex = random;
@@ -188,7 +189,6 @@ void UpdateDrawZombies(void)
                 SetSoundPitch(zombieGrowlSounds[random], GetRandomFloatValue(0.9f, 1.1f));
                 PlaySound(zombieGrowlSounds[random]);
 
-                bool shortCooldown = GetRandomValue(0, 4) == 0;
                 zombieGrowlTimer = GetRandomValue(60*10, 60*20);
             }
 
@@ -205,7 +205,7 @@ void UpdateDrawZombies(void)
                             p->health -= 0.5f;
                             // Bit of a hack, but makes sure flash only happens once a second
                             if (p->flashTimer <= -60) {
-                                p->flashTimer = 4;
+                                p->flashTimer = SPRITE_FLASH_TIME;
                             }
                         }
                         moveAmount = 0;
@@ -223,7 +223,7 @@ void UpdateDrawZombies(void)
 
             int sX = gridDrawOffset.x + zombie->gridPos.x*gridCellSize.x;
             int sY = gridDrawOffset.y + zombie->gridPos.y*gridCellSize.y;
-            Rectangle bounds = {sX-16, sY-16, (float)zombieSprite.width/2, zombieSprite.height};
+            Rectangle bounds = {sX-16, sY-16, zombieSprite.width/2.0f, zombieSprite.height};
 
             // Handle collisions with projectiles
             Projectile* projArr = (Projectile*)projectiles.array;
@@ -232,7 +232,7 @@ void UpdateDrawZombies(void)
                     if (CheckCollisionPointRec(projArr[j].pos, bounds)) {
                         projArr[j].active = false;
                         zombie->health -= 0.1f;
-                        zombie->flashTimer = 4;
+                        zombie->flashTimer = SPRITE_FLASH_TIME;
                         SetSoundPitch(popSound, GetRandomFloatValue(0.95f, 1.05f));
                         PlaySound(popSound);
                         PlaySound(zombieHitSounds[GetRandomValue(0, ZOMBIE_HIT_SOUND_COUNT-1)]);
@@ -246,9 +246,10 @@ void UpdateDrawZombies(void)
 
             Vector2 origin = {(float)zombieSprite.width*0.7f, zombieSprite.height-4};
 
+            // Zombie head spawning
             if (zombie->health <= 0 && !zombie->headless) {
                 zombie->headless = true;
-                zombie->headlessTimer = 60 * 3;
+                zombie->headlessTimer = HEADLESS_TIME;
                 ZombieKilled();
 
                 ZombieHead* head = GetNextObject(zombieHeads, ZombieHead);
@@ -291,7 +292,7 @@ void UpdateDrawZombies(void)
 
             zombie->flashTimer--;
             if (zombie->flashTimer > 0) {
-                PushDrawData(flashSprite, LAYER_ZOMBIES+zombie->gridPos.y*10+1, drawPos, origin, c, zombie->scale, zombie->rotation);
+                PushDrawData(flashSprite, LAYER_ZOMBIES+zombie->gridPos.y*10+1, drawPos, origin, GetFlashTint(zombie->flashTimer), zombie->scale, zombie->rotation);
             }
 
             // TODO: Add debug colliders

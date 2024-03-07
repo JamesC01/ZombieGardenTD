@@ -42,3 +42,9 @@ Add more credits and an info/about button to main menu
 Add some interactable stuff in the title screen, maybe some particles.
 
 Consider refactoring menus. There's a lot of similar code in them
+
+Make head x vel randomised, + make head rotation speed random
+
+Make plant being eaten spawn particles and a big exposion when the plant is dead
+
+Make zombie heads leave trailing blood particles once they're on the ground (just need a particle with no velocity)

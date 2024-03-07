@@ -49,6 +49,8 @@ const int defaultFps = 60;
 bool limitFrameRate = true;
 int frameCount = 0;
 
+const int SPRITE_FLASH_TIME = 8;
+
 Plant gardenGrid[GRID_WIDTH][GRID_HEIGHT] = {0};
 Vector2 gridDrawOffset = {40, 80};
 Vector2 gridCellSize = {65, 78};
@@ -251,7 +253,7 @@ void UpdateDrawStart(void)
     char *titleText3 = "Garden";
     int tfSize = 75;
     DrawTextWithShadow(bigFont, titleText1, GetCenteredTextX(bigFont, tfSize, titleText1, 0, virtualScreenWidth), 32, tfSize, 4, WHITE);
-    DrawTextWithShadow(bigFont, titleText2, GetCenteredTextX(bigFont, tfSize/2, titleText2, 0, virtualScreenWidth), 32+tfSize, (float)tfSize/2, 4, WHITE);
+    DrawTextWithShadow(bigFont, titleText2, GetCenteredTextX(bigFont, tfSize/2, titleText2, 0, virtualScreenWidth), 32+tfSize, tfSize/2.0f, 4, WHITE);
     DrawTextWithShadow(bigFont, titleText3, GetCenteredTextX(bigFont, tfSize, titleText3, 0, virtualScreenWidth), 32+tfSize*1.5f, tfSize, 4, WHITE);
 
 
@@ -814,4 +816,12 @@ int CompareDrawDatas(const void *a, const void *b)
         return 1;
 
     return 0;
+}
+
+Color GetFlashTint(int flashTimer)
+{
+    Color tint = WHITE;
+    tint.a = 255 * ((float)flashTimer / SPRITE_FLASH_TIME);
+
+    return tint;
 }

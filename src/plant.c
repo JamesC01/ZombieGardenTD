@@ -53,11 +53,11 @@ void UpdateDrawPlants()
                         break;
                     case PT_COCONUT:
                         {
-                            Vector2 origin = {(float)coconutSprite.width/2, coconutSprite.height-4};
+                            Vector2 origin = {coconutSprite.width/2.0f, coconutSprite.height-4};
                             PushDrawData(coconutSprite, LAYER_PLANTS, screenPos, origin, WHITE, 1, 0);
                             p->flashTimer--;
                             if (p->flashTimer > 0) {
-                                PushDrawData(coconutFlashSprite, LAYER_PLANTS+1, screenPos, origin, WHITE, 1, 0);
+                                PushDrawData(coconutFlashSprite, LAYER_PLANTS+1, screenPos, origin, GetFlashTint(p->flashTimer), 1, 0);
                             }
                         }
                         break;
@@ -97,12 +97,12 @@ void UpdateDrawPotatoBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
     float coolDownPercent = (p->cooldown / (float)plantCooldownLUT[p->type]);
     float scale = 1+coolDownPercent*0.5f;
 
-    Vector2 origin = {(float)potatoSprite.width/2, potatoSprite.height-2};
+    Vector2 origin = {potatoSprite.width/2.0f, potatoSprite.height-2};
     PushDrawData(potatoSprite, LAYER_PLANTS, screenPos, origin, WHITE, scale, 0);
 
     p->flashTimer--;
     if (p->flashTimer > 0) {
-        PushDrawData(potatoFlashSprite, LAYER_PLANTS+1, screenPos, origin, WHITE, scale, 0);
+        PushDrawData(potatoFlashSprite, LAYER_PLANTS+1, screenPos, origin, GetFlashTint(p->flashTimer), scale, 0);
     }
 }
 
@@ -114,7 +114,7 @@ void UpdateDrawSunflower(Plant* p, Vector2 screenPos)
     if (TickCooldown(&p->cooldown, plantCooldownLUT[p->type]))
         SpawnSun(sunSpawnPos);
 
-    Vector2 origin = {sunflowerSprite.width/2, sunflowerSprite.height-4};
+    Vector2 origin = {sunflowerSprite.width/2.0f, sunflowerSprite.height-4};
 
     float coolDownPercent = (p->cooldown / (float)plantCooldownLUT[p->type]);
     float scale = 1;
@@ -126,7 +126,7 @@ void UpdateDrawSunflower(Plant* p, Vector2 screenPos)
 
     p->flashTimer--;
     if (p->flashTimer > 0) {
-        PushDrawData(sunflowerFlashSprite, LAYER_PLANTS+1, screenPos, origin, WHITE, scale, 0);
+        PushDrawData(sunflowerFlashSprite, LAYER_PLANTS+1, screenPos, origin, GetFlashTint(p->flashTimer), scale, 0);
     }
 }
 
@@ -165,11 +165,11 @@ void UpdateDrawSeedShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
         scale = 1+(coolDownPercent*3);
     }
 
-    Vector2 origin = {seedShooterSprite.width/2, seedShooterSprite.height-4};
+    Vector2 origin = {seedShooterSprite.width/2.0f, seedShooterSprite.height-4};
     PushDrawData(seedShooterSprite, LAYER_PLANTS, screenPos, origin, WHITE, scale, 0);
 
     p->flashTimer--;
     if (p->flashTimer > 0) {
-        PushDrawData(seedShooterFlashSprite, LAYER_PLANTS+1, screenPos, origin, WHITE, scale, 0);
+        PushDrawData(seedShooterFlashSprite, LAYER_PLANTS+1, screenPos, origin, GetFlashTint(p->flashTimer), scale, 0);
     }
 }
