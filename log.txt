@@ -464,3 +464,9 @@ the zombie sprite
 
 Today I spent 45 minutes. I found an open source license to use, I changed a font, I credited the fonts, I added a cover image to the github readme, I renamed the repo to something more generic. I
 also added some simple tooltips to the seedpackets to see their name. I'm finally ready to call this version 1.0 and make the repo public!
+
+
+
+07/03/2024
+
+I spent around 44 minutes just refactoring a few small areas and tackling a few small issues. The project is mostly done for now, so I won't be working on it very often.
