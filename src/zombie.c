@@ -8,7 +8,6 @@
 #include "game.h"
 #include <raymath.h>
 #include "particles.h"
-#include "game.h"
 #include "seed_packets.h"
 
 FixedObjectArray zombies;
@@ -95,6 +94,15 @@ void UpdateDrawZombieHeads(void)
             } else {
                 head->velocity.y += gravity;
             }
+
+            /*
+            // TODO: Consider adding depth sorting to particles
+            if (head->onGround) {
+                Color bloodColour = {100, 20, 20};
+                Particle *p = CreateParticle(P_DEFAULT, Vector2Add(head->pos, (Vector2){GetRandomFloatValue(8, 16), GetRandomFloatValue(16, 24)}), (Vector2){2, 2}, 2*60, bloodColour);
+                p->velocity = Vector2Zero();
+            }
+            */
 
             head->pos.x += head->velocity.x;
             head->pos.y += head->velocity.y;

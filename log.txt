@@ -470,3 +470,13 @@ also added some simple tooltips to the seedpackets to see their name. I'm finall
 07/03/2024
 
 I spent around 44 minutes just refactoring a few small areas and tackling a few small issues. The project is mostly done for now, so I won't be working on it very often.
+
+
+10/03/2024
+
+~30 minutes today, just some refactoring (unfinished.)
+
+
+14/03/2024
+
+~34 minutes today, refactoring buttons (unfinished)

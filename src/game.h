@@ -59,6 +59,26 @@ typedef enum {
     LAYER_UNUSED = 80
 } DrawLayer;
 
+typedef struct {
+    bool playingMusic;
+    bool raining;
+    bool fullscreen;
+    int width, height;
+    bool maximized;
+} GameConfig;
+
+extern GameConfig gameConfig;
+
+typedef enum {
+    GAME_SCREEN_START,
+    GAME_SCREEN_PLAYING,
+    GAME_SCREEN_PAUSE_MENU,
+    GAME_SCREEN_GAMEOVER,
+    GAME_SCREEN_CONFIG_MENU,
+    GAME_SCREEN_DEBUG_MENU,
+    GAME_SCREEN_EXIT
+} GameScreen;
+
 
 #define GetNextObject(fixedObjArray, type) &((type*)fixedObjArray.array)[fixedObjArray.next]
 void IncrementArrayIndex(FixedObjectArray *array);
@@ -72,5 +92,8 @@ void PushDrawData(Texture2D sprite, int depth, Vector2 pos, Vector2 origin, Colo
 Vector2 GetTextureCenterPoint(Texture2D sprite);
 Vector2 GetMousePosVirtual(void);
 int GetButtonHeight(ButtonOptions bOpt, TextOptions tOpt);
+void DrawTitleText(char *text);
+void ChangeGameScreen(GameScreen newScreen);
+void InitializeGame(void);
 
 #endif

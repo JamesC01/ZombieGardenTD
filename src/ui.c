@@ -15,31 +15,31 @@ ButtonOptions defaultButtonOptions = {
     true
 };
 
-bool TextButton(ButtonOptions buttonOptions, TextOptions textOptions, char *text, int x, int y)
+bool UpdateDrawTextButton(TextButton *button, int x, int y)
 {
     // TODO: Consider making centering/minWidth code clearer
-    Vector2 textSize = MeasureTextEx(textOptions.font, text, textOptions.size, 0);
-    int width = textSize.x + buttonOptions.paddingX*2;
+    Vector2 textSize = MeasureTextEx(button->textOptions.font, button->text, button->textOptions.size, 0);
+    int width = textSize.x + button->buttonOptions.paddingX*2;
 
-    if (width < buttonOptions.minWidth) {
+    if (width < button->buttonOptions.minWidth) {
         // Set padding so width == minWidth
-        int diff = buttonOptions.minWidth - width;
-        buttonOptions.paddingX = diff;
+        int diff = button->buttonOptions.minWidth - width;
+        button->buttonOptions.paddingX = diff;
     }
 
-    if (buttonOptions.centered) {
-        int centeredTextX = GetCenteredTextX(textOptions.font, textOptions.size, text, 0, virtualScreenWidth);
-        x = centeredTextX - buttonOptions.paddingX/2;
+    if (button->buttonOptions.centered) {
+        int centeredTextX = GetCenteredTextX(button->textOptions.font, button->textOptions.size, button->text, 0, virtualScreenWidth);
+        x = centeredTextX - button->buttonOptions.paddingX/2;
     }
 
-    Rectangle button = {
+    Rectangle buttonRect = {
         x, y,
-        textSize.x+buttonOptions.paddingX, textSize.y+buttonOptions.paddingY
+        textSize.x+button->buttonOptions.paddingX, textSize.y+button->buttonOptions.paddingY
     };
 
     bool btnClicked = false;
 
-    bool cursorInside = CheckCollisionPointRec(GetMousePosVirtual(), button);
+    bool cursorInside = CheckCollisionPointRec(GetMousePosVirtual(), buttonRect);
     if (cursorInside) {
         btnClicked = IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && !draggingSeedPacket;
         if (btnClicked) {
@@ -49,30 +49,18 @@ bool TextButton(ButtonOptions buttonOptions, TextOptions textOptions, char *text
         bool btnHeldDown = IsMouseButtonDown(MOUSE_BUTTON_LEFT) && !draggingSeedPacket;
 
         float colourMult = (btnHeldDown) ? 0.5f : 0.75f;
-        buttonOptions.colour.r *= colourMult;
-        buttonOptions.colour.g *= colourMult;
-        buttonOptions.colour.b *= colourMult;
+        button->buttonOptions.colour.r *= colourMult;
+        button->buttonOptions.colour.g *= colourMult;
+        button->buttonOptions.colour.b *= colourMult;
 
-        buttonOptions.shadowOffset /= 2;
+        button->buttonOptions.shadowOffset /= 2;
     }
 
-    Rectangle shadow = button;
-    shadow.x += buttonOptions.shadowOffset;
-    shadow.y += buttonOptions.shadowOffset;
+    DrawBorderedRectangleWithShadow(buttonRect, button->buttonOptions.shadowOffset, button->buttonOptions.outlineThickness, button->buttonOptions.colour, button->buttonOptions.outlineColour);
 
-    Rectangle outline = button;
-    outline.x -= buttonOptions.outlineThickness;
-    outline.y -= buttonOptions.outlineThickness;
-    outline.width += buttonOptions.outlineThickness*2;
-    outline.height += buttonOptions.outlineThickness*2;
-
-    DrawRectangleRec(shadow, (Color){0, 0, 0, 100});
-    DrawRectangleRec(outline, buttonOptions.outlineColour);
-    DrawRectangleRec(button, buttonOptions.colour);
-
-    DrawTextWithShadow(textOptions.font, text,
-        x+buttonOptions.paddingX/2, y+buttonOptions.paddingY/2,
-        textOptions.size, textOptions.shadowOffset, textOptions.colour
+    DrawTextWithShadow(button->textOptions.font, button->text,
+        x+button->buttonOptions.paddingX/2, y+button->buttonOptions.paddingY/2,
+        button->textOptions.size, button->textOptions.shadowOffset, button->textOptions.colour
     );
 
     return btnClicked;
@@ -90,4 +78,26 @@ void DrawTextWithShadow(Font font, const char *text, int x, int y, float fontSiz
     const Color shadowColour = {0, 0, 0, 150};
     DrawTextEx(font, text, (Vector2){x+shadowOffset, y+shadowOffset}, fontSize, 0, shadowColour);
     DrawTextEx(font, text, (Vector2){x, y}, fontSize, 0, tint);
+}
+
+void DrawBorderedRectangle(Rectangle rect, int outlineThickness, Color colour, Color borderColour)
+{
+    Rectangle border = rect;
+    border.x -= outlineThickness;
+    border.y -= outlineThickness;
+    border.width += outlineThickness*2;
+    border.height += outlineThickness*2;
+
+    DrawRectangleRec(border, borderColour);
+    DrawRectangleRec(rect, colour);
+}
+
+void DrawBorderedRectangleWithShadow(Rectangle rect, int shadowOffset, int outlineThickness, Color colour, Color borderColour)
+{
+    Rectangle shadow = rect;
+    shadow.x += shadowOffset;
+    shadow.y += shadowOffset;
+
+    DrawRectangleRec(shadow, (Color){0, 0, 0, 100});
+    DrawBorderedRectangle(rect, outlineThickness, colour, borderColour);
 }

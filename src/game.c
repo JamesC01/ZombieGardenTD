@@ -15,27 +15,11 @@
 #include "sun.h"
 #include "ui.h"
 #include <assert.h>
-
-typedef enum {
-    GAME_SCREEN_START,
-    GAME_SCREEN_PLAYING,
-    GAME_SCREEN_PAUSE_MENU,
-    GAME_SCREEN_GAMEOVER,
-    GAME_SCREEN_CONFIG_MENU,
-    GAME_SCREEN_DEBUG_MENU,
-    GAME_SCREEN_EXIT
-} GameScreen;
+#include "menus.h"
 
 GameScreen previousScreen;
 GameScreen currentScreen = GAME_SCREEN_START;
 
-typedef struct {
-    bool playingMusic;
-    bool raining;
-    bool fullscreen;
-    int width, height;
-    bool maximized;
-} GameConfig;
 
 FixedObjectArray projectiles;
 FixedObjectArray drawDatas;
@@ -64,10 +48,8 @@ void UpdateDrawGameOver(void);
 void UpdateDrawProjectiles(void);
 void UpdateDrawConfigMenu(GameConfig *config, GameScreen previousScreen);
 void UpdateDrawDebugMenu(GameScreen previousScreen);
-void InitializeGame(void);
 void DrawBackground(void);
 Rectangle GetRenderRect(void);
-void ChangeGameScreen(GameScreen newScreen);
 int CompareDrawDatas(const void *a, const void *b);
 
 void ReadWriteConfig(GameConfig *config, char *operation);
@@ -174,24 +156,34 @@ int main(void)
         ClearBackground(WHITE);
         switch (currentScreen) {
             case GAME_SCREEN_START:
+                DrawBackground();
+                UpdateDrawParticles();
                 UpdateDrawStart();
                 break;
             case GAME_SCREEN_PLAYING:
                 UpdateDrawGame();
                 break;
             case GAME_SCREEN_PAUSE_MENU:
+                DrawBackground();
+                UpdateDrawParticles();
                 UpdateDrawPauseMenu();
                 break;
             case GAME_SCREEN_GAMEOVER:
+                DrawBackground();
+                UpdateDrawParticles();
                 UpdateDrawGameOver();
                 break;
             case GAME_SCREEN_EXIT:
                 shouldClose = true;
                 break;
             case GAME_SCREEN_CONFIG_MENU:
+                DrawBackground();
+                UpdateDrawParticles();
                 UpdateDrawConfigMenu(&gameConfig, previousScreen);
                 break;
             case GAME_SCREEN_DEBUG_MENU:
+                DrawBackground();
+                UpdateDrawParticles();
                 UpdateDrawDebugMenu(previousScreen);
                 break;
         }
@@ -242,254 +234,7 @@ int main(void)
     return 0;
 }
 
-void UpdateDrawStart(void)
-{
-    DrawBackground();
 
-    UpdateDrawParticles();
-
-    char *titleText1 = "Zombies";
-    char *titleText2 = "In Your";
-    char *titleText3 = "Garden";
-    int tfSize = 75;
-    DrawTextWithShadow(bigFont, titleText1, GetCenteredTextX(bigFont, tfSize, titleText1, 0, virtualScreenWidth), 32, tfSize, 4, WHITE);
-    DrawTextWithShadow(bigFont, titleText2, GetCenteredTextX(bigFont, tfSize/2, titleText2, 0, virtualScreenWidth), 32+tfSize, tfSize/2.0f, 4, WHITE);
-    DrawTextWithShadow(bigFont, titleText3, GetCenteredTextX(bigFont, tfSize, titleText3, 0, virtualScreenWidth), 32+tfSize*1.5f, tfSize, 4, WHITE);
-
-
-    TextOptions tOpt = {
-        .font = smallFont,
-        .size = 40,
-        .shadowOffset = 2,
-        .colour = WHITE
-    };
-
-    ButtonOptions bOpt = defaultButtonOptions;
-    bOpt.centered = true;
-    bOpt.shadowOffset = 4;
-
-    int y = virtualScreenHeight/2;
-    int gap = 6;
-    int height = GetButtonHeight(bOpt, tOpt) + gap;
-
-    bOpt.colour = GREEN;
-    if (TextButton(bOpt, tOpt, "Start Game!", 0, y)) {
-        ChangeGameScreen(GAME_SCREEN_PLAYING);
-        InitializeGame();
-    }
-
-    y += height;
-    bOpt.colour = LIGHTGRAY;
-    if (TextButton(bOpt, tOpt, "Game Config", 0, y)) {
-        ChangeGameScreen(GAME_SCREEN_CONFIG_MENU);
-    }
-
-    y += height;
-    bOpt.colour = RED;
-    if (TextButton(bOpt, tOpt, "Quit Game", 0, y)) {
-        ChangeGameScreen(GAME_SCREEN_EXIT);
-    }
-
-
-    char *creditText = "(c) James Czekaj 2024";
-    int cfSize = 25;
-    DrawTextWithShadow(smallFont, creditText, GetCenteredTextX(smallFont, cfSize, creditText, 0, virtualScreenWidth), virtualScreenHeight-32, cfSize, 2, WHITE);
-
-    char *versionText = VERSION_STRING;
-    int vfSize = 25;
-    DrawTextWithShadow(smallFont, versionText, 8, 5, cfSize, 2, WHITE);
-}
-
-void UpdateDrawConfigMenu(GameConfig *config, GameScreen previousScreen)
-{
-    DrawBackground();
-    UpdateDrawParticles();
-
-    char *pausedText = "Game Config";
-    int tfSize = 50;
-    DrawTextWithShadow(bigFont, pausedText, GetCenteredTextX(bigFont, tfSize, pausedText, 0, virtualScreenWidth), 64, tfSize, 4, WHITE);
-
-
-    TextOptions tOpt = {
-        .font = smallFont,
-        .size = 40,
-        .shadowOffset = 2,
-        .colour = WHITE
-    };
-
-    ButtonOptions bOpt = defaultButtonOptions;
-    bOpt.shadowOffset = 4;
-    bOpt.centered = true;
-    bOpt.minWidth = 250;
-
-    int y = virtualScreenHeight/2-80;
-    int gap = 6;
-    int height = GetButtonHeight(bOpt, tOpt) + gap;
-
-    bOpt.colour = LIGHTGRAY;
-    const int btnShadow = 4;
-    if (TextButton(bOpt, tOpt, "<-- Back", 0, y)) {
-        ChangeGameScreen(previousScreen);
-    }
-
-    y += height;
-
-    bOpt.colour = (Color){0, 150, 200, 255};
-    char rainText[32];
-    sprintf(rainText, "Rain (%s)", (gameConfig.raining) ? "On" : "Off");
-    if (TextButton(bOpt, tOpt, rainText, 0, y)) {
-        gameConfig.raining = !gameConfig.raining;
-    }
-
-    y += height;
-
-    bOpt.colour = BROWN;
-    char musicText[32];
-    sprintf(musicText, "Music (%s)", (gameConfig.playingMusic) ? "On" : "Off");
-    if (TextButton(bOpt, tOpt, musicText, 0, y)) {
-        gameConfig.playingMusic = !gameConfig.playingMusic;
-    }
-
-    y += height;
-
-    bOpt.colour = DARKPURPLE;
-    char fullScreenText[32];
-    sprintf(fullScreenText, "Fullscreen (%s)", (IsWindowFullscreen()) ? "Yes" : "No");
-    if (TextButton(bOpt, tOpt, fullScreenText, 0, y)) {
-        ToggleFullscreen();
-        gameConfig.fullscreen = IsWindowFullscreen();
-    }
-}
-
-void UpdateDrawDebugMenu(GameScreen previousScreen)
-{
-    DrawBackground();
-    UpdateDrawParticles();
-
-
-    char *debugText = "Debug Options";
-    int tfSize = 50;
-    DrawTextWithShadow(bigFont, debugText, GetCenteredTextX(bigFont, tfSize, debugText, 0, virtualScreenWidth), 64, tfSize, 4, WHITE);
-
-
-    TextOptions tOpt = {
-        .font = smallFont,
-        .size = 40,
-        .shadowOffset = 2,
-        .colour = WHITE
-    };
-
-    ButtonOptions bOpt = defaultButtonOptions;
-    bOpt.shadowOffset = 4;
-    bOpt.centered = true;
-    bOpt.minWidth = 250;
-
-    int y = virtualScreenHeight/2-80;
-    int gap = 6;
-    int height = GetButtonHeight(bOpt, tOpt) + gap;
-
-    bOpt.colour = LIGHTGRAY;
-    const int btnShadow = 4;
-    if (TextButton(bOpt, tOpt, "<-- Back", 0, y)) {
-        ChangeGameScreen(previousScreen);
-    }
-
-    y += height;
-
-    bOpt.colour = (Color){0, 150, 200, 255};
-    char zombieDebugText[64];
-    sprintf(zombieDebugText, "Right-click zombie spawning (%s)", (debugZombieSpawning) ? "On" : "Off");
-    if (TextButton(bOpt, tOpt, zombieDebugText, 0, y)) {
-        debugZombieSpawning = !debugZombieSpawning;
-    }
-
-    y += height;
-
-    bOpt.colour = YELLOW;
-    if (TextButton(bOpt, tOpt, "Give suns", 0, y)) {
-        sunsCollectedCount += 1000*SUN_VALUE;
-    }
-
-    y += height;
-}
-
-void UpdateDrawPauseMenu(void)
-{
-    DrawBackground();
-    UpdateDrawParticles();
-
-    char *pausedText = "Paused";
-    int tfSize = 50;
-    DrawTextWithShadow(bigFont, pausedText, GetCenteredTextX(bigFont, tfSize, pausedText, 0, virtualScreenWidth), 64, tfSize, 4, WHITE);
-
-
-    TextOptions tOpt = {
-        .font = smallFont,
-        .size = 40,
-        .shadowOffset = 2,
-        .colour = WHITE
-    };
-
-    ButtonOptions bOpt = defaultButtonOptions;
-    bOpt.shadowOffset = 4;
-    bOpt.centered = true;
-    bOpt.minWidth = 250;
-
-    int y = virtualScreenHeight/2-80;
-    int gap = 6;
-    int height = GetButtonHeight(bOpt, tOpt) + gap;
-
-    bOpt.colour = GREEN;
-    if (TextButton(bOpt, tOpt, "Resume", 0, y)) {
-        ChangeGameScreen(GAME_SCREEN_PLAYING);
-    }
-
-    y += height;
-    bOpt.colour = LIGHTGRAY;
-    if (TextButton(bOpt, tOpt, "Game Config", 0, y)) {
-        ChangeGameScreen(GAME_SCREEN_CONFIG_MENU);
-    }
-
-    y += height;
-    bOpt.colour = LIGHTGRAY;
-    if (TextButton(bOpt, tOpt, "Debug Options", 0, y)) {
-        ChangeGameScreen(GAME_SCREEN_DEBUG_MENU);
-    }
-
-    y += height;
-    bOpt.colour = RED;
-    if (TextButton(bOpt, tOpt, "Give Up", 0, y)) {
-        ChangeGameScreen(GAME_SCREEN_START);
-    }
-}
-
-void UpdateDrawGameOver(void)
-{
-    DrawBackground();
-    UpdateDrawParticles();
-
-    DrawTextWithShadow(bigFont, "YOU DIED!", GetCenteredTextX(bigFont, 50, "YOU DIED!", 0, virtualScreenWidth), 32, 50, 4, WHITE);
-    DrawTextWithShadow(bigFont, "GAME OVER", GetCenteredTextX(bigFont, 50, "GAME OVER", 0, virtualScreenWidth), 80, 50, 4, WHITE);
-
-    char killCountText[32];
-    sprintf(killCountText, "You killed %i zombies!", zombiesKilledCount);
-    DrawTextWithShadow(smallFont, killCountText, GetCenteredTextX(smallFont, 40, killCountText, 0, virtualScreenWidth), virtualScreenHeight/2-80, 40, 2, WHITE);
-
-    TextOptions options = {
-        .font = smallFont,
-        .size = 40,
-        .shadowOffset = 2,
-        .colour = WHITE
-    };
-
-    ButtonOptions bOpt = defaultButtonOptions;
-    bOpt.colour = LIGHTGRAY;
-    bOpt.centered = true;
-
-    if (TextButton(bOpt, options, "Return to Start", 0, virtualScreenHeight/2)) {
-        ChangeGameScreen(GAME_SCREEN_START);
-    }
-}
 
 void UpdateDrawGame(void)
 {
@@ -553,14 +298,7 @@ void UpdateDrawGame(void)
         trayStart.x, trayStart.y,
         trayEnd.x, trayEnd.y
     };
-    // TODO: Consider making a DrawRectangleWithBorder function that could be used here, and by TextButton
-    Rectangle border = tray;
-    border.x -= 1;
-    border.y -= 1;
-    border.width += 2;
-    border.height += 2;
-    DrawRectangleRec(border, (Color){255, 220, 200, 100});
-    DrawRectangleRec(tray, (Color){46, 40, 34, 255});
+    DrawBorderedRectangle(tray, 1, (Color){46, 40, 34, 255}, (Color){255, 220, 200, 100});
 
     // Depth sorted drawing 
     qsort(drawDatas.array, drawDatas.fixedSize, sizeof(DrawData), &CompareDrawDatas);
