@@ -487,3 +487,18 @@ I spent around 44 minutes just refactoring a few small areas and tackling a few 
 
 ~39 minutes today, more refactoring of buttons (still unfinished.) I'm not 100% where I'm going with this. I probably should've left the old functions in-place, and made a few new functions where
 I can *just* replace the start menu or something, rather than making the whole program untestable because it won't compile without redoing all of the other menus.
+
+
+
+06/04/2024
+
+Around 50 minutes today. I finally finished refactoring the buttons to store their state, so they aren't immediate mode anymore. And to be honest, I think it was a bit of a mistake. Overall, the
+code grew larger, and in my opinion, has become a bit more difficult to work with. I could've kept it mostly immediate mode, but just kept an array of states which I could've passed to the immediate
+TextButton function, and maybe used an enum of buttons to use as indexes into a state array. This would've kept the minimal code of immediate mode, but also added states. Maybe I'll undo it, maybe not.
+I'm just glad to be back with the code functioning. It at least solved the problem of clicking outside a button, and then releasing the mouse inside the button to click it.
+
+Overall, I didn't dislike doing this, but it was drudge-work, and probably wasn't worth it. At least I've learned some stuff from it: Make sure to keep the old system in place, and just build your new
+one alongside it so you can transplant parts of it while testing. Also, just go with the simplest solution first (which I already knew.) Don't completely redo the way you handle something just to add
+a tiny feature, or solve a tiny bug, unless you absolutely have to. In this case, I didn't have to at all.
+
+I believe this'll be the last commit for a while now. I want to work on more games.
