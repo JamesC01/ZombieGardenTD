@@ -480,3 +480,10 @@ I spent around 44 minutes just refactoring a few small areas and tackling a few 
 14/03/2024
 
 ~34 minutes today, refactoring buttons (unfinished)
+
+
+
+15/03/2024
+
+~39 minutes today, more refactoring of buttons (still unfinished.) I'm not 100% where I'm going with this. I probably should've left the old functions in-place, and made a few new functions where
+I can *just* replace the start menu or something, rather than making the whole program untestable because it won't compile without redoing all of the other menus.

@@ -3,6 +3,7 @@
 #include "game.h"
 #include "seed_packets.h"
 #include <raylib.h>
+#include <stdio.h>
 
 
 ButtonOptions defaultButtonOptions = {
@@ -14,6 +15,23 @@ ButtonOptions defaultButtonOptions = {
     2,
     true
 };
+
+TextButton CreateMenuTextButton(char *text, Color colour)
+{
+    TextOptions tOpt = {
+        .font = smallFont,
+        .size = 40,
+        .shadowOffset = 2,
+        .colour = WHITE
+    };
+
+    ButtonOptions bOpt = defaultButtonOptions;
+    bOpt.centered = true;
+    bOpt.shadowOffset = 4;
+    bOpt.colour = colour;
+
+    return (TextButton){.text=text, .textOptions=tOpt, .buttonOptions=bOpt};
+}
 
 bool UpdateDrawTextButton(TextButton *button, int x, int y)
 {
@@ -37,36 +55,51 @@ bool UpdateDrawTextButton(TextButton *button, int x, int y)
         textSize.x+button->buttonOptions.paddingX, textSize.y+button->buttonOptions.paddingY
     };
 
-    bool btnClicked = false;
+    Color modifiedButtonColour = button->buttonOptions.colour;
+    float colourMult = 1.0f;
 
     bool cursorInside = CheckCollisionPointRec(GetMousePosVirtual(), buttonRect);
     if (cursorInside) {
-        btnClicked = IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && !draggingSeedPacket;
-        if (btnClicked) {
-            PlaySound(peaShootSound);
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !draggingSeedPacket) {
+            button->down = true;
         }
 
-        bool btnHeldDown = IsMouseButtonDown(MOUSE_BUTTON_LEFT) && !draggingSeedPacket;
-
-        float colourMult = (btnHeldDown) ? 0.5f : 0.75f;
-        button->buttonOptions.colour.r *= colourMult;
-        button->buttonOptions.colour.g *= colourMult;
-        button->buttonOptions.colour.b *= colourMult;
+        colourMult = 0.75f;
 
         button->buttonOptions.shadowOffset /= 2;
     }
 
-    DrawBorderedRectangleWithShadow(buttonRect, button->buttonOptions.shadowOffset, button->buttonOptions.outlineThickness, button->buttonOptions.colour, button->buttonOptions.outlineColour);
+    if (button->down) {
+        colourMult = 0.5f;
+    }
+
+    modifiedButtonColour.r *= colourMult;
+    modifiedButtonColour.g *= colourMult;
+    modifiedButtonColour.b *= colourMult;
+
+    bool btnTriggered = IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && button->down && !draggingSeedPacket;
+    if (btnTriggered) {
+        PlaySound(peaShootSound);
+        button->down = false;
+    }
+
+    DrawBorderedRectangleWithShadow(
+        buttonRect,
+        button->buttonOptions.shadowOffset,
+        button->buttonOptions.outlineThickness,
+        modifiedButtonColour,
+        button->buttonOptions.outlineColour
+    );
 
     DrawTextWithShadow(button->textOptions.font, button->text,
         x+button->buttonOptions.paddingX/2, y+button->buttonOptions.paddingY/2,
         button->textOptions.size, button->textOptions.shadowOffset, button->textOptions.colour
     );
 
-    return btnClicked;
+    return btnTriggered;
 }
 
-int GetCenteredTextX(Font font, int size, char *text, int startX, int endX)
+int GetCenteredTextX(Font font, int size, const char *text, int startX, int endX)
 {
     int textHalfWidth = MeasureTextEx(font, text, size, 0).x/2;
 
@@ -78,6 +111,11 @@ void DrawTextWithShadow(Font font, const char *text, int x, int y, float fontSiz
     const Color shadowColour = {0, 0, 0, 150};
     DrawTextEx(font, text, (Vector2){x+shadowOffset, y+shadowOffset}, fontSize, 0, shadowColour);
     DrawTextEx(font, text, (Vector2){x, y}, fontSize, 0, tint);
+}
+
+void DrawCenteredTextWithShadow(Font font, const char *text, int y, float fontSize, float shadowOffset, Color tint)
+{
+    DrawTextWithShadow(font, text, GetCenteredTextX(font, fontSize, text, 0, virtualScreenWidth), y, fontSize, shadowOffset, tint);
 }
 
 void DrawBorderedRectangle(Rectangle rect, int outlineThickness, Color colour, Color borderColour)

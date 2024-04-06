@@ -56,6 +56,8 @@ void ReadWriteConfig(GameConfig *config, char *operation);
 
 FixedObjectArray CreateFixedObjectArray(int objMaxCount, int typeSizeBytes);
 
+static TextButton pauseButton;
+
 
 GameConfig gameConfig = {
     .playingMusic = true,
@@ -76,6 +78,7 @@ int main(void)
     SetExitKey(KEY_NULL);
 
     LoadAssets();
+    CreateAllButtons();
 
     SetMusicVolume(themeSong, 0.5f);
     PlayMusicStream(themeSong);
@@ -91,6 +94,23 @@ int main(void)
     drawDatas = CreateFixedObjectArray(128, sizeof(DrawData));
 
     targetRT = LoadRenderTexture(640, 480);
+
+    TextOptions tOpt = {
+        .font = smallFont,
+        .size = 20,
+        .shadowOffset = 2,
+        .colour = WHITE
+    };
+
+    ButtonOptions bOpt = defaultButtonOptions;
+
+    bOpt.paddingX = 16;
+    bOpt.paddingY = 8;
+    bOpt.centered = false;
+
+    pauseButton = CreateMenuTextButton("||", LIGHTGRAY);
+    pauseButton.buttonOptions = bOpt;
+    pauseButton.textOptions = tOpt;
 
     ReadWriteConfig(&gameConfig, "rb");
 
@@ -332,19 +352,8 @@ void UpdateDrawGame(void)
     sprintf(timerText, "%i", frameCount/60);
     DrawTextWithShadow(smallFont, timerText, virtualScreenWidth-100, 10, 40, 1, WHITE);
 
-    TextOptions options = {
-        .font = smallFont,
-        .size = 20,
-        .shadowOffset = 2,
-        .colour = WHITE
-    };
 
-    ButtonOptions bOpt = defaultButtonOptions;
-    bOpt.paddingX = 16;
-    bOpt.paddingY = 8;
-    bOpt.centered = false;
-
-    if (TextButton(bOpt, options, "||", virtualScreenWidth-32, virtualScreenHeight-32)) {
+    if (UpdateDrawTextButton(&pauseButton, virtualScreenWidth-32, virtualScreenHeight-32)) {
         ChangeGameScreen(GAME_SCREEN_PAUSE_MENU);
     }
 

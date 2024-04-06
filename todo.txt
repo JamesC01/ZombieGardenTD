@@ -50,3 +50,5 @@ Make plant being eaten spawn particles and a big exposion when the plant is dead
 Make zombie heads leave trailing blood particles once they're on the ground (just need a particle with no velocity)
 
 Fix buttons able to be clicked outside by keep buttonstate in a struct (inspired by schismtracker widget)
+
+Make variables and functions static if they don't need to be accessed outside of their module/file

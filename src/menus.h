@@ -4,6 +4,7 @@
 #include "game.h"
 #include <raylib.h>
 
+void CreateAllButtons(void);
 void UpdateDrawPauseMenu(void);
 void UpdateDrawStart(void);
 void UpdateDrawGameOver(void);
