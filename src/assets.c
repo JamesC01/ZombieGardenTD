@@ -127,6 +127,9 @@ void LoadAssets()
 
 void UnloadAssets()
 {
+    // TODO: I'm not freeing everything. This is a sign I need a better way to handle this. Maybe
+    // keep an array of each type of asset that just holds a pointer to it, and then loop over the
+    // array. I can just make a wrapper function that automatically adds it to the array.
     UnloadTexture(seedPacketSprite);
     UnloadTexture(lawnBackgroundSprite );
     UnloadTexture(seedShooterSprite);

@@ -20,8 +20,8 @@ typedef struct {
 
 // Cooldowns apply to certain actions, for peashooters, it's the shoot frequency,
 // for sunflowers, is the spawnrate of the suns.
-extern int plantCooldownLUT[PT_COUNT];
-extern int plantHealthLUT[PT_COUNT];
+extern int plantCooldownMap[PT_COUNT];
+extern int plantHealthMap[PT_COUNT];
 
 void UpdateDrawPlants(void);
 

@@ -7,7 +7,7 @@
 #include "zombie.h"
 #include "sun.h"
 
-int plantCooldownLUT[PT_COUNT] = {
+int plantCooldownMap[PT_COUNT] = {
     0, // PT_NONE,
     60*2, // PT_PSHOOTER,
     60*25, // PT_SUNFLOWER,
@@ -16,7 +16,7 @@ int plantCooldownLUT[PT_COUNT] = {
     //PT_COUNT
 };
 
-int plantHealthLUT[PT_COUNT] = {
+int plantHealthMap[PT_COUNT] = {
     0, // PT_NONE,
     100, // PT_PSHOOTER,
     100, // PT_SUNFLOWER,
@@ -76,7 +76,7 @@ void UpdateDrawPlants()
 
 void UpdateDrawPotatoBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
 {
-    if (TickCooldown(&p->cooldown, plantCooldownLUT[p->type])) {
+    if (TickCooldown(&p->cooldown, plantCooldownMap[p->type])) {
         Zombie* zArr = (Zombie*)zombies.array;
         for (int i = 0; i < zombies.fixedSize; i++) {
             if (zArr[i].active) {
@@ -94,7 +94,7 @@ void UpdateDrawPotatoBomb(Plant* p, Vector2 gridPos, Vector2 screenPos)
         PlaySound(explodeSound);
     }
 
-    float coolDownPercent = (p->cooldown / (float)plantCooldownLUT[p->type]);
+    float coolDownPercent = (p->cooldown / (float)plantCooldownMap[p->type]);
     float scale = 1+coolDownPercent*0.5f;
 
     Vector2 origin = {potatoSprite.width/2.0f, potatoSprite.height-2};
@@ -111,12 +111,12 @@ void UpdateDrawSunflower(Plant* p, Vector2 screenPos)
 {
     Vector2 sunSpawnPos = Vector2Subtract(screenPos, (Vector2){0, 40});
 
-    if (TickCooldown(&p->cooldown, plantCooldownLUT[p->type]))
+    if (TickCooldown(&p->cooldown, plantCooldownMap[p->type]))
         SpawnSun(sunSpawnPos);
 
     Vector2 origin = {sunflowerSprite.width/2.0f, sunflowerSprite.height-4};
 
-    float coolDownPercent = (p->cooldown / (float)plantCooldownLUT[p->type]);
+    float coolDownPercent = (p->cooldown / (float)plantCooldownMap[p->type]);
     float scale = 1;
     if (coolDownPercent < 0.02f) {
         scale = 1+(coolDownPercent*4);
@@ -145,7 +145,7 @@ void UpdateDrawSeedShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
 
     // Shoot pea if a zombie is in our row
     if (zombieInRow) {
-        if (TickCooldown(&p->cooldown, plantCooldownLUT[p->type])) {
+        if (TickCooldown(&p->cooldown, plantCooldownMap[p->type])) {
             Vector2 peaSpawnPos = Vector2Add(screenPos, (Vector2){18, -42});
 
             Projectile* proj = GetNextObject(projectiles, Projectile);
@@ -159,7 +159,7 @@ void UpdateDrawSeedShooter(Plant* p, Vector2 gridPos, Vector2 screenPos)
         }
     }
 
-    float coolDownPercent = (p->cooldown / (float)plantCooldownLUT[p->type]);
+    float coolDownPercent = (p->cooldown / (float)plantCooldownMap[p->type]);
     float scale = 1;
     if (coolDownPercent < 0.05f) {
         scale = 1+(coolDownPercent*3);

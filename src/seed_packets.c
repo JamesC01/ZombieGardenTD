@@ -70,8 +70,8 @@ void UpdateSeedPackets()
                     if (noPlantInCell) {
                         // Plant the plant
                         plant->type = packet->type;
-                        plant->cooldown = plantCooldownLUT[packet->type];
-                        plant->health = plantHealthLUT[packet->type];
+                        plant->cooldown = plantCooldownMap[packet->type];
+                        plant->health = plantHealthMap[packet->type];
                         sunsCollectedCount -= packet->cost;
 
                         PlaySound(placePlantSound);
