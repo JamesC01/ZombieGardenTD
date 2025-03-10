@@ -94,6 +94,7 @@ int main(void)
     drawDatas = CreateFixedObjectArray(128, sizeof(DrawData));
 
     targetRT = LoadRenderTexture(640, 480);
+    SetTextureFilter(targetRT.texture, TEXTURE_FILTER_BILINEAR);
 
     TextOptions tOpt = {
         .font = smallFont,

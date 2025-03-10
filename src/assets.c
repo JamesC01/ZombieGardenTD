@@ -121,8 +121,9 @@ void LoadAssets()
     }
 
     bigFont = LoadFont("big_font.ttf");
+    SetTextureFilter(bigFont.texture, TEXTURE_FILTER_BILINEAR);
     smallFont = LoadFont("small_font.ttf");
-    while (!IsFontReady(bigFont) || !IsFontReady(smallFont)) {}
+    SetTextureFilter(smallFont.texture, TEXTURE_FILTER_BILINEAR);
 }
 
 void UnloadAssets()

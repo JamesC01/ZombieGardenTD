@@ -13,7 +13,7 @@ void GameOver(void);
 
 #define EXPAND_V2(v2) v2.x, v2.y
 
-#define VERSION_STRING "v1.0"
+#define VERSION_STRING "v1.0.1"
 
 extern const int SPRITE_FLASH_TIME;
 
